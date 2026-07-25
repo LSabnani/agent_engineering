@@ -9,11 +9,11 @@ Goal: wrap the Class 10 workflow, unchanged, in a bounded ADK loop that processe
 
 ## Steps
 
-1. Extend `workflow/state_machine.py` with `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW`. Decide where they attach to the existing transition table yourself before looking at the reference — Book 1 §11.6 tells you what the two states mean, not which existing state should route to them. `BLOCKED` should no longer be terminal once you're done.
+1. Extend `workflow/state_machine.py` with `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW`. Decide where they attach to the existing transition table yourself before looking at the reference — Book 1 §13.6 tells you what the two states mean, not which existing state should route to them. `BLOCKED` should no longer be terminal once you're done.
 
 2. Write `loop/budget.py`, `loop/decision.py` (the five-way decision — CONTINUE, RETRY, STOP, DEFER, ESCALATE), `loop/account_queue.py`, and `loop/run_report.py`.
 
-3. Write `loop/batch_runner.py`'s `run_batch()` to accept `qualify`/`review`/`draft` as injected callables, exactly like Class 9's `run_workflow` — this keeps the whole loop testable offline. Checkpoint after every account, and verify the state the workflow actually reached (§11.7) before deciding what to do next.
+3. Write `loop/batch_runner.py`'s `run_batch()` to accept `qualify`/`review`/`draft` as injected callables, exactly like Class 9's `run_workflow` — this keeps the whole loop testable offline. Checkpoint after every account, and verify the state the workflow actually reached (§13.7) before deciding what to do next.
 
 4. Ask Antigravity for the ADK-native `LoopAgent` wiring, but expect a surprise:
 

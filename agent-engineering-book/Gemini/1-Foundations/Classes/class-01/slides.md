@@ -12,7 +12,7 @@
 
 ---
 
-## Slide 2 — A model is a capability, not a system (§1.1)
+## Slide 2 — A model is a capability, not a system (§3.1)
 
 **On slide:** "A language model predicts and generates language. It does not define responsibility, permission, persistence, or correctness."
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Slide 3 — Assistants, workflows, agents, agentic systems (§1.2)
+## Slide 3 — Assistants, workflows, agents, agentic systems (§3.2)
 
 **On slide:** Four terms, precisely defined: model → assistant → workflow → agent → agentic system.
 
@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — The autonomy spectrum (§1.3), and where WidgetWare starts
+## Slide 4 — The autonomy spectrum (§3.3), and where WidgetWare starts
 
 **On slide:** Seven levels, Answer-only through Open-ended autonomy. WidgetWare stops at level 5: Execute with approval.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Probabilistic reasoning inside deterministic boundaries (§1.4)
+## Slide 5 — Probabilistic reasoning inside deterministic boundaries (§3.4)
 
 **On slide:** "Let the model interpret, synthesize, draft. Let software validate, authorize, persist, route, enforce."
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Introducing WidgetWare (§1.5)
+## Slide 6 — Introducing WidgetWare (§3.5)
 
 **On slide:** WidgetWare sells software that helps manufacturing and industrial-automation companies modernize plant operations and adopt AI-enabled automation.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Initial system boundary (§1.6)
+## Slide 9 — Initial system boundary (§3.6)
 
 **On slide:** In scope: research, qualify, draft, request approval. Out of scope: autonomous prospecting, sending messages, modifying CRM without approval, inventing facts.
 
@@ -92,7 +92,7 @@
 
 ---
 
-## Slide 12 — Acceptance criteria: written before implementation (§1.7)
+## Slide 12 — Acceptance criteria: written before implementation (§3.7)
 
 **On slide:** Six criteria, each independently testable — schema conformance, evidence-or-inference, no drafting on insufficient evidence, no autonomous send, explainability, usable on representative accounts.
 

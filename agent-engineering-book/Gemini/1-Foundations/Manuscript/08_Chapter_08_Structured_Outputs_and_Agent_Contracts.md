@@ -1,4 +1,4 @@
-# Chapter 6: Structured Outputs and Agent Contracts
+# Chapter 8: Structured Outputs and Agent Contracts
 
 ## Chapter purpose
 
@@ -24,7 +24,7 @@ By the end of this chapter, the reader should be able to:
 
 Replace the qualification assistant’s prose-only result with a validated `QualificationResult` contract.
 
-## 6.1 Prose is for people; contracts are for systems
+## 8.1 Prose is for people; contracts are for systems
 
 A response such as “Acme looks like a strong opportunity” may be understandable to a person, but software cannot reliably determine:
 
@@ -37,7 +37,7 @@ A response such as “Acme looks like a strong opportunity” may be understanda
 
 A contract makes those elements explicit.
 
-## 6.2 Designing the qualification schema
+## 8.2 Designing the qualification schema
 
 A useful result may contain:
 
@@ -65,7 +65,7 @@ Use enumerations for stable states:
 
 Do not encode workflow state in arbitrary prose.
 
-## 6.3 Confidence is not probability
+## 8.3 Confidence is not probability
 
 A model-provided confidence value is a self-assessment, not a calibrated probability. It can still be useful when combined with rules:
 
@@ -76,7 +76,7 @@ A model-provided confidence value is a self-assessment, not a calibrated probabi
 
 Do not treat `0.92` as scientific certainty merely because it contains decimals.
 
-## 6.4 Evidence references
+## 8.4 Evidence references
 
 The result should refer to evidence by stable identifiers rather than copying large passages. An evidence object may include:
 
@@ -94,7 +94,7 @@ EvidenceItem
 
 The qualification result then lists the evidence identifiers that support each decisive claim.
 
-## 6.5 Validation and repair
+## 8.5 Validation and repair
 
 A structured-output pipeline should:
 
@@ -107,7 +107,7 @@ A structured-output pipeline should:
 
 Never silently coerce a materially ambiguous status.
 
-## 6.6 Semantic correctness remains separate
+## 8.6 Semantic correctness remains separate
 
 Schema validation can prove that `status` contains an allowed value. It cannot prove that the chosen value is justified.
 
@@ -118,7 +118,7 @@ Use two layers:
 
 Both are required.
 
-## 6.7 Designing for handoffs
+## 8.7 Designing for handoffs
 
 Contracts should be designed for the next component. The future research agent needs a list of missing questions. The outreach agent needs approved facts and positioning angles. The approval interface needs the draft, evidence, and risk flags.
 
@@ -154,14 +154,14 @@ Add deterministic rules such as:
 
 The WidgetWare qualification agent now produces a machine-validated result that remains readable to a person. This contract will become the interface between agents and workflow stages.
 
-## Bridge to Chapter 7
+## Bridge to Chapter 9
 
-Chapter 7 gives the system controlled capabilities. The agent will retrieve account data through narrow tools whose inputs, permissions, errors, and outputs are as carefully engineered as the agent contract.
+Chapter 9 gives the system controlled capabilities. The agent will retrieve account data through narrow tools whose inputs, permissions, errors, and outputs are as carefully engineered as the agent contract.
 
 ## Exercises
 
-1. Take the prose result "Acme looks like a strong opportunity" from §6.1 and write out the six things §6.1 says software cannot reliably determine from it. Now look at your own `QualificationResult` output from the Hands-on Lab — does it actually answer all six?
-2. §6.3 warns that a confidence value is a self-assessment, not a calibrated probability. Design one deterministic rule, in plain language, that would prevent your system from treating a 0.95 confidence score as sufficient justification on its own, mirroring the four rules in §6.3.
-3. §6.5 lists six pipeline steps ending in "fail safely if the contract remains invalid." Deliberately feed your qualification agent an account likely to produce a borderline or malformed result. Does it reach `BLOCKED`, or does it silently produce something plausible-looking instead?
-4. Using §6.7's handoff-design principle — sufficient but not bloated — look at your `QualificationResult` contract and identify one field a downstream agent genuinely needs that's currently missing, and one field that's present but that none of Chapter 9's agents will actually use.
-5. §6.6 requires two separate layers: contract tests and evaluation cases. Write one evaluation case, in plain language — the account, the expected reasoning — that a contract test could never catch, because the schema would validate a wrong answer just as easily as a right one.
+1. Take the prose result "Acme looks like a strong opportunity" from §8.1 and write out the six things §8.1 says software cannot reliably determine from it. Now look at your own `QualificationResult` output from the Hands-on Lab — does it actually answer all six?
+2. §8.3 warns that a confidence value is a self-assessment, not a calibrated probability. Design one deterministic rule, in plain language, that would prevent your system from treating a 0.95 confidence score as sufficient justification on its own, mirroring the four rules in §8.3.
+3. §8.5 lists six pipeline steps ending in "fail safely if the contract remains invalid." Deliberately feed your qualification agent an account likely to produce a borderline or malformed result. Does it reach `BLOCKED`, or does it silently produce something plausible-looking instead?
+4. Using §8.7's handoff-design principle — sufficient but not bloated — look at your `QualificationResult` contract and identify one field a downstream agent genuinely needs that's currently missing, and one field that's present but that none of Chapter 11's agents will actually use.
+5. §8.6 requires two separate layers: contract tests and evaluation cases. Write one evaluation case, in plain language — the account, the expected reasoning — that a contract test could never catch, because the schema would validate a wrong answer just as easily as a right one.

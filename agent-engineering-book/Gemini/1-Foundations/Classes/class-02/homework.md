@@ -19,7 +19,7 @@ Ask Antigravity (or simulate this yourself) to produce a gap report against your
 
 ## Extension (optional)
 
-Write repository instructions (§2.5-style) precise enough that a new contributor's very first Antigravity task would be automatically well-scoped — for example, a standing instruction that any task touching `src/widgetware_sdr` must state which tests should pass before it's considered complete.
+Write repository instructions (§4.5-style) precise enough that a new contributor's very first Antigravity task would be automatically well-scoped — for example, a standing instruction that any task touching `src/widgetware_sdr` must state which tests should pass before it's considered complete.
 
 ## Submission
 

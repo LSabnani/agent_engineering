@@ -8,7 +8,7 @@ This checkpoint is charter and fixture files only — there is no code to fail a
 
 ## 2. The three scenario accounts are illustrative, not exhaustive
 
-`tests/fixtures/accounts/` covers exactly one qualifying, one disqualifying, and one ambiguous account. This is enough to exercise the three qualification directions once code exists, but it is not a representative dataset — Class 8's golden dataset (Book 1, Chapter 10) is where breadth actually gets addressed. Do not mistake these three fixtures for adequate test coverage later in the course.
+`tests/fixtures/accounts/` covers exactly one qualifying, one disqualifying, and one ambiguous account. This is enough to exercise the three qualification directions once code exists, but it is not a representative dataset — Class 8's golden dataset (Book 1, Chapter 12) is where breadth actually gets addressed. Do not mistake these three fixtures for adequate test coverage later in the course.
 
 ## 3. "Expected output" here is a written prediction, not a verified fact
 
@@ -16,4 +16,4 @@ This checkpoint is charter and fixture files only — there is no code to fail a
 
 ## 4. This checkpoint cannot demonstrate the no-autonomous-send guarantee
 
-Acceptance criterion 4 ("no autonomous send") is meaningless to verify against a codebase that doesn't exist yet. The guarantee only becomes checkable once there is a codebase to grep for the absence of a send-capable tool — practically speaking, this is not truly verifiable until Class 7 (Book 1, Chapter 9) and remains re-verifiable at every checkpoint after that.
+Acceptance criterion 4 ("no autonomous send") is meaningless to verify against a codebase that doesn't exist yet. The guarantee only becomes checkable once there is a codebase to grep for the absence of a send-capable tool — practically speaking, this is not truly verifiable until Class 7 (Book 1, Chapter 11) and remains re-verifiable at every checkpoint after that.

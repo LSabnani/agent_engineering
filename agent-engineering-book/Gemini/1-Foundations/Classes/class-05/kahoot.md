@@ -4,19 +4,19 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What is the difference between a Skill and a tool (§5.3)?
+**1. (Terminology)** What is the difference between a Skill and a tool (§7.3)?
 - A) They're interchangeable terms for the same thing
 - **✓** B) A Skill tells the agent how to perform a task; a tool lets it do something outside the model
 - C) A tool is written in Markdown; a Skill is written in Python
 - D) A Skill requires network access; a tool never does
 
-**2. (Terminology)** What is the difference between a Skill and a workflow (§5.4)?
+**2. (Terminology)** What is the difference between a Skill and a workflow (§7.4)?
 - A) They're interchangeable terms for the same thing
 - **✓** B) A Skill packages know-how one agent applies within a single reasoning step; a workflow coordinates multiple steps or agents over time
 - C) A workflow is always faster than a Skill
 - D) A Skill can only be used once per session; a workflow can be reused
 
-**3. (Architecture)** Why does progressive disclosure (§5.6) matter for context consumption?
+**3. (Architecture)** Why does progressive disclosure (§7.6) matter for context consumption?
 - **✓** A) A Skill can expose a concise discovery description and load full detail only when selected, reducing what's in the reasoning window
 - B) It makes the Skill file smaller on disk
 - C) It's required by ADK's `Agent` constructor
@@ -34,7 +34,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) Neither — this can only be fixed with structured outputs (Class 6)
 - D) The context builder, since evidence lives there
 
-**6. (Security/governance)** What does §5.7 say a Skill needs that "an anonymous prompt fragment" doesn't?
+**6. (Security/governance)** What does §7.7 say a Skill needs that "an anonymous prompt fragment" doesn't?
 - **✓** A) A name, a version, and clear ownership — so changes to it can be reviewed like any other production asset
 - B) Nothing — Skills and prompt fragments carry identical governance requirements
 - C) Encryption at rest
@@ -46,9 +46,9 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) It means the second agent doesn't need a model at all
 - D) It automatically merges both agents into one
 
-**8. (Connecting back)** How does §3.5's evidence-policy vocabulary (Class 3) show up inside the Skill's procedure?
+**8. (Connecting back)** How does §5.5's evidence-policy vocabulary (Class 3) show up inside the Skill's procedure?
 - **✓** A) The Skill's quality criteria explicitly require distinguishing fact from inference and never fabricating account attributes — the same categories Class 3 defined
-- B) It doesn't — evidence policy only applies to Chapter 8's research pipeline
+- B) It doesn't — evidence policy only applies to Chapter 10's research pipeline
 - C) The Skill replaces the evidence policy entirely
 - D) Evidence policy only becomes relevant once tools are added in Class 7
 

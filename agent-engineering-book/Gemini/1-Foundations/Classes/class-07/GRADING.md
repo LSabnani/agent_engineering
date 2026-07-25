@@ -2,7 +2,7 @@
 
 Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check partially.
 
-1. **Tool descriptions would actually work on a model that's never seen the code.** Read each tool's docstring as if you were an LLM deciding whether to call it. Does it say when to use it *and* when not to? A description that only states what the function returns, with no usage guidance, is weaker than Book 1 §7.2 asks for.
+1. **Tool descriptions would actually work on a model that's never seen the code.** Read each tool's docstring as if you were an LLM deciding whether to call it. Does it say when to use it *and* when not to? A description that only states what the function returns, with no usage guidance, is weaker than Book 1 §9.2 asks for.
 
 2. **`calculate_fit_score` is not reachable by the model.** Check the agent's `tools=[...]` list — `calculate_fit_score` should not be in it. If it is, the submission has undone the chapter's own point about keeping deterministic calculation outside model reasoning.
 

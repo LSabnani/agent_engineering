@@ -1,6 +1,6 @@
 # Class 2 — Antigravity Workspace and Repository Harness
 
-**Manuscript source:** Book 1, Chapter 2
+**Manuscript source:** Book 1, Chapter 4
 **Seven-Step mapping:** Primary: Build the Harness / Supporting: Design Agent Capabilities, Evaluate & Govern
 **Starting checkpoint:** [`../class-01/golden-solution/`](../class-01/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 3 passed)
@@ -31,6 +31,6 @@ Expected: `ruff format --check`, `ruff check`, and `pytest` (3 tests) all pass.
 
 ## Facilitator checklist
 
-- [ ] Give Antigravity (or simulate) both the unscoped task ("build the entire application") and the properly scoped one from §2.6 — the comparison is the point, not either output alone
+- [ ] Give Antigravity (or simulate) both the unscoped task ("build the entire application") and the properly scoped one from §4.6 — the comparison is the point, not either output alone
 - [ ] Confirm every participant's `./scripts/check.sh` (or equivalent) passes before homework is assigned
 - [ ] Flag the Kahoot #7 discussion (scope creep temptation) explicitly — it recurs in almost every class from here on

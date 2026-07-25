@@ -61,7 +61,7 @@ Both paths are pay-as-you-go per token past any free allotment — check current
 
 ## Two settings this course relies on
 
-- **Review every plan before permitting implementation** (Book 1 §2.2's eight-step disciplined cycle). Don't let Antigravity run an unbounded, unreviewed task against your working directory — Class 02 builds a real permissions model around this; skipping the review habit early defeats the point of that chapter once you reach it.
+- **Review every plan before permitting implementation** (Book 1 §4.2's eight-step disciplined cycle). Don't let Antigravity run an unbounded, unreviewed task against your working directory — Class 02 builds a real permissions model around this; skipping the review habit early defeats the point of that chapter once you reach it.
 - **Keep `.env` out of version control from the very first commit.** `.env.example` documents the shape; `.env` never gets committed. Class 02 sets this up explicitly, but the habit should start now, before there's anything real to leak.
 
 ## Then

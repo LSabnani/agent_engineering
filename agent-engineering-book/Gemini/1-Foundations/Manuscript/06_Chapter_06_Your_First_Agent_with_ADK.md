@@ -1,4 +1,4 @@
-# Chapter 4: Your First Agent with ADK
+# Chapter 6: Your First Agent with ADK
 
 ## Chapter purpose
 
@@ -22,9 +22,9 @@ By the end of this chapter, the reader should be able to:
 
 ## The WidgetWare increment
 
-Build an **Account Qualification Assistant** that accepts a supplied account profile and returns a reasoned, human-readable recommendation. Structured output arrives in Chapter 6; this chapter focuses on the execution lifecycle.
+Build an **Account Qualification Assistant** that accepts a supplied account profile and returns a reasoned, human-readable recommendation. Structured output arrives in Chapter 8; this chapter focuses on the execution lifecycle.
 
-## 4.1 ADK as an application framework
+## 6.1 ADK as an application framework
 
 ADK provides a code-first way to define agents, connect models, attach tools, manage sessions, compose workflows, and evaluate behavior. In Book 1, keep the implementation explicit and readable.
 
@@ -37,7 +37,7 @@ The first agent needs:
 - an entry point or runner; and
 - a local interface for testing.
 
-## 4.2 The first agent boundary
+## 6.2 The first agent boundary
 
 The Account Qualification Assistant may:
 
@@ -56,13 +56,13 @@ It may not:
 
 A narrow boundary makes early failures easier to diagnose.
 
-## 4.3 Sessions and events
+## 6.3 Sessions and events
 
 A **session** represents the interaction context for a user or workflow. It may hold conversation history and state. An **event** records something that happened during execution, such as a model request, response, tool call, or state change.
 
 Even when the first implementation is simple, inspect the event stream. Agent systems become easier to debug when execution is treated as a sequence of observable events rather than a single opaque response.
 
-## 4.4 Basic state
+## 6.4 Basic state
 
 Book 1 uses minimal state:
 
@@ -73,7 +73,7 @@ Book 1 uses minimal state:
 
 At this stage, only `account_id` and the current interaction are necessary. The remaining fields establish the vocabulary that later chapters will use.
 
-## 4.5 Testing an LLM-backed agent
+## 6.5 Testing an LLM-backed agent
 
 Do not require exact word-for-word output. Test stable properties:
 
@@ -85,7 +85,7 @@ Do not require exact word-for-word output. Test stable properties:
 
 Use fixed test inputs and record representative outputs for human review.
 
-## 4.6 Local playground and inspection
+## 6.6 Local playground and inspection
 
 Run the agent through the supported local interface. During development, inspect:
 
@@ -137,14 +137,14 @@ source_notes:
 
 The project now contains its first working ADK agent. It can reason about supplied account data but does not yet expose its procedure as a reusable Skill or return a machine-validated contract.
 
-## Bridge to Chapter 5
+## Bridge to Chapter 7
 
-Chapter 5 separates repeatable qualification knowledge from the agent definition. This creates a reusable Skill that can later be shared by multiple agents and evaluated independently.
+Chapter 7 separates repeatable qualification knowledge from the agent definition. This creates a reusable Skill that can later be shared by multiple agents and evaluated independently.
 
 ## Exercises
 
-1. §4.2 draws a narrow first-agent boundary — five things the Account Qualification Assistant may do, five it may not. Before reading Chapter 7, predict which of the "may not" items get lifted first, and in what order. Check your prediction once tools are introduced.
-2. §4.5 insists on testing stable properties, not exact wording. Take one of your own scenario tests (real or hypothetical) for an LLM-backed feature and check whether it's actually asserting exact phrasing in disguise — a string match that would fail if the model rephrased a correct answer.
-3. Using §4.3's distinction between a session and an event, describe from memory — or by re-running the Hands-on Lab — what a single call to the qualification assistant actually produced as its event sequence. Could you explain, from the events alone, why it reached its conclusion?
-4. §4.4 lists four state fields Book 1 will use, but says only `account_id` matters yet. Predict which chapter first makes real use of `workflow_status`, and which first makes real use of `approval_status`, before reading further.
-5. §4.6 says "the ability to explain an execution is more important than visual polish." Run the local playground against one uncertain-evidence account from your Hands-on Lab and write, in plain language, exactly why the agent reached the recommendation it did — citing the actual assembled instructions and event sequence, not a paraphrase from memory.
+1. §6.2 draws a narrow first-agent boundary — five things the Account Qualification Assistant may do, five it may not. Before reading Chapter 9, predict which of the "may not" items get lifted first, and in what order. Check your prediction once tools are introduced.
+2. §6.5 insists on testing stable properties, not exact wording. Take one of your own scenario tests (real or hypothetical) for an LLM-backed feature and check whether it's actually asserting exact phrasing in disguise — a string match that would fail if the model rephrased a correct answer.
+3. Using §6.3's distinction between a session and an event, describe from memory — or by re-running the Hands-on Lab — what a single call to the qualification assistant actually produced as its event sequence. Could you explain, from the events alone, why it reached its conclusion?
+4. §6.4 lists four state fields Book 1 will use, but says only `account_id` matters yet. Predict which chapter first makes real use of `workflow_status`, and which first makes real use of `approval_status`, before reading further.
+5. §6.6 says "the ability to explain an execution is more important than visual polish." Run the local playground against one uncertain-evidence account from your Hands-on Lab and write, in plain language, exactly why the agent reached the recommendation it did — citing the actual assembled instructions and event sequence, not a paraphrase from memory.

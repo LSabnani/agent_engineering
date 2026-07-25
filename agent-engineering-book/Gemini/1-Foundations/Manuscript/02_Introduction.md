@@ -41,7 +41,7 @@ The book uses one seven-step framework, applied consistently across every techno
 
 ### 1. Frame the Use Case
 
-Define the business objective, the intended users, what the system may and may not do, and the autonomy level it is permitted before any code exists. This is a discipline, not a formality — Chapter 1's WidgetWare charter and acceptance criteria are this step made concrete.
+Define the business objective, the intended users, what the system may and may not do, and the autonomy level it is permitted before any code exists. This is a discipline, not a formality — Chapter 3's WidgetWare charter and acceptance criteria are this step made concrete.
 
 ### 2. Build Context
 
@@ -69,19 +69,19 @@ Measure whether the system is actually good — not merely whether it runs — a
 
 ## How Book 1 progresses
 
-Book 1 is organized as a build sequence, and that sequence does not track the seven steps in numeric order — Chapter 2 builds the harness (Step 4) before Chapter 3 builds context (Step 2), because a reader needs a working Antigravity workspace before there is anywhere to put business rules. The steps describe a dependency structure among engineering concerns, not a fixed reading order.
+Book 1 is organized as a build sequence, and that sequence does not track the seven steps in numeric order — Chapter 4 builds the harness (Step 4) before Chapter 5 builds context (Step 2), because a reader needs a working Antigravity workspace before there is anywhere to put business rules. The steps describe a dependency structure among engineering concerns, not a fixed reading order.
 
-- Chapter 1 establishes the discipline and defines the WidgetWare problem (Step 1).
-- Chapter 2 creates the Antigravity development harness (Step 4).
-- Chapter 3 designs model and context behavior (Step 2).
-- Chapter 4 implements the first ADK agent (Step 4, continued).
-- Chapter 5 extracts reusable Skills (Step 3).
-- Chapter 6 introduces structured outputs and contracts (Step 3, continued).
-- Chapter 7 adds controlled tools (Step 3, continued).
-- Chapter 8 connects evidence-backed research through tools and MCP (Step 3, continued).
-- Chapter 9 introduces multi-agent workflows and human approval (Step 5).
-- Chapter 10 evaluates and deploys the integrated, single-account system (Step 7).
-- Chapter 11 wraps that evaluated system in a bounded ADK loop that processes many accounts (Step 6) — Book 1's closing chapter.
+- Chapter 3 establishes the discipline and defines the WidgetWare problem (Step 1).
+- Chapter 4 creates the Antigravity development harness (Step 4).
+- Chapter 5 designs model and context behavior (Step 2).
+- Chapter 6 implements the first ADK agent (Step 4, continued).
+- Chapter 7 extracts reusable Skills (Step 3).
+- Chapter 8 introduces structured outputs and contracts (Step 3, continued).
+- Chapter 9 adds controlled tools (Step 3, continued).
+- Chapter 10 connects evidence-backed research through tools and MCP (Step 3, continued).
+- Chapter 11 introduces multi-agent workflows and human approval (Step 5).
+- Chapter 12 evaluates and deploys the integrated, single-account system (Step 7).
+- Chapter 13 wraps that evaluated system in a bounded ADK loop that processes many accounts (Step 6) — Book 1's closing chapter.
 
 Every chapter leaves the repository in a usable state. A reader should be able to begin from the previous checkpoint, complete the chapter, run the tests, and inspect the new capability.
 

@@ -4,7 +4,7 @@ Reviewing Class 3's homework before revealing `golden-solution/`.
 
 ## In the fifth context-quality test (Class 3's diagnostic)
 
-- **A staleness test that only checks a date field exists, not that behavior actually changes.** The point of §3.6's staleness failure is that stale data should be treated differently from fresh data — a test that only confirms a `retrieved_at` field is present, without asserting anything downstream reacts to it, hasn't actually tested the failure mode.
+- **A staleness test that only checks a date field exists, not that behavior actually changes.** The point of §5.6's staleness failure is that stale data should be treated differently from fresh data — a test that only confirms a `retrieved_at` field is present, without asserting anything downstream reacts to it, hasn't actually tested the failure mode.
 
 ## In the model-selection extension
 

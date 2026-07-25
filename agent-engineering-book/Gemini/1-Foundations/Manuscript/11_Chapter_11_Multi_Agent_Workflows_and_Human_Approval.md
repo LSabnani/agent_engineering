@@ -1,4 +1,4 @@
-# Chapter 9: Multi-Agent Workflows and Human Approval
+# Chapter 11: Multi-Agent Workflows and Human Approval
 
 ## Chapter purpose
 
@@ -29,7 +29,7 @@ Build the Book 1 workflow:
 
 No send action is implemented.
 
-## 9.1 Why multiple agents
+## 11.1 Why multiple agents
 
 A single agent can perform many tasks, but broad responsibility creates several problems:
 
@@ -50,7 +50,7 @@ WidgetWare uses:
 - **Outreach Drafting Agent** — creates a message from approved facts; and
 - **Workflow Coordinator** — manages state and transitions.
 
-## 9.2 Workflow patterns
+## 11.2 Workflow patterns
 
 ### Sequential
 
@@ -66,9 +66,9 @@ A coordinator delegates work and combines results. The coordinator should manage
 
 ### Loop
 
-A stage repeats until a condition is met. This chapter uses only bounded repair or research retries within one account's workflow — repeating a step, not repeating the whole workflow across many accounts. Chapter 11 wraps this entire workflow in that outer loop; adaptive, multi-agent loops that change their own strategy belong in Book 2.
+A stage repeats until a condition is met. This chapter uses only bounded repair or research retries within one account's workflow — repeating a step, not repeating the whole workflow across many accounts. Chapter 13 wraps this entire workflow in that outer loop; adaptive, multi-agent loops that change their own strategy belong in Book 2.
 
-## 9.3 State machine before agent prompt
+## 11.3 State machine before agent prompt
 
 Represent workflow state explicitly:
 
@@ -85,7 +85,7 @@ Represent workflow state explicitly:
 
 A model may recommend the next step, but deterministic code validates whether the transition is allowed.
 
-## 9.4 Typed handoffs
+## 11.4 Typed handoffs
 
 Pass contracts, not transcripts:
 
@@ -96,7 +96,7 @@ Pass contracts, not transcripts:
 
 This reduces context coupling and makes each agent independently testable.
 
-## 9.5 Evidence review before drafting
+## 11.5 Evidence review before drafting
 
 The Evidence Reviewer should verify:
 
@@ -109,7 +109,7 @@ The Evidence Reviewer should verify:
 
 An outreach agent should not independently browse for more persuasive facts after review. That would bypass the evidence gate.
 
-## 9.6 Human-in-the-loop approval
+## 11.6 Human-in-the-loop approval
 
 Approval is a workflow state and policy decision, not merely an instruction saying “ask the user first.”
 
@@ -125,7 +125,7 @@ The approval package should contain:
 
 The system must remain unable to execute the external action without an approved state.
 
-## 9.7 Partial failure
+## 11.7 Partial failure
 
 Possible failures include:
 
@@ -167,14 +167,14 @@ The final stage should be `AWAITING_APPROVAL`. An approval may update state to `
 
 WidgetWare is now a complete bounded agent system. It can research, qualify, review, and draft while preserving evidence and requiring human approval.
 
-## Bridge to Chapter 10
+## Bridge to Chapter 12
 
 The final chapter asks whether the system is actually good enough. We will build evaluation datasets, inspect trajectories, test failure conditions, add observability, and deploy the integrated application.
 
 ## Exercises
 
-1. §9.1 lists six reasons a single agent's broad responsibility becomes a problem. Using your own qualification-and-research code as it stood at the end of Chapter 8, before this chapter's split, identify which one or two of those six reasons had already started to appear, even if you hadn't named the problem yet.
-2. §9.3 requires the state machine to exist before the agent prompts. Draw, on paper, the ten states from §9.3, then trace by hand what happens to an account that fails research twice before succeeding on a third attempt — which states does it pass through, and how many times does it revisit `RESEARCHING`?
-3. §9.5 says the outreach agent must not independently browse for more persuasive facts after review, calling that a bypass of the evidence gate. Describe a realistic, well-intentioned reason a future engineer might be tempted to add exactly that shortcut, and what you would say to talk them out of it.
-4. §9.7 lists seven partial-failure modes. Pick the one your workflow currently handles by restarting more of the process than §9.7 says it should, and describe the smallest change that would let it resume from the actual point of failure instead.
-5. §9.6 insists approval is "a workflow state and policy decision," not an instruction asking politely. Find the exact line of code — or the exact absence of one — that makes it *structurally* impossible to skip approval in your workflow, not just unlikely. If you cannot point to one, that is the gap this exercise is meant to surface.
+1. §11.1 lists six reasons a single agent's broad responsibility becomes a problem. Using your own qualification-and-research code as it stood at the end of Chapter 10, before this chapter's split, identify which one or two of those six reasons had already started to appear, even if you hadn't named the problem yet.
+2. §11.3 requires the state machine to exist before the agent prompts. Draw, on paper, the ten states from §11.3, then trace by hand what happens to an account that fails research twice before succeeding on a third attempt — which states does it pass through, and how many times does it revisit `RESEARCHING`?
+3. §11.5 says the outreach agent must not independently browse for more persuasive facts after review, calling that a bypass of the evidence gate. Describe a realistic, well-intentioned reason a future engineer might be tempted to add exactly that shortcut, and what you would say to talk them out of it.
+4. §11.7 lists seven partial-failure modes. Pick the one your workflow currently handles by restarting more of the process than §11.7 says it should, and describe the smallest change that would let it resume from the actual point of failure instead.
+5. §11.6 insists approval is "a workflow state and policy decision," not an instruction asking politely. Find the exact line of code — or the exact absence of one — that makes it *structurally* impossible to skip approval in your workflow, not just unlikely. If you cannot point to one, that is the gap this exercise is meant to surface.

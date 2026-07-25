@@ -10,11 +10,11 @@
 
 ### 1. The research source is a local mock, not a real external source
 
-`search_public_records` reads `data/mock_public_sources.yaml` — a small, hand-authored, deterministic file, not a real web search, news API, or MCP server. This is a genuine simplification, not just a testing convenience: it means Book 1 §8.3's "assess source quality and freshness" guidance is only exercised against sources this course invented and dated for the purpose, never a genuinely unpredictable real-world source. A real integration (a live MCP server, an actual search API) would need its own error handling, rate limiting, and result-quality variance this mock never exhibits.
+`search_public_records` reads `data/mock_public_sources.yaml` — a small, hand-authored, deterministic file, not a real web search, news API, or MCP server. This is a genuine simplification, not just a testing convenience: it means Book 1 §10.3's "assess source quality and freshness" guidance is only exercised against sources this course invented and dated for the purpose, never a genuinely unpredictable real-world source. A real integration (a live MCP server, an actual search API) would need its own error handling, rate limiting, and result-quality variance this mock never exhibits.
 
 ### 2. Conflict detection is a single regular expression, not a general capability
 
-`detect_employee_count_conflict` only catches the specific phrase pattern "approximately N employees" appearing more than once with different values. It would not catch a conflict phrased differently ("roughly 22K staff" vs. "approximately 19,500 employees"), a conflict in a different field entirely (industry classification, headquarters location), or a conflict spread across more than two sources with partial agreement. Book 1 §8.4 does not specify a general algorithm either — but a reader could easily overestimate what this checkpoint's conflict detection actually covers if they don't read the regex directly.
+`detect_employee_count_conflict` only catches the specific phrase pattern "approximately N employees" appearing more than once with different values. It would not catch a conflict phrased differently ("roughly 22K staff" vs. "approximately 19,500 employees"), a conflict in a different field entirely (industry classification, headquarters location), or a conflict spread across more than two sources with partial agreement. Book 1 §10.4 does not specify a general algorithm either — but a reader could easily overestimate what this checkpoint's conflict detection actually covers if they don't read the regex directly.
 
 ### 3. The Research Agent's isolation instruction is untested against a real model
 

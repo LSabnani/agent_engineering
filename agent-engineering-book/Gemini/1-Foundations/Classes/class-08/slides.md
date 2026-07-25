@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: research is not one model call (§8.1)
+## Slide 4 — Core concept: research is not one model call (§10.1)
 
 **On slide:** Questions → discovery → retrieval → extraction → assessment → contradiction detection → synthesis → citation.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Function tools versus MCP (§8.5)
+## Slide 5 — Function tools versus MCP (§10.5)
 
 **On slide:** Function tool when the integration is application-specific and narrow; MCP when a standardized server already exists and multiple clients need it.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: the evidence ledger (§8.7)
+## Slide 6 — Architecture: the evidence ledger (§10.7)
 
 **On slide:** `ResearchBrief`: evidence_items[], claims[], conflicts[], unknowns[], summary, recommended_next_step.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: retrieved content is untrusted data (§8.6)
+## Slide 9 — Security: retrieved content is untrusted data (§10.6)
 
 **On slide:** Isolate, label, extract only task-relevant evidence, never execute instructions found in content.
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: freshness and contradictions (§8.3, §8.4)
+## Slide 11 — Lab architecture: freshness and contradictions (§10.3, §10.4)
 
 **On slide:** A stale source isn't automatically wrong, but it needs to be flagged. A conflict isn't resolved by convenience.
 

@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: the harness is part of the system (§2.1)
+## Slide 4 — Core concept: the harness is part of the system (§4.1)
 
 **On slide:** IDE, repo structure, instructions, dependency management, secrets handling, code-quality checks, tests, permissions, review practice.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Antigravity as engineering partner; README vs. SPEC (§2.2, §2.4)
+## Slide 5 — Antigravity as engineering partner; README vs. SPEC (§4.2, §4.4)
 
 **On slide:** The eight-step disciplined cycle: state objective → provide spec → ask for plan → review → permit bounded implementation → inspect diff → run tests → accept/revise/revert.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: repository structure (§2.3)
+## Slide 6 — Architecture: repository structure (§4.3)
 
 **On slide:** The full tree — `docs/`, `config/`, `src/widgetware_sdr/`, `tests/{unit,contracts,scenarios}`, `scripts/`.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: trust and permissions (§2.7)
+## Slide 9 — Security: trust and permissions (§4.7)
 
 **On slide:** Least privilege for a *development* agent: review shell commands, restrict production credentials, use `.env.example`, isolate experiments, inspect dependency additions.
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: specification-driven tasks (§2.6)
+## Slide 11 — Lab architecture: specification-driven tasks (§4.6)
 
 **On slide:** A good Antigravity task: one bounded objective, files in scope, acceptance criteria, explicit exclusions, commands that should pass, expected deliverable.
 

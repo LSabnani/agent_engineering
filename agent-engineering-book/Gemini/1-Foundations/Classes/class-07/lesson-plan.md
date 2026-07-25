@@ -1,6 +1,6 @@
 # Class 7 — Tool Engineering
 
-**Manuscript source:** Book 1, Chapter 7 — Tool Engineering
+**Manuscript source:** Book 1, Chapter 9 — Tool Engineering
 **Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build the Harness, Evaluate & Govern
 **Golden solution produced:** `class-07/golden-solution/`
 **Starting checkpoint:** `class-06/golden-solution/`
@@ -16,26 +16,26 @@
 1. Current WidgetWare state: a validated contract, but an agent that still can't reach outside what it's handed
 2. Today's dependency: Class 6's `QualificationResult` and `EvidenceItem` contracts don't change structurally — tool-retrieved facts just start giving `evidence_refs` something real to point at
 3. Business objective: an agent that retrieves its own facts instead of trusting whatever the caller hands it
-4. Core concept: a tool lets the agent *do something outside the model* (§7.1) — the second of the three capability primitives after Skills
-5. Terminology: tool descriptions are part of control (§7.2) — the model selects tools by name and description alone
-6. Architecture: three narrow, read-only tools (§7.3) — `get_account_profile`, `get_widgetware_product`, `get_icp_policy`
+4. Core concept: a tool lets the agent *do something outside the model* (§9.1) — the second of the three capability primitives after Skills
+5. Terminology: tool descriptions are part of control (§9.2) — the model selects tools by name and description alone
+6. Architecture: three narrow, read-only tools (§9.3) — `get_account_profile`, `get_widgetware_product`, `get_icp_policy`
 7. Seven Steps mapping: Design Agent Capabilities continues — a tool is a capability engineered from the opposite direction of a Skill
 8. Gemini vs. deterministic code: the model decides *when* to call a tool; `calculate_fit_score()` is pure arithmetic and never exposed as a callable tool at all
-9. Security: least privilege for tools (§7.5) — a read-only lookup should never hold write-capable credentials, even if the underlying platform account technically could
+9. Security: least privilege for tools (§9.5) — a read-only lookup should never hold write-capable credentials, even if the underlying platform account technically could
 10. Today's increment: `tools/account_data.py`, `tools/fit_score.py`, agent updated with `tools=[...]` and an instruction to use them instead of assuming facts
-11. Lab architecture: tool testing without the agent (§7.8) — valid input, invalid input, missing record, deterministic output shape, tested completely independent of any model call
+11. Lab architecture: tool testing without the agent (§9.8) — valid input, invalid input, missing record, deterministic output shape, tested completely independent of any model call
 12. Acceptance criteria: every tool-retrieved fact used in a qualification result carries a real evidence identifier the tool actually returned
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a Skill and a tool (§7.1 recap of §5.3)?
-- Terminology: Why does a tool's description matter as much as its implementation (§7.2)?
+- Terminology: What is the difference between a Skill and a tool (§9.1 recap of §7.3)?
+- Terminology: Why does a tool's description matter as much as its implementation (§9.2)?
 - Architecture: Why is `calculate_fit_score()` deterministic code and never exposed to the model as a callable tool?
-- Architecture: What should `get_account_profile` return for a missing record — an exception, `None`, or something else (§7.4)?
+- Architecture: What should `get_account_profile` return for a missing record — an exception, `None`, or something else (§9.4)?
 - Failure analysis: The agent calls `get_widgetware_product` with a malformed `product_id` — what should happen, and where does that get tested?
-- Security/governance: What does "permissions narrower than the underlying platform account" mean for a read-only tool (§7.5)?
+- Security/governance: What does "permissions narrower than the underlying platform account" mean for a read-only tool (§9.5)?
 - WidgetWare scenario: A `QualificationResult`'s `evidence_refs` entry doesn't trace to any tool-returned fact — what's wrong, and which layer should have caught it?
-- Connecting back: How does §7.8's tool-testing checklist relate to the fail-safe pipeline Class 6 built for `parse_qualification_result`?
+- Connecting back: How does §9.8's tool-testing checklist relate to the fail-safe pipeline Class 6 built for `parse_qualification_result`?
 
 ## Build together (0:55–1:35)
 
@@ -58,7 +58,7 @@
 | ----- | ---- |
 | **Required** | Build the three tools and `calculate_fit_score()`, attach the three read tools to the agent, and confirm the agent's qualification results now carry real, traceable evidence references |
 | **Diagnostic** | A provided test case has a `QualificationResult` with `status=QUALIFIED` and an `evidence_refs` entry that doesn't actually correspond to any tool-returned fact — it was invented. Write a test that would catch a fabricated evidence reference, and explain in one sentence why the contract layer alone (Class 6) can't fully solve this |
-| **Extension** | Pick one tool and write the full seven-item test list from §7.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real |
+| **Extension** | Pick one tool and write the full seven-item test list from §9.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real |
 
 - **Starting checkpoint:** `class-06/golden-solution/`
 - **Files participants may modify:** `src/widgetware_sdr/tools/`, `src/widgetware_sdr/agents/qualification_agent.py`, `tests/`

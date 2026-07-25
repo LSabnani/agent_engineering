@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: ADK as an application framework (§4.1)
+## Slide 4 — Core concept: ADK as an application framework (§6.1)
 
 **On slide:** Agent, Session, Event, Runner — the four abstractions everything else builds on.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Sessions and events (§4.3); basic state (§4.4)
+## Slide 5 — Sessions and events (§6.3); basic state (§6.4)
 
 **On slide:** A session holds one interaction's history and state. An event records one thing that happened.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: the first agent boundary (§4.2)
+## Slide 6 — Architecture: the first agent boundary (§6.2)
 
 **On slide:** May: read the account, compare to ICP, recommend in prose. May not: search, call external services, modify CRM, draft outreach.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: staying within the boundary (Evaluation checklist, §4)
+## Slide 9 — Security: staying within the boundary (Evaluation checklist, §6)
 
 **On slide:** Does it say when information is missing? Does it stay within its boundary?
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: local playground inspection (§4.6)
+## Slide 11 — Lab architecture: local playground inspection (§6.6)
 
 **On slide:** Assembled instructions, event sequence, latency — inspect all three, every run.
 

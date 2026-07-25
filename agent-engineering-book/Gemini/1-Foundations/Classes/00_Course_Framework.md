@@ -36,7 +36,7 @@ This works for Agent Engineering specifically because participants repeatedly ex
 2. **The instructor-led implementation** (built live, in class)
 3. **The tested golden solution** (the reference checkpoint)
 
-They do not copy code from one source. They compare three independently-arrived-at answers to the same problem and learn to explain why the reference solution is shaped the way it is — which is the same "probabilistic reasoning inside deterministic boundaries" habit the manuscript itself teaches (Book 1, Chapter 1.4), now applied to the participants' own work instead of WidgetWare's.
+They do not copy code from one source. They compare three independently-arrived-at answers to the same problem and learn to explain why the reference solution is shaped the way it is — which is the same "probabilistic reasoning inside deterministic boundaries" habit the manuscript itself teaches (Book 1, Chapter 3.4), now applied to the participants' own work instead of WidgetWare's.
 
 ## Class 1 Exception
 
@@ -147,24 +147,24 @@ The 1:35–1:50 segment follows the same seven-step sequence every class:
 6. Apply the smallest correct fix.
 7. Re-run the tests.
 
-This reinforces that testing and diagnosis are part of Agent Engineering, not activities postponed until the final class — the same discipline the manuscript itself insists on from Book 1, Chapter 4.5 onward.
+This reinforces that testing and diagnosis are part of Agent Engineering, not activities postponed until the final class — the same discipline the manuscript itself insists on from Book 1, Chapter 6.5 onward.
 
 ## Eleven-Class Application
 
 | Class | Manuscript source | Main capability | Homework outcome |
 | ----: | ------------------ | ---------------------------------------------------------- | ------------------------------------------------------ |
-|     1 | Book 1, Ch. 1 | Agent Engineering foundations and the WidgetWare specification | Complete the scoped use case and acceptance criteria |
-|     2 | Book 1, Ch. 2 | Antigravity workspace and repository harness | Complete and validate the project workspace |
-|     3 | Book 1, Ch. 3 | Gemini context and instruction architecture | Refine WidgetWare context and test prompt behavior |
-|     4 | Book 1, Ch. 4 | First ADK agent (embedded procedure) | Complete the account-qualification agent |
-|     5 | Book 1, Ch. 5 | Skills and reusable agent capabilities | Extract the qualification procedure into a Skill |
-|     6 | Book 1, Ch. 6 | Structured outputs and agent contracts | Add a validated `QualificationResult` contract |
-|     7 | Book 1, Ch. 7 | Tool engineering | Attach the agent's first read-only tools |
-|     8 | Book 1, Ch. 8 | MCP and evidence-backed research | Produce a cited account-research brief |
-|     9 | Book 1, Ch. 9 | Multi-agent workflow and human approval | Complete the approved outreach workflow |
-|    10 | Book 1, Ch. 10 | Evaluate, deploy, and demonstrate | Pass the golden-dataset release gate |
-|    11 | Book 1, Ch. 11 | Loop engineering with ADK | Run the unattended batch loop to completion |
+|     1 | Book 1, Ch. 3 | Agent Engineering foundations and the WidgetWare specification | Complete the scoped use case and acceptance criteria |
+|     2 | Book 1, Ch. 4 | Antigravity workspace and repository harness | Complete and validate the project workspace |
+|     3 | Book 1, Ch. 5 | Gemini context and instruction architecture | Refine WidgetWare context and test prompt behavior |
+|     4 | Book 1, Ch. 6 | First ADK agent (embedded procedure) | Complete the account-qualification agent |
+|     5 | Book 1, Ch. 7 | Skills and reusable agent capabilities | Extract the qualification procedure into a Skill |
+|     6 | Book 1, Ch. 8 | Structured outputs and agent contracts | Add a validated `QualificationResult` contract |
+|     7 | Book 1, Ch. 9 | Tool engineering | Attach the agent's first read-only tools |
+|     8 | Book 1, Ch. 10 | MCP and evidence-backed research | Produce a cited account-research brief |
+|     9 | Book 1, Ch. 11 | Multi-agent workflow and human approval | Complete the approved outreach workflow |
+|    10 | Book 1, Ch. 12 | Evaluate, deploy, and demonstrate | Pass the golden-dataset release gate |
+|    11 | Book 1, Ch. 13 | Loop engineering with ADK | Run the unattended batch loop to completion |
 
-Every class tracks exactly one Book 1 chapter, at a one-to-one pace — no chapter is split across classes and no two chapters share a class. Class 1 additionally carries the course's own orientation content (introductions, course architecture, the cumulative learning model), since Chapter 1 itself is conceptual and produces no code, making it a natural fit for both. Class 11 closes Book 1.
+Every class tracks exactly one Book 1 chapter, at a one-to-one pace — no chapter is split across classes and no two chapters share a class. Class 1 additionally carries the course's own orientation content (introductions, course architecture, the cumulative learning model), since Chapter 3 itself is conceptual and produces no code, making it a natural fit for both. Class 11 closes Book 1.
 
 Per-class lesson plans: `class-0N/lesson-plan.md`.

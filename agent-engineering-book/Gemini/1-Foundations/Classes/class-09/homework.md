@@ -16,7 +16,7 @@ The provided rejected-approval test currently confirms `record_approval_decision
 
 ## Extension (optional)
 
-Add a sixth partial-failure scenario from §9.7's list not covered in class (research source unavailable, user rejects the draft, workflow resumed after interruption) with its own test, following the same "visible state, prior work preserved" pattern as the five required ones.
+Add a sixth partial-failure scenario from §11.7's list not covered in class (research source unavailable, user rejects the draft, workflow resumed after interruption) with its own test, following the same "visible state, prior work preserved" pattern as the five required ones.
 
 ## Submission
 

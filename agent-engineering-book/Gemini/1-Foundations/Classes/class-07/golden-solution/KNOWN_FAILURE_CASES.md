@@ -10,11 +10,11 @@
 
 ### 1. Tool tests don't cover dependency failure, permission failure, or redaction
 
-Book 1 §7.8 lists seven things to test tools for. This checkpoint's three tools are local, read-only, and have no sensitive fields — so "dependency failure" (no external dependency exists), "permission failure" (no auth boundary exists yet), and "redaction of prohibited fields" (nothing sensitive is in this schema) are genuinely not applicable *yet*. This is not the same as "tested and passing" — it's untested because the failure mode doesn't exist in this codebase. The moment Class 6 adds a real external research source, dependency failure becomes real and needs its own test; the moment any account field becomes sensitive, redaction becomes real too.
+Book 1 §9.8 lists seven things to test tools for. This checkpoint's three tools are local, read-only, and have no sensitive fields — so "dependency failure" (no external dependency exists), "permission failure" (no auth boundary exists yet), and "redaction of prohibited fields" (nothing sensitive is in this schema) are genuinely not applicable *yet*. This is not the same as "tested and passing" — it's untested because the failure mode doesn't exist in this codebase. The moment Class 6 adds a real external research source, dependency failure becomes real and needs its own test; the moment any account field becomes sensitive, redaction becomes real too.
 
 ### 2. `parse_qualification_result`'s repair step is not actually a repair
 
-Book 1 §6.5 lists "optionally request a bounded repair for format errors" as one pipeline stage. This checkpoint's `parse_qualification_result` skips straight from "invalid" to `BLOCKED` — it never attempts to ask the model to fix a malformed response before giving up. That's a legitimate simplification for this checkpoint (fail-safe is the priority; repair is an optimization), but a submission that claims to have implemented §6.5's repair step in full would be overclaiming.
+Book 1 §8.5 lists "optionally request a bounded repair for format errors" as one pipeline stage. This checkpoint's `parse_qualification_result` skips straight from "invalid" to `BLOCKED` — it never attempts to ask the model to fix a malformed response before giving up. That's a legitimate simplification for this checkpoint (fail-safe is the priority; repair is an optimization), but a submission that claims to have implemented §8.5's repair step in full would be overclaiming.
 
 ### 3. The agent's tool-calling behavior is unverified without a live run
 

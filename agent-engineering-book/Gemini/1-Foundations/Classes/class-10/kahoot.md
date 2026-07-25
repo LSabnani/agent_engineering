@@ -4,7 +4,7 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What is the difference between a metric and a release gate (§10.3–10.4)?
+**1. (Terminology)** What is the difference between a metric and a release gate (§12.3–10.4)?
 - A) They're interchangeable terms for the same thing
 - **✓** B) A metric measures something about system behavior; a gate applies thresholds to metrics to produce a ship/don't-ship decision
 - C) A metric only applies to model quality, never to code quality

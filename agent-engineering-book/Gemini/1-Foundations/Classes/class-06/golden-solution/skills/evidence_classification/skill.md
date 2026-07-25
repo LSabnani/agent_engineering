@@ -5,7 +5,7 @@
 - Name: evidence_classification
 - Version: 1.0.0
 - Owner: WidgetWare SDR Lab course
-- Purpose: Label a piece of supplied information as verified fact, derived fact, inference, unknown, or conflict — WidgetWare's evidence policy (Book 1 §3.5), applied consistently by any agent that needs it.
+- Purpose: Label a piece of supplied information as verified fact, derived fact, inference, unknown, or conflict — WidgetWare's evidence policy (Book 1 §5.5), applied consistently by any agent that needs it.
 
 ## Inputs
 

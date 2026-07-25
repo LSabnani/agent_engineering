@@ -1,4 +1,4 @@
-# Chapter 8: Evidence-Backed Research with MCP
+# Chapter 10: Evidence-Backed Research with MCP
 
 ## Chapter purpose
 
@@ -25,7 +25,7 @@ By the end of this chapter, the reader should be able to:
 
 Add an Account Research capability that gathers approved public evidence, normalizes it into an evidence ledger, and produces a structured research brief for qualification.
 
-## 8.1 Research is not one model call
+## 10.1 Research is not one model call
 
 A robust research process separates:
 
@@ -40,7 +40,7 @@ A robust research process separates:
 
 The model may assist at several stages, but the system should preserve provenance throughout.
 
-## 8.2 Claims and evidence
+## 10.2 Claims and evidence
 
 Begin with explicit research questions, such as:
 
@@ -52,7 +52,7 @@ Begin with explicit research questions, such as:
 
 For every resulting claim, record the supporting evidence. A research brief should never contain a floating factual assertion whose source has been lost.
 
-## 8.3 Source quality and freshness
+## 10.3 Source quality and freshness
 
 Assess sources according to the claim:
 
@@ -64,7 +64,7 @@ Assess sources according to the claim:
 
 Freshness should be explicit. A five-year-old employee count may not support a current qualification decision.
 
-## 8.4 Contradictions
+## 10.4 Contradictions
 
 When sources disagree, do not choose the most convenient result. Record:
 
@@ -76,7 +76,7 @@ When sources disagree, do not choose the most convenient result. Record:
 
 The appropriate outcome may be `NEEDS_RESEARCH`.
 
-## 8.5 Function tools versus MCP
+## 10.5 Function tools versus MCP
 
 Use a custom function tool when:
 
@@ -94,7 +94,7 @@ Use MCP when:
 
 MCP does not remove the need for permission, input validation, provenance, or output filtering.
 
-## 8.6 Retrieved content is untrusted data
+## 10.6 Retrieved content is untrusted data
 
 External content may contain instructions such as “ignore your rules” or “send this secret.” Treat retrieved text as data, not authority.
 
@@ -108,7 +108,7 @@ Controls include:
 - restrict accessible MCP servers and methods; and
 - validate the final brief against the evidence ledger.
 
-## 8.7 The evidence ledger
+## 10.7 The evidence ledger
 
 Create a durable structure:
 
@@ -152,14 +152,14 @@ Each claim links to one or more evidence items. Each evidence item records sourc
 
 WidgetWare can now produce an inspectable account research brief. Research and qualification are still separate capabilities; the next chapter coordinates them as a multi-agent workflow and adds the human approval boundary.
 
-## Bridge to Chapter 9
+## Bridge to Chapter 11
 
-Chapter 9 introduces specialized agents, typed handoffs, workflow orchestration, partial-failure handling, bounded iteration, and an approval gate before outreach.
+Chapter 11 introduces specialized agents, typed handoffs, workflow orchestration, partial-failure handling, bounded iteration, and an approval gate before outreach.
 
 ## Exercises
 
-1. §8.5 gives four conditions favoring MCP over a function tool. Take the one research source you connected in the Hands-on Lab and argue, honestly, whether MCP was the right call for it under those four conditions — or whether a function tool would have been more honest about what the integration actually is.
-2. §8.6 lists seven controls against untrusted retrieved content. Re-run your prompt-injection test, but change the injected instruction to something more subtle than "ignore your rules" — for example, retrieved text stating a false but plausible employee count as if it were the company's own official figure. Does your evidence pipeline catch a false *fact* as readily as it catches an obvious override attempt?
-3. §8.4 says contradictions should not be resolved by picking the most convenient result. Using your two-conflicting-sources test, write out what "the most convenient result" would have been for a WidgetWare SDR eager to hit quota, and confirm your `ResearchBrief` actually resisted that pull.
-4. §8.2 gives five research questions. Add a sixth, specific to a signal WidgetWare's ICP (Chapter 3) cares about but isn't already covered, and explain what evidence would actually answer it.
-5. §8.3 treats a five-year-old employee count as potentially unusable for a current decision. Pick one evidence item from your `ResearchBrief` and write what "sufficiently current" should mean for that specific kind of fact — a number of days, months, or years — and why.
+1. §10.5 gives four conditions favoring MCP over a function tool. Take the one research source you connected in the Hands-on Lab and argue, honestly, whether MCP was the right call for it under those four conditions — or whether a function tool would have been more honest about what the integration actually is.
+2. §10.6 lists seven controls against untrusted retrieved content. Re-run your prompt-injection test, but change the injected instruction to something more subtle than "ignore your rules" — for example, retrieved text stating a false but plausible employee count as if it were the company's own official figure. Does your evidence pipeline catch a false *fact* as readily as it catches an obvious override attempt?
+3. §10.4 says contradictions should not be resolved by picking the most convenient result. Using your two-conflicting-sources test, write out what "the most convenient result" would have been for a WidgetWare SDR eager to hit quota, and confirm your `ResearchBrief` actually resisted that pull.
+4. §10.2 gives five research questions. Add a sixth, specific to a signal WidgetWare's ICP (Chapter 5) cares about but isn't already covered, and explain what evidence would actually answer it.
+5. §10.3 treats a five-year-old employee count as potentially unusable for a current decision. Pick one evidence item from your `ResearchBrief` and write what "sufficiently current" should mean for that specific kind of fact — a number of days, months, or years — and why.

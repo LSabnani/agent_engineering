@@ -1,8 +1,8 @@
 # Acceptance Criteria
 
-Written before any implementation exists, per Book 1 §1.7. Each criterion below is stated so that a person could test it mechanically, without asking a clarifying question.
+Written before any implementation exists, per Book 1 §3.7. Each criterion below is stated so that a person could test it mechanically, without asking a clarifying question.
 
-1. **Schema conformance.** Every qualification result produced by the system validates against a published schema (introduced in Class 6 / Book 1 Chapter 6). A result that does not validate is never surfaced as if it were a valid answer.
+1. **Schema conformance.** Every qualification result produced by the system validates against a published schema (introduced in Class 6 / Book 1 Chapter 8). A result that does not validate is never surfaced as if it were a valid answer.
 2. **Evidence or labeled inference.** Every material factual claim in a qualification result or outreach draft either references a specific piece of supplied or retrieved evidence, or is explicitly labeled as an inference. A claim with neither is a defect.
 3. **No drafting on insufficient evidence.** When the evidence available for a company does not support a qualification decision either way, the system produces `NEEDS_RESEARCH` and does not draft outreach. A drafted message for an insufficiently evidenced account is a defect.
 4. **No autonomous send.** No test run, demonstration, or production path in this codebase ever transmits an outbound message without a preceding, explicit human approval. This is verified by inspecting the codebase for the absence of any send-capable tool, not merely by observing that no test happened to trigger one.

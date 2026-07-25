@@ -1,6 +1,6 @@
 # Class 10 — Evaluation and the Release Gate
 
-**Manuscript source:** Book 1, Chapter 10
+**Manuscript source:** Book 1, Chapter 12
 **Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Orchestrate Workflows
 **Starting checkpoint:** [`../class-09/golden-solution/`](../class-09/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 109 passed, 3 skipped without live credentials)

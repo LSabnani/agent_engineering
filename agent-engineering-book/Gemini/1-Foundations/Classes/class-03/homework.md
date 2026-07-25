@@ -17,7 +17,7 @@ The provided `malicious-note` test case in `golden-solution/` currently only che
 
 ## Extension (optional)
 
-Add a fifth context quality failure test from §3.6's list not covered in class — for example, "stale data presented as current": construct an account profile where one field is explicitly marked with an old `retrieved_at` date, and confirm the assembled context surfaces that staleness rather than presenting it as equally current with fresher fields.
+Add a fifth context quality failure test from §5.6's list not covered in class — for example, "stale data presented as current": construct an account profile where one field is explicitly marked with an old `retrieved_at` date, and confirm the assembled context surfaces that staleness rather than presenting it as equally current with fresher fields.
 
 ## Submission
 

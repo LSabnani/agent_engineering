@@ -16,9 +16,9 @@ cp .env.example .env
 
 ## What's new this class
 
-- `eval/golden_dataset.py` — 10 cases covering every required category (§10.3)
+- `eval/golden_dataset.py` — 10 cases covering every required category (§12.3)
 - `eval/metrics.py` — deterministic metrics: contract validity, evidence coverage, prohibited-action scan of the actual source tree
-- `eval/release_gate.py` — the seven §10.8 conditions as one executable, testable function
+- `eval/release_gate.py` — the seven §12.8 conditions as one executable, testable function
 - `eval/observability.py` — a structured event recorder answering "why did this case end in X?"
 
 ## Repository structure

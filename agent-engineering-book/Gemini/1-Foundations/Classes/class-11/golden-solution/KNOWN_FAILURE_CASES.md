@@ -26,7 +26,7 @@ Constructing a `LoopAgent` in this checkpoint's environment (`google-adk` 2.5.0)
 
 ### 5. `AccountQueue.select_next` can let one retrying account monopolize turns
 
-Because `select_next` always returns the *first* eligible account in list order, an account that becomes `RETRY_PENDING` sits at its original list position and will be reselected before any account later in the list gets its first attempt, if it comes earlier in the list. A large batch with one early, persistently-failing account could delay every account behind it. Book 1 §11.5 doesn't specify a fairness policy for this, and this checkpoint doesn't add one.
+Because `select_next` always returns the *first* eligible account in list order, an account that becomes `RETRY_PENDING` sits at its original list position and will be reselected before any account later in the list gets its first attempt, if it comes earlier in the list. A large batch with one early, persistently-failing account could delay every account behind it. Book 1 §13.5 doesn't specify a fairness policy for this, and this checkpoint doesn't add one.
 
 ### 6. No test simulates an actual process restart, at either the workflow or loop level
 
@@ -34,4 +34,4 @@ Same gap as Class 7, now also true one layer up: `test_checkpoints_are_written_p
 
 ### 7. The golden dataset is four accounts covering ten categories
 
-`eval/golden_dataset.py`'s ten `GoldenCase` entries reuse only four underlying accounts. `test_every_required_category_has_at_least_one_case` proves every category is *represented*, not that it's adequately *covered* — one case per category is the minimum Book 1 §10.3 asks for, not a claim of statistical confidence.
+`eval/golden_dataset.py`'s ten `GoldenCase` entries reuse only four underlying accounts. `test_every_required_category_has_at_least_one_case` proves every category is *represented*, not that it's adequately *covered* — one case per category is the minimum Book 1 §12.3 asks for, not a claim of statistical confidence.

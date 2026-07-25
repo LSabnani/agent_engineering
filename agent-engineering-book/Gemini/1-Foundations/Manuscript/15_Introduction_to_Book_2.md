@@ -38,7 +38,7 @@ How should the system select, compress, cache, and refresh context under token, 
 
 ## Chapter 5 — Goals, Planning, and Controlled Loops
 
-Book 1's Chapter 11 built one bounded loop: a fixed workflow, a fixed queue, an ADK `LoopAgent`, and five explicit decisions. This chapter asks what changes when the loop must decompose a goal it wasn't handed pre-solved, adapt its own plan, and still not run indefinitely. It introduces plan contracts, budgets, stopping conditions, checkpointing, non-progress detection, and human interruption — deepening Engineer Loops, not replacing what Book 1 already proved.
+Book 1's Chapter 13 built one bounded loop: a fixed workflow, a fixed queue, an ADK `LoopAgent`, and five explicit decisions. This chapter asks what changes when the loop must decompose a goal it wasn't handed pre-solved, adapt its own plan, and still not run indefinitely. It introduces plan contracts, budgets, stopping conditions, checkpointing, non-progress detection, and human interruption — deepening Engineer Loops, not replacing what Book 1 already proved.
 
 ## Chapter 6 — Distributed Agent Collaboration
 

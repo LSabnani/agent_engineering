@@ -1,6 +1,6 @@
 # Class 6 — Structured Outputs and Agent Contracts
 
-**Manuscript source:** Book 1, Chapter 6 — Structured Outputs and Agent Contracts
+**Manuscript source:** Book 1, Chapter 8 — Structured Outputs and Agent Contracts
 **Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Design Agent Capabilities, Build the Harness
 **Golden solution produced:** `class-06/golden-solution/`
 **Starting checkpoint:** `class-05/golden-solution/`
@@ -16,20 +16,20 @@
 1. Current WidgetWare state: an agent that reasons well but returns free-form prose
 2. Today's dependency: Class 5's Skill-driven agent doesn't change — only what happens to its output
 3. Business objective: a validated, machine-checkable qualification result, safe to route on
-4. Core concept: why prose isn't enough (§6.1–6.2) — a downstream system can't safely branch on "it looks qualified"
-5. Terminology: schema vs. contract vs. validation (§6.3) — a schema describes shape; a contract adds business invariants; validation enforces both
-6. Architecture: `QualificationResult`'s four business invariants (§6.4) — QUALIFIED needs evidence, NOT_QUALIFIED needs exclusions, NEEDS_RESEARCH needs missing info, BLOCKED needs an error
+4. Core concept: why prose isn't enough (§8.1–6.2) — a downstream system can't safely branch on "it looks qualified"
+5. Terminology: schema vs. contract vs. validation (§8.3) — a schema describes shape; a contract adds business invariants; validation enforces both
+6. Architecture: `QualificationResult`'s four business invariants (§8.4) — QUALIFIED needs evidence, NOT_QUALIFIED needs exclusions, NEEDS_RESEARCH needs missing info, BLOCKED needs an error
 7. Seven Steps mapping: Evaluate & Govern — the first chapter squarely about making an agent's output trustworthy
 8. Gemini vs. deterministic code: the agent still reasons in prose; parsing, schema validation, and invariant checks are pure deterministic code
-9. Security: fail-safe design (§6.5) — malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through
+9. Security: fail-safe design (§8.5) — malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through
 10. Today's increment: `contracts/evidence.py`, `contracts/qualification.py`, `parse_qualification_result()`
 11. Lab architecture: one failing-case test per invariant — four ways to be wrong, one way to be right
 12. Acceptance criteria: the agent itself is byte-for-byte unchanged — this is a validation layer, not a rewiring
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a schema and a business invariant (§6.3–6.4)?
-- Terminology: What does "fail-safe" mean for a parsing pipeline (§6.5), and how is it different from "fail-fast"?
+- Terminology: What is the difference between a schema and a business invariant (§8.3–6.4)?
+- Terminology: What does "fail-safe" mean for a parsing pipeline (§8.5), and how is it different from "fail-fast"?
 - Architecture: Why does `QUALIFIED` require `evidence_refs` to be non-empty as a business rule, not just a type check?
 - Architecture: What does `parse_qualification_result()` return when given malformed input, and why is that the right answer?
 - Failure analysis: A qualification result claims `NOT_QUALIFIED` but has an empty `exclusion_reasons` list — what should happen?
@@ -65,7 +65,7 @@
 - **Expected behavior:** malformed or invariant-violating input never crashes the pipeline — it always yields a `BLOCKED` result with the error preserved
 - **Tests that must pass:** all contract tests, both happy-path and failing-case
 - **Submission:** test output showing all eight (or more) contract tests passing
-- **Constraints:** the agent itself (`qualification_agent.py`) must remain byte-for-byte unchanged from Class 5 — no tools yet (Chapter 7)
+- **Constraints:** the agent itself (`qualification_agent.py`) must remain byte-for-byte unchanged from Class 5 — no tools yet (Chapter 9)
 
 ## Golden solution: `class-06/`
 

@@ -9,7 +9,7 @@ Goal: a research pipeline that gathers external evidence, normalizes it into typ
 
 ## Steps
 
-1. Decide, and write down, why this checkpoint uses a function tool rather than MCP for its research source (§8.5's four conditions). There's no wrong answer as long as you can defend it against the actual criteria, not just "MCP sounded more advanced."
+1. Decide, and write down, why this checkpoint uses a function tool rather than MCP for its research source (§10.5's four conditions). There's no wrong answer as long as you can defend it against the actual criteria, not just "MCP sounded more advanced."
 
 2. Build a small mock research source (a YAML file is enough) with data for your existing sample accounts. Deliberately include one account with two sources that disagree on a fact, and one account with a source containing an obvious prompt-injection attempt. You need both to actually exercise this chapter's two hardest requirements.
 

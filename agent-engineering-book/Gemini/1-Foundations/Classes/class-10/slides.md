@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: a golden dataset (§10.2)
+## Slide 4 — Core concept: a golden dataset (§12.2)
 
 **On slide:** A fixed, representative, version-controlled set of cases with known-correct outcomes.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Terminology: metric vs. release gate (§10.3–10.4)
+## Slide 5 — Terminology: metric vs. release gate (§12.3–10.4)
 
 **On slide:** A metric measures. A gate decides, based on thresholds applied to metrics.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: the golden dataset's required categories (§10.2)
+## Slide 6 — Architecture: the golden dataset's required categories (§12.2)
 
 **On slide:** Qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt — each represented on purpose, not by accident.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: a gate that fails loudly (§10.5)
+## Slide 9 — Security: a gate that fails loudly (§12.5)
 
 **On slide:** `ReleaseGateResult` reports every unmet condition, not just the first one found.
 

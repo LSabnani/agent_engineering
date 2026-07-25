@@ -1,6 +1,6 @@
 # Class 7 — Tool Engineering
 
-**Manuscript source:** Book 1, Chapter 7
+**Manuscript source:** Book 1, Chapter 9
 **Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build the Harness, Evaluate & Govern
 **Starting checkpoint:** [`../class-06/golden-solution/`](../class-06/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 44 passed, 3 skipped without live credentials)

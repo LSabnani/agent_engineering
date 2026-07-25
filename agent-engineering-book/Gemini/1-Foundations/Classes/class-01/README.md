@@ -1,6 +1,6 @@
 # Class 1 — Agent Engineering Foundations and the WidgetWare Specification
 
-**Manuscript source:** Book 1, Chapter 1
+**Manuscript source:** Book 1, Chapter 3
 **Seven-Step mapping:** Primary: Frame the Use Case / Supporting: Evaluate & Govern
 **Starting checkpoint:** none (first class)
 **This class's golden solution:** [`golden-solution/`](golden-solution/)

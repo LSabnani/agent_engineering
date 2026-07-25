@@ -1,6 +1,6 @@
 # Class 6 — Structured Outputs and Agent Contracts
 
-**Manuscript source:** Book 1, Chapter 6
+**Manuscript source:** Book 1, Chapter 8
 **Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Design Agent Capabilities, Build the Harness
 **Starting checkpoint:** [`../class-05/golden-solution/`](../class-05/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 29 passed, 3 skipped without live credentials)

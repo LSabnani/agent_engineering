@@ -1,4 +1,4 @@
-# Chapter 5: Skills and Reusable Agent Capabilities
+# Chapter 7: Skills and Reusable Agent Capabilities
 
 ## Chapter purpose
 
@@ -23,7 +23,7 @@ By the end of this chapter, the reader should be able to:
 
 Extract the account-qualification procedure into a reusable **ICP Qualification Skill**. The agent remains responsible for the task, while the Skill supplies the repeatable method.
 
-## 5.1 Why Skills matter
+## 7.1 Why Skills matter
 
 As agent systems grow, important procedures often become duplicated across instructions, prompts, notebooks, and code. Duplication creates inconsistent behavior and makes improvement difficult.
 
@@ -40,7 +40,7 @@ A Skill creates a named unit of reusable know-how. It may include:
 
 Skills make procedures easier to discover, review, reuse, and version.
 
-## 5.2 Skill versus prompt
+## 7.2 Skill versus prompt
 
 A prompt is an invocation or instruction for a particular interaction. A Skill is a maintained capability that can support many interactions.
 
@@ -48,7 +48,7 @@ A prompt is an invocation or instruction for a particular interaction. A Skill i
 
 “WidgetWare ICP Qualification” is a Skill that describes how qualification should be performed, what evidence matters, how uncertainty is represented, and what quality standards apply.
 
-## 5.3 Skill versus tool
+## 7.3 Skill versus tool
 
 A Skill tells the agent **how to perform a task**. A tool allows the agent to **do something outside the model**.
 
@@ -59,7 +59,7 @@ For example:
 
 The two work together but solve different problems.
 
-## 5.4 Skill versus workflow
+## 7.4 Skill versus workflow
 
 A Skill is reusable procedure or expertise. A workflow coordinates stages and state.
 
@@ -67,7 +67,7 @@ A Skill is reusable procedure or expertise. A workflow coordinates stages and st
 
 “Research, qualify, draft, then request approval” is a workflow.
 
-## 5.5 Anatomy of a useful Skill
+## 7.5 Anatomy of a useful Skill
 
 The ICP Qualification Skill should contain:
 
@@ -106,11 +106,11 @@ The ICP Qualification Skill should contain:
 
 Include one positive, one negative, and one ambiguous example. Examples should illustrate the rules rather than encourage imitation of irrelevant wording.
 
-## 5.6 Progressive disclosure
+## 7.6 Progressive disclosure
 
 Do not force every Skill detail into every model call. A Skill can expose a concise description for discovery and load detailed instructions only when selected. This reduces context consumption and keeps irrelevant procedures out of the reasoning window.
 
-## 5.7 Versioning and ownership
+## 7.7 Versioning and ownership
 
 A business Skill should have an owner and version because changing the procedure may change business outcomes. Record:
 
@@ -154,14 +154,14 @@ Add a second lightweight Skill: **Evidence Classification**, which labels suppli
 
 The qualification procedure is now a reusable asset. The agent can apply consistent business judgment, but its output is still primarily natural language.
 
-## Bridge to Chapter 6
+## Bridge to Chapter 8
 
-Chapter 6 replaces ambiguous prose interfaces with typed contracts. This allows workflows, tests, and downstream components to consume agent results safely.
+Chapter 8 replaces ambiguous prose interfaces with typed contracts. This allows workflows, tests, and downstream components to consume agent results safely.
 
 ## Exercises
 
-1. §5.3 distinguishes a Skill (how to perform a task) from a tool (doing something outside the model). Take one procedure and one external action from your own domain and confirm you can sort them correctly. Is there anything you currently implement as a tool that is actually a Skill in disguise, or the reverse?
-2. Using §5.5's anatomy, draft only the "Procedure" section — the ordered steps — for a Skill you don't yet have: something you personally do by habit rather than by written rule. Where did you struggle to make step 2 or 3 explicit?
-3. §5.6 (progressive disclosure) argues a Skill should expose a concise description for discovery and load full detail only when selected. Look at the `skill.md` you built in the Hands-on Lab: if a second, unrelated agent had to decide whether this Skill applies to its task, does the discovery description alone give it enough to decide correctly?
-4. §5.7 requires an owner and version for a business Skill. Imagine the ICP thresholds in the qualification Skill change three months from now. Using §5.7's four record-keeping questions, write what that change's record would actually say.
-5. Using §5.4's distinction between a Skill and a workflow, predict which of Chapter 9's five named agents will use the ICP Qualification Skill directly, and which will use a different Skill or none at all. Check your prediction once you reach Chapter 9.
+1. §7.3 distinguishes a Skill (how to perform a task) from a tool (doing something outside the model). Take one procedure and one external action from your own domain and confirm you can sort them correctly. Is there anything you currently implement as a tool that is actually a Skill in disguise, or the reverse?
+2. Using §7.5's anatomy, draft only the "Procedure" section — the ordered steps — for a Skill you don't yet have: something you personally do by habit rather than by written rule. Where did you struggle to make step 2 or 3 explicit?
+3. §7.6 (progressive disclosure) argues a Skill should expose a concise description for discovery and load full detail only when selected. Look at the `skill.md` you built in the Hands-on Lab: if a second, unrelated agent had to decide whether this Skill applies to its task, does the discovery description alone give it enough to decide correctly?
+4. §7.7 requires an owner and version for a business Skill. Imagine the ICP thresholds in the qualification Skill change three months from now. Using §7.7's four record-keeping questions, write what that change's record would actually say.
+5. Using §7.4's distinction between a Skill and a workflow, predict which of Chapter 11's five named agents will use the ICP Qualification Skill directly, and which will use a different Skill or none at all. Check your prediction once you reach Chapter 11.

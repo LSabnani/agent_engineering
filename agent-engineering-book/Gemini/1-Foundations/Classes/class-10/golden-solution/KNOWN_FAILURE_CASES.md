@@ -9,11 +9,11 @@
 
 ### 1. The golden dataset is four accounts covering ten categories
 
-`eval/golden_dataset.py`'s ten `GoldenCase` entries reuse only four underlying accounts. `test_every_required_category_has_at_least_one_case` proves every category is *represented*, not that it's adequately *covered* — one case per category is the minimum Book 1 §10.3 asks for, not a claim of statistical confidence.
+`eval/golden_dataset.py`'s ten `GoldenCase` entries reuse only four underlying accounts. `test_every_required_category_has_at_least_one_case` proves every category is *represented*, not that it's adequately *covered* — one case per category is the minimum Book 1 §12.3 asks for, not a claim of statistical confidence.
 
 ### 2. `approval_compliance_rate` only recognizes the states that exist at this checkpoint
 
-This function's "compliant" set currently lists `AWAITING_APPROVAL`, `APPROVED`, `REJECTED`, and `BLOCKED` — the four terminal-or-waiting states Chapter 9's workflow can reach. Class 11 adds `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW` to the state machine; this function will need updating then, or it will silently undercount compliant runs inside a batch loop. Flagged here explicitly so that update isn't missed.
+This function's "compliant" set currently lists `AWAITING_APPROVAL`, `APPROVED`, `REJECTED`, and `BLOCKED` — the four terminal-or-waiting states Chapter 11's workflow can reach. Class 11 adds `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW` to the state machine; this function will need updating then, or it will silently undercount compliant runs inside a batch loop. Flagged here explicitly so that update isn't missed.
 
 ### 3. There is no loop yet — this checkpoint evaluates one account at a time, run on request
 

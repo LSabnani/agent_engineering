@@ -6,7 +6,7 @@ Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to th
 
 2. **The injection-attempt test proves isolation, not just survival.** A test that only confirms `build_research_brief` doesn't crash on injection-laden input is weaker than one that confirms the attack text ends up as ordinary, cited claim data — exactly where any other evidence text would land, no special handling, no special exception.
 
-3. **The choice of function tool vs. MCP is argued, not assumed.** A strong submission states which of §8.5's four conditions actually applied to this specific research source, and reaches a defensible conclusion — even if that conclusion is "MCP would be better here, but a function tool is simpler for a course lab."
+3. **The choice of function tool vs. MCP is argued, not assumed.** A strong submission states which of §10.5's four conditions actually applied to this specific research source, and reaches a defensible conclusion — even if that conclusion is "MCP would be better here, but a function tool is simpler for a course lab."
 
 4. **`ResearchBrief`'s claims are genuinely tied to evidence, not decoratively.** Pick one claim in a generated brief and trace its `evidence_refs` back to a real evidence item's `claim` text. If the two don't actually match — the claim says something the cited evidence doesn't support — the citation is present but hollow.
 

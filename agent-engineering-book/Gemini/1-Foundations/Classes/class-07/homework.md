@@ -17,7 +17,7 @@ The provided test suite includes a case where a `QualificationResult` is constru
 
 ## Extension (optional)
 
-Pick one tool and write the full seven-item test list from §7.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — you'll need to invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real. Document your reasoning, not just the test code.
+Pick one tool and write the full seven-item test list from §9.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — you'll need to invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real. Document your reasoning, not just the test code.
 
 ## Submission
 

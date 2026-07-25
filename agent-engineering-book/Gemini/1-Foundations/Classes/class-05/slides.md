@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: Skill vs. prompt vs. tool (§5.2–5.3)
+## Slide 4 — Core concept: Skill vs. prompt vs. tool (§7.2–5.3)
 
 **On slide:** A Skill tells the agent *how*; a tool lets it *do*.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Terminology: anatomy of a useful Skill (§5.5)
+## Slide 5 — Terminology: anatomy of a useful Skill (§7.5)
 
 **On slide:** Identity, inputs, procedure, quality criteria, examples.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: progressive disclosure (§5.6)
+## Slide 6 — Architecture: progressive disclosure (§7.6)
 
 **On slide:** A concise discovery description first; full detail only when the Skill is actually selected.
 
@@ -54,7 +54,7 @@
 
 ## Slide 7 — Seven Steps mapping: Design Agent Capabilities
 
-**On slide:** Chapter 5 — the first chapter primarily about making a capability reusable.
+**On slide:** Chapter 7 — the first chapter primarily about making a capability reusable.
 
 **Say:** "Build the Harness got the agent running. Design Agent Capabilities is about making what it knows how to do something you can hand to the next agent, unchanged."
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: versioning and ownership (§5.7)
+## Slide 9 — Security: versioning and ownership (§7.7)
 
 **On slide:** A Skill is an organizational asset, not an anonymous prompt fragment.
 

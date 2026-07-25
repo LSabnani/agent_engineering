@@ -1,4 +1,4 @@
-# Chapter 10: Evaluate, Deploy, and Demonstrate
+# Chapter 12: Evaluate, Deploy, and Demonstrate
 
 ## Chapter purpose
 
@@ -26,7 +26,7 @@ By the end of this chapter, the reader should be able to:
 
 Create the Book 1 release candidate: an evaluated application deployed to Cloud Run or an appropriate managed agent runtime, with basic observability and a repeatable demonstration.
 
-## 10.1 Evaluation is broader than the final answer
+## 12.1 Evaluation is broader than the final answer
 
 An agent can produce a plausible final message while using the wrong source, calling an unnecessary tool, ignoring an exclusion, or skipping approval. Evaluate the entire behavior:
 
@@ -40,7 +40,7 @@ An agent can produce a plausible final message while using the wrong source, cal
 - approval compliance; and
 - final artifacts.
 
-## 10.2 Evaluation layers
+## 12.2 Evaluation layers
 
 ### Unit tests
 
@@ -66,7 +66,7 @@ Prompt injection, prohibited action requests, missing approval, secret exposure,
 
 Latency, dependency failure, retry behavior, logging, and deployment health.
 
-## 10.3 Build the golden dataset
+## 12.3 Build the golden dataset
 
 A useful Book 1 dataset should contain at least:
 
@@ -83,7 +83,7 @@ A useful Book 1 dataset should contain at least:
 
 Each case should define expected stable properties rather than one perfect paragraph.
 
-## 10.4 Evaluation criteria
+## 12.4 Evaluation criteria
 
 Possible metrics include:
 
@@ -100,7 +100,7 @@ Possible metrics include:
 
 Book 1 can begin with simple thresholds and human-reviewed rubrics. Book 2 will extend this into continuous evaluation.
 
-## 10.5 LLM-as-a-judge with caution
+## 12.5 LLM-as-a-judge with caution
 
 A model-based evaluator can score relevance, clarity, grounding, or tone. It should use a specific rubric and structured output. It should not be the only authority for high-risk requirements.
 
@@ -115,7 +115,7 @@ Use deterministic checks for:
 
 Use human review to calibrate judge behavior.
 
-## 10.6 Basic observability
+## 12.6 Basic observability
 
 Capture:
 
@@ -133,7 +133,7 @@ Avoid logging secrets, unnecessary personal data, or full sensitive payloads.
 
 Tracing should make it possible to answer: “Why did this case end in `BLOCKED`?”
 
-## 10.7 Deployment choices
+## 12.7 Deployment choices
 
 Book 1 may deploy to:
 
@@ -152,7 +152,7 @@ Deployment requires:
 - versioning; and
 - rollback.
 
-## 10.8 Release gates
+## 12.8 Release gates
 
 A Book 1 release candidate should not deploy unless:
 
@@ -164,7 +164,7 @@ A Book 1 release candidate should not deploy unless:
 - deployment identity is least privilege; and
 - rollback instructions exist.
 
-## 10.9 The final demonstration
+## 12.9 The final demonstration
 
 Demonstrate more than the happy path.
 
@@ -216,14 +216,14 @@ A trustworthy demonstration shows how the system fails safely.
 
 The reader has completed an inspectable, evaluated, and deployable agent application — for one account at a time, run on request. WidgetWare's SDR workflow combines Gemini reasoning, ADK orchestration, Antigravity-assisted development, reusable Skills, controlled tools, evidence-backed research, structured contracts, multi-agent collaboration, and human approval. What it does not yet know how to do is work through a queue of accounts unattended, recover from an interruption, or stop on its own for a reason it can name.
 
-## Bridge to Chapter 11
+## Bridge to Chapter 13
 
-A single evaluated run is not yet a system you can point at a backlog of accounts and trust to work through them. Chapter 11 takes this exact workflow, unchanged, and wraps it in a bounded ADK loop — durable session state, budgets, checkpoints, and an explicit decision after every account — before Book 1 closes.
+A single evaluated run is not yet a system you can point at a backlog of accounts and trust to work through them. Chapter 13 takes this exact workflow, unchanged, and wraps it in a bounded ADK loop — durable session state, budgets, checkpoints, and an explicit decision after every account — before Book 1 closes.
 
 ## Exercises
 
-1. §10.1 lists nine things evaluation should cover beyond the final answer. Pick one of your own past "it works" moments with an agent system, in this course or elsewhere, and check how many of the nine you actually verified versus simply assumed because the final output looked right.
-2. §10.3 requires ten kinds of cases in the golden dataset. Look at your own dataset from the Hands-on Lab and identify which of the ten is currently thinnest or missing, and describe a specific WidgetWare account profile that would fill that gap.
-3. §10.5 says an LLM-as-a-judge should never be the sole authority for high-risk requirements, listing six things that must stay deterministic instead. Pick one of the six and describe, concretely, what a judge model getting it "almost right" would look like — a plausible-sounding but wrong judgment a rubric alone might miss.
-4. §10.8 lists seven release-gate conditions. If you had to ship WidgetWare today under deadline pressure and could honestly satisfy only five of the seven, which two would you refuse to waive, and why those two specifically?
-5. §10.9's five-case demonstration ends with "a trustworthy demonstration shows how the system fails safely." Pick the one of the five cases — success, insufficient-evidence, conflict, safety, approval — you'd most want a skeptical buyer to see first, and justify your choice in terms of what it proves that the success case alone cannot.
+1. §12.1 lists nine things evaluation should cover beyond the final answer. Pick one of your own past "it works" moments with an agent system, in this course or elsewhere, and check how many of the nine you actually verified versus simply assumed because the final output looked right.
+2. §12.3 requires ten kinds of cases in the golden dataset. Look at your own dataset from the Hands-on Lab and identify which of the ten is currently thinnest or missing, and describe a specific WidgetWare account profile that would fill that gap.
+3. §12.5 says an LLM-as-a-judge should never be the sole authority for high-risk requirements, listing six things that must stay deterministic instead. Pick one of the six and describe, concretely, what a judge model getting it "almost right" would look like — a plausible-sounding but wrong judgment a rubric alone might miss.
+4. §12.8 lists seven release-gate conditions. If you had to ship WidgetWare today under deadline pressure and could honestly satisfy only five of the seven, which two would you refuse to waive, and why those two specifically?
+5. §12.9's five-case demonstration ends with "a trustworthy demonstration shows how the system fails safely." Pick the one of the five cases — success, insufficient-evidence, conflict, safety, approval — you'd most want a skeptical buyer to see first, and justify your choice in terms of what it proves that the success case alone cannot.

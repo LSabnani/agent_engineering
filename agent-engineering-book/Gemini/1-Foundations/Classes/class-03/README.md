@@ -1,6 +1,6 @@
 # Class 3 — Gemini Context and Instruction Architecture
 
-**Manuscript source:** Book 1, Chapter 3
+**Manuscript source:** Book 1, Chapter 5
 **Seven-Step mapping:** Primary: Build Context / Supporting: Frame the Use Case, Evaluate & Govern
 **Starting checkpoint:** [`../class-02/golden-solution/`](../class-02/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 8 passed)
