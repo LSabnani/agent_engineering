@@ -5,7 +5,7 @@ Goal: the five-file project charter — `README.md`, `SPEC.md`, `docs/widgetware
 ## Prerequisites
 
 - **`../SETUP.md` complete** — Antigravity installed and authenticated. One-time, done once, not something you learn by jumping ahead into Class 02.
-- You've read Book 1, Chapter 3 (`../../Manuscript/03_Chapter_03_From_Language_Models_to_Agent_Engineering.md`).
+- You've read Book 1, Chapter 1 (`../../Manuscript/03_Chapter_01_From_Language_Models_to_Agent_Engineering.md`).
 
 ## Steps
 
@@ -27,7 +27,7 @@ Goal: the five-file project charter — `README.md`, `SPEC.md`, `docs/widgetware
 
 ## Verify
 
-There is no automated test at this checkpoint — Chapter 3 is charter only. The check is manual:
+There is no automated test at this checkpoint — Chapter 1 is charter only. The check is manual:
 
 - Does every criterion in your `docs/acceptance-criteria.md` name something a person could check mechanically?
 - Does `SPEC.md` state required and prohibited behavior as falsifiable statements, not marketing language?

@@ -9,17 +9,17 @@ This directory contains the manuscript blueprint for Book 1. Each major part of 
 
 1. `01_Preface.md`
 2. `02_Introduction.md`
-3. `03_Chapter_03_From_Language_Models_to_Agent_Engineering.md`
-4. `04_Chapter_04_Building_with_Antigravity.md`
-5. `05_Chapter_05_Gemini_Models_and_Context_Engineering.md`
-6. `06_Chapter_06_Your_First_Agent_with_ADK.md`
-7. `07_Chapter_07_Skills_and_Reusable_Agent_Capabilities.md`
-8. `08_Chapter_08_Structured_Outputs_and_Agent_Contracts.md`
-9. `09_Chapter_09_Tool_Engineering.md`
-10. `10_Chapter_10_Evidence_Backed_Research_with_MCP.md`
-11. `11_Chapter_11_Multi_Agent_Workflows_and_Human_Approval.md`
-12. `12_Chapter_12_Evaluate_Deploy_and_Demonstrate.md`
-13. `13_Chapter_13_Loop_Engineering_with_ADK.md`
+3. `03_Chapter_01_From_Language_Models_to_Agent_Engineering.md`
+4. `04_Chapter_02_Building_with_Antigravity.md`
+5. `05_Chapter_03_Gemini_Models_and_Context_Engineering.md`
+6. `06_Chapter_04_Your_First_Agent_with_ADK.md`
+7. `07_Chapter_05_Skills_and_Reusable_Agent_Capabilities.md`
+8. `08_Chapter_06_Structured_Outputs_and_Agent_Contracts.md`
+9. `09_Chapter_07_Tool_Engineering.md`
+10. `10_Chapter_08_Evidence_Backed_Research_with_MCP.md`
+11. `11_Chapter_09_Multi_Agent_Workflows_and_Human_Approval.md`
+12. `12_Chapter_10_Evaluate_Deploy_and_Demonstrate.md`
+13. `13_Chapter_11_Loop_Engineering_with_ADK.md`
 14. `14_Book_1_Conclusion.md`
 15. `15_Introduction_to_Book_2.md`
 

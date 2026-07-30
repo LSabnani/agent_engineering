@@ -4,7 +4,7 @@ Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to th
 
 1. **The golden dataset is actually representative, not decorative.** A strong submission's cases each map to a real failure mode this course has demonstrated (conflicting evidence broke qualification in Class 8, injection attempts had to be neutralized in Class 8's research pipeline, etc.) — not ten variations on the same easy qualified/disqualified split.
 
-2. **The release gate genuinely reports every failure, not just the first.** Feed it a system with two independent things broken at once (e.g., a business invariant violated *and* a golden-dataset case producing the wrong outcome) and confirm both appear in `reasons`. A submission that only surfaces one at a time has not met §12.5's "fails loudly" requirement.
+2. **The release gate genuinely reports every failure, not just the first.** Feed it a system with two independent things broken at once (e.g., a business invariant violated *and* a golden-dataset case producing the wrong outcome) and confirm both appear in `reasons`. A submission that only surfaces one at a time has not met §10.5's "fails loudly" requirement.
 
 3. **`approval_compliance_rate()`'s known limitation is stated, not hidden.** This metric only recognizes four workflow states at this checkpoint (RETRY_PENDING and NEEDS_HUMAN_REVIEW don't exist until Class 11). A strong submission's own `KNOWN_FAILURE_CASES.md` or code comment says this plainly — silently presenting the metric as complete is a real defect this class's own reference checkpoint exists to warn against.
 

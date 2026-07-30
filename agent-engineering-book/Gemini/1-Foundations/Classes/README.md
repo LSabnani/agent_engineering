@@ -24,17 +24,17 @@ Neither track is the "real" one — pick whichever fits how you're actually deli
 
 | Class | Manuscript source | Main capability | Golden solution |
 | ----: | ------------------ | ---------------------------------------------------------- | --- |
-| [1](class-01/) | Book 1, Ch. 3 | Foundations, the WidgetWare specification (folds in course orientation) | ✅ verified (charter only, no code) |
-| [2](class-02/) | Book 1, Ch. 4 | Antigravity workspace and repository harness | ✅ verified — 3 passed |
-| [3](class-03/) | Book 1, Ch. 5 | Gemini context and instruction architecture | ✅ verified — 8 passed |
-| [4](class-04/) | Book 1, Ch. 6 | First ADK agent (embedded procedure, no Skills yet) | ✅ verified — 18 passed, 3 skipped |
-| [5](class-05/) | Book 1, Ch. 7 | Skills and reusable agent capabilities | ✅ verified — 17 passed, 3 skipped |
-| [6](class-06/) | Book 1, Ch. 8 | Structured outputs and agent contracts | ✅ verified — 29 passed, 3 skipped |
-| [7](class-07/) | Book 1, Ch. 9 | Tool engineering | ✅ verified — 44 passed, 3 skipped |
-| [8](class-08/) | Book 1, Ch. 10 | MCP and evidence-backed research | ✅ verified — 60 passed, 3 skipped |
-| [9](class-09/) | Book 1, Ch. 11 | Multi-agent workflow and human approval | ✅ verified — 90 passed, 3 skipped |
-| [10](class-10/) | Book 1, Ch. 12 | Evaluate, deploy, and demonstrate (no loop yet) | ✅ verified — 109 passed, 3 skipped |
-| [11](class-11/) | Book 1, Ch. 13 | Loop engineering with ADK — closes Book 1 | ✅ verified — 140 passed, 3 skipped |
+| [1](class-01/) | Book 1, Ch. 1 | Foundations, the WidgetWare specification (folds in course orientation) | ✅ verified (charter only, no code) |
+| [2](class-02/) | Book 1, Ch. 2 | Antigravity workspace and repository harness | ✅ verified — 3 passed |
+| [3](class-03/) | Book 1, Ch. 3 | Gemini context and instruction architecture | ✅ verified — 8 passed |
+| [4](class-04/) | Book 1, Ch. 4 | First ADK agent (embedded procedure, no Skills yet) | ✅ verified — 18 passed, 3 skipped |
+| [5](class-05/) | Book 1, Ch. 5 | Skills and reusable agent capabilities | ✅ verified — 17 passed, 3 skipped |
+| [6](class-06/) | Book 1, Ch. 6 | Structured outputs and agent contracts | ✅ verified — 29 passed, 3 skipped |
+| [7](class-07/) | Book 1, Ch. 7 | Tool engineering | ✅ verified — 44 passed, 3 skipped |
+| [8](class-08/) | Book 1, Ch. 8 | MCP and evidence-backed research | ✅ verified — 60 passed, 3 skipped |
+| [9](class-09/) | Book 1, Ch. 9 | Multi-agent workflow and human approval | ✅ verified — 90 passed, 3 skipped |
+| [10](class-10/) | Book 1, Ch. 10 | Evaluate, deploy, and demonstrate (no loop yet) | ✅ verified — 109 passed, 3 skipped |
+| [11](class-11/) | Book 1, Ch. 11 | Loop engineering with ADK — closes Book 1 | ✅ verified — 140 passed, 3 skipped |
 
 "Passed"/"skipped" counts are from `pytest` run with no live Gemini credentials in the environment — the skipped tests are the semantic, live-model scenario tests in `tests/integration/`, which require `GOOGLE_API_KEY` or a configured Vertex AI project to actually run. Every checkpoint is cumulative: `class-0N/golden-solution/` contains everything from `class-0(N-1)/` plus that chapter's own increment, verified by actually running its own test suite from a clean install, not by inspection.
 

@@ -1,6 +1,6 @@
 # Class 9 — Multi-Agent Workflow and Human Approval
 
-**Manuscript source:** Book 1, Chapter 11
+**Manuscript source:** Book 1, Chapter 9
 **Seven-Step mapping:** Primary: Orchestrate Workflows / Supporting: Design Agent Capabilities, Evaluate & Govern
 **Starting checkpoint:** [`../class-08/golden-solution/`](../class-08/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 90 passed, 3 skipped without live credentials)

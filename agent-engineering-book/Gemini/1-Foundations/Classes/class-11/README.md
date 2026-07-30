@@ -1,6 +1,6 @@
 # Class 11 — Loop Engineering with ADK
 
-**Manuscript source:** Book 1, Chapter 13
+**Manuscript source:** Book 1, Chapter 11
 **Seven-Step mapping:** Primary: Engineer Loops / Supporting: Orchestrate Workflows, Evaluate & Govern
 **Starting checkpoint:** [`../class-10/golden-solution/`](../class-10/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 140 passed, 3 skipped without live credentials)
@@ -35,5 +35,5 @@ Expected: 140 tests pass offline; 3 live-model tests in `tests/integration/` ski
 
 - [ ] Run Class 10's release gate live against the Class 10 checkpoint and watch it pass, then ask what happens the moment WidgetWare hands over a hundred accounts unattended — sets up the whole class
 - [ ] Live-demo a mid-batch restart and show the loop resuming from durable session state instead of reprocessing a settled account
-- [ ] Make §13.10 concrete: confirm out loud that an account processed inside an unattended batch gets exactly the same approval scrutiny as one processed live
+- [ ] Make §11.10 concrete: confirm out loud that an account processed inside an unattended batch gets exactly the same approval scrutiny as one processed live
 - [ ] Close Book 1 explicitly — name what this system still can't do (multi-user, long-term memory, planning over ambiguous goals, collaborating with agents it doesn't own) as the on-ramp to Book 2

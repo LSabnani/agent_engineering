@@ -1,6 +1,6 @@
 # Class 5 — Skills and Reusable Agent Capabilities
 
-**Manuscript source:** Book 1, Chapter 7
+**Manuscript source:** Book 1, Chapter 5
 **Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build Context, Build the Harness, Evaluate & Govern
 **Starting checkpoint:** [`../class-04/golden-solution/`](../class-04/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 17 passed, 3 skipped without live credentials)

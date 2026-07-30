@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: why prose isn't enough (§8.1–6.2)
+## Slide 4 — Core concept: why prose isn't enough (§6.1–6.2)
 
 **On slide:** A downstream system can't safely branch on a sentence that might rephrase itself every call.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Terminology: schema vs. contract vs. validation (§8.3)
+## Slide 5 — Terminology: schema vs. contract vs. validation (§6.3)
 
 **On slide:** A schema describes shape. A contract adds business invariants. Validation enforces both.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: the four business invariants (§8.4)
+## Slide 6 — Architecture: the four business invariants (§6.4)
 
 **On slide:** `QUALIFIED` needs evidence. `NOT_QUALIFIED` needs exclusions. `NEEDS_RESEARCH` needs missing info. `BLOCKED` needs an error.
 
@@ -54,7 +54,7 @@
 
 ## Slide 7 — Seven Steps mapping: Evaluate & Govern
 
-**On slide:** Chapter 8 — the first chapter squarely about making an agent's output trustworthy.
+**On slide:** Chapter 6 — the first chapter squarely about making an agent's output trustworthy.
 
 **Say:** "Every step so far has been about getting the agent to do the right thing. This one is about proving it did — mechanically, not by reading its prose and trusting it."
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: fail-safe design (§8.5)
+## Slide 9 — Security: fail-safe design (§6.5)
 
 **On slide:** Malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through.
 

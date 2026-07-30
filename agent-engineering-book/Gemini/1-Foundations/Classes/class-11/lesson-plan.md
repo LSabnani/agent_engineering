@@ -1,6 +1,6 @@
 # Class 11 — Loop Engineering with ADK
 
-**Manuscript source:** Book 1, Chapter 13 — Loop Engineering with ADK
+**Manuscript source:** Book 1, Chapter 11 — Loop Engineering with ADK
 **Seven-Step mapping:** Primary: Engineer Loops / Supporting: Orchestrate Workflows, Evaluate & Govern
 **Golden solution produced:** `class-11/golden-solution/`
 **Starting checkpoint:** `class-10/golden-solution/`
@@ -18,26 +18,26 @@ This class closes Book 1. Everything the loop touches today — the single-accou
 1. Current WidgetWare state: a single-account workflow that's proven good enough to ship, run once, on request
 2. Today's dependency: nothing about `run_workflow` changes today — the loop wraps it, unchanged, exactly as Class 10 left it
 3. Business objective: run the same proven workflow unattended, across a queue, safely and within stated budgets
-4. Core concept: a loop is not `max_iterations` alone (§13.4) — it needs work selection, durable state, verification, and budgets
-5. Terminology: the inner ADK reasoning loop vs. the outer engineered loop this chapter adds (§13.2–11.3)
-6. Architecture: the five-way per-account decision (§13.8) — CONTINUE, RETRY, STOP, DEFER, ESCALATE
+4. Core concept: a loop is not `max_iterations` alone (§11.4) — it needs work selection, durable state, verification, and budgets
+5. Terminology: the inner ADK reasoning loop vs. the outer engineered loop this chapter adds (§11.2–11.3)
+6. Architecture: the five-way per-account decision (§11.8) — CONTINUE, RETRY, STOP, DEFER, ESCALATE
 7. Seven Steps mapping: Engineer Loops — the final primary step of Book 1
 8. Gemini vs. deterministic code: the workflow's reasoning is unchanged; everything new today — budget checks, decisions, queue selection — is deterministic
-9. Security: human approval authority does not change inside a loop (§13.10) — an account processed at 3am unattended gets exactly the same scrutiny as one processed live
+9. Security: human approval authority does not change inside a loop (§11.10) — an account processed at 3am unattended gets exactly the same scrutiny as one processed live
 10. Today's increment: `loop/budget.py`, `loop/decision.py`, `loop/account_queue.py`, `loop/run_report.py`, `loop/batch_runner.py`, plus two new workflow states
-11. Lab architecture: verification before advancing (§13.7) — trust only the state the workflow actually reached, never an agent's own unverified claim
+11. Lab architecture: verification before advancing (§11.7) — trust only the state the workflow actually reached, never an agent's own unverified claim
 12. Acceptance criteria: the loop stops for a reason it can name, every time
 
 ## Kahoot (8 questions)
 
-- Terminology: What are the five outcomes of the loop's per-account decision (§13.8)?
-- Terminology: What's the difference between the inner agent loop ADK already runs and the outer loop this chapter adds (§13.2–11.3)?
-- Architecture: Why is `max_iterations` alone not an engineered loop (§13.4)?
+- Terminology: What are the five outcomes of the loop's per-account decision (§11.8)?
+- Terminology: What's the difference between the inner agent loop ADK already runs and the outer loop this chapter adds (§11.2–11.3)?
+- Architecture: Why is `max_iterations` alone not an engineered loop (§11.4)?
 - Architecture: Why does the state machine need `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW` added, and why is `BLOCKED` no longer terminal once they exist?
 - Failure analysis: A restarted batch run re-researches an account it already finished — what's missing?
-- Security/governance: Does an account processed inside an unattended batch loop get less approval scrutiny than one processed on request? What does §13.10 say?
+- Security/governance: Does an account processed inside an unattended batch loop get less approval scrutiny than one processed on request? What does §11.10 say?
 - WidgetWare scenario: The loop hits its maximum-attempts limit for one account — CONTINUE, RETRY, STOP, DEFER, or ESCALATE?
-- Connecting back: How does the loop's verification-before-advancing step (§13.7) reuse Class 6's contracts and Class 9's state machine?
+- Connecting back: How does the loop's verification-before-advancing step (§11.7) reuse Class 6's contracts and Class 9's state machine?
 
 ## Build together (0:55–1:35)
 

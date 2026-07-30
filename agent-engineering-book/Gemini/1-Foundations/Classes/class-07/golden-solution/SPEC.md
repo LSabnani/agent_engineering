@@ -34,7 +34,7 @@ Help a WidgetWare SDR decide, quickly and defensibly, whether a target company i
 
 ## State transitions
 
-Defined in full starting in Class 9 (Book 1, Chapter 11). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
+Defined in full starting in Class 9 (Book 1, Chapter 9). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
 
 ## Error behavior
 
@@ -42,7 +42,7 @@ When evidence is insufficient to qualify a company one way or the other, the sys
 
 ## Approval rules
 
-No outbound action of any kind may occur without a prior, explicit, human-approved state. This is a structural guarantee, not an instruction the model is asked to follow — Book 1 contains no send-capable tool anywhere in the codebase, by design, through Chapter 13.
+No outbound action of any kind may occur without a prior, explicit, human-approved state. This is a structural guarantee, not an instruction the model is asked to follow — Book 1 contains no send-capable tool anywhere in the codebase, by design, through Chapter 11.
 
 ## Completion criteria for this checkpoint (Class 1)
 

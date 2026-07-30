@@ -44,7 +44,7 @@ The intended reader does not need to be an advanced Python programmer. The imple
 
 These questions are more durable than any particular API call.
 
-Book 1 focuses on foundations. By the end, you will have an inspectable, evaluated, deployable agent application. Book 2 will extend that application into a stateful and governed enterprise agent platform with persistent memory, enterprise retrieval, controlled loops, distributed collaboration, identity, security, observability, cost management, and continuous evaluation.
+Book 1 focuses on foundations. By the end, you will have an inspectable, evaluated, deployable agent application — including a bounded, engineered loop that works through a queue of accounts unattended. Book 2 will extend that application into a stateful and governed enterprise agent platform with persistent memory, enterprise retrieval, adaptive and distributed loops, identity, security, observability, cost management, and continuous evaluation.
 
 My hope is that this book helps readers move beyond two common extremes: fear that agents are uncontrollable, and excitement that ignores engineering discipline. Both are incomplete. Agent systems can be useful and trustworthy when we design them with humility, explicit boundaries, and measurable expectations.
 

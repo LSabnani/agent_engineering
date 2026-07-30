@@ -14,7 +14,7 @@
 
 ### 2. `data/sample_accounts/` and `tests/fixtures/accounts/` are duplicated, not shared
 
-Book 1 §6's Hands-on Lab asks for sample account profiles under `data/sample_accounts/`, and this checkpoint already had `tests/fixtures/accounts/` from Class 3. Rather than pick one, this checkpoint keeps both, with identical content, for two different audiences. They are not read from a single source — if one is edited without the other, they will silently drift.
+Book 1 §4's Hands-on Lab asks for sample account profiles under `data/sample_accounts/`, and this checkpoint already had `tests/fixtures/accounts/` from Class 3. Rather than pick one, this checkpoint keeps both, with identical content, for two different audiences. They are not read from a single source — if one is edited without the other, they will silently drift.
 
 ### 3. The qualification procedure is embedded directly in this file, by design — and that's the whole point of this checkpoint
 

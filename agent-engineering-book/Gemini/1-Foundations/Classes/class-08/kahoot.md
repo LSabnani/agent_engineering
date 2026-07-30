@@ -4,13 +4,13 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What's the practical difference between a function tool and an MCP integration (§10.5)?
+**1. (Terminology)** What's the practical difference between a function tool and an MCP integration (§8.5)?
 - **✓** A) A function tool is application-specific and narrow; MCP is for standardized capabilities multiple agents or clients share
 - B) Function tools can only read data; MCP can only write it
 - C) There is no practical difference — they're interchangeable terms
 - D) MCP requires no permission model; function tools always do
 
-**2. (Terminology)** What four things does an evidence item record (§10.7)?
+**2. (Terminology)** What four things does an evidence item record (§8.7)?
 - **✓** A) Source, date, excerpt, and reliability assessment
 - B) Status, confidence, score, and rationale
 - C) Account ID, industry, region, and employee count

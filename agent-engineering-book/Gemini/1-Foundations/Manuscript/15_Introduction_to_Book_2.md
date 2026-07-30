@@ -1,6 +1,6 @@
 # Introduction to Book 2: From Agent Application to Enterprise Agent Platform
 
-*This chapter previews Book 2. The full manuscript — ten chapters plus its own introduction and conclusion — lives in [`../../2-Advanced-Architectures/`](../../2-Advanced-Architectures/00_README.md).*
+*This chapter previews Book 2. The full manuscript — ten chapters plus its own introduction and conclusion — is published as a separate volume, `Agent Engineering with Gemini, ADK & Antigravity, Book 2: Advanced Architectures`.*
 
 Book 1 ended with a complete WidgetWare SDR application. It can research an account, preserve evidence, qualify the opportunity, draft an outreach message, and request human approval — for one account, or for a bounded queue of accounts inside an ADK `LoopAgent` that stops for a reason it can name. It is inspectable, evaluated, and deployable.
 
@@ -9,10 +9,6 @@ That success creates a new class of problems.
 A single application can keep its knowledge in a small set of files, run a short workflow, and rely on a compact team of agents. An enterprise platform must support many users, many agents, large knowledge collections, persistent state, distributed execution, strict identity boundaries, cost controls, continuous evaluation, and centralized governance.
 
 Book 2 begins at that transition.
-
-# Agent Engineering with Gemini, ADK & Antigravity
-## Book 2: Advanced Architectures
-### Build Stateful, Adaptive, Collaborative, and Governed Agent Systems on Google Cloud
 
 ## The Book 2 objective
 
@@ -38,7 +34,7 @@ How should the system select, compress, cache, and refresh context under token, 
 
 ## Chapter 5 — Goals, Planning, and Controlled Loops
 
-Book 1's Chapter 13 built one bounded loop: a fixed workflow, a fixed queue, an ADK `LoopAgent`, and five explicit decisions. This chapter asks what changes when the loop must decompose a goal it wasn't handed pre-solved, adapt its own plan, and still not run indefinitely. It introduces plan contracts, budgets, stopping conditions, checkpointing, non-progress detection, and human interruption — deepening Engineer Loops, not replacing what Book 1 already proved.
+Book 1's Chapter 11 built one bounded loop: a fixed workflow, a fixed queue, an ADK `LoopAgent`, and five explicit decisions. This chapter asks what changes when the loop must decompose a goal it wasn't handed pre-solved, adapt its own plan, and still not run indefinitely. It introduces plan contracts, budgets, stopping conditions, checkpointing, non-progress detection, and human interruption — deepening the Engineer Loops step, not replacing what Book 1 already proved.
 
 ## Chapter 6 — Distributed Agent Collaboration
 

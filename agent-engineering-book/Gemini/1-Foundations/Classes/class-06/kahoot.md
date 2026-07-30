@@ -4,13 +4,13 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What is the difference between a schema and a business invariant (§8.3–6.4)?
+**1. (Terminology)** What is the difference between a schema and a business invariant (§6.3–6.4)?
 - A) They're interchangeable terms for the same thing
 - **✓** B) A schema checks shape and types; a business invariant checks domain-specific rules a valid-shaped object can still violate
 - C) A schema is written in Python; a business invariant is written in YAML
 - D) Business invariants only apply to numeric fields
 
-**2. (Terminology)** What does "fail-safe" mean for a parsing pipeline (§8.5), and how is it different from "fail-fast"?
+**2. (Terminology)** What does "fail-safe" mean for a parsing pipeline (§6.5), and how is it different from "fail-fast"?
 - **✓** A) Fail-safe returns a well-formed error result (`BLOCKED`) instead of crashing; fail-fast raises immediately on the first problem
 - B) They're the same design pattern with different names
 - C) Fail-safe means the pipeline retries automatically until it succeeds

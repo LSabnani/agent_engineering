@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: why multiple agents (§11.1)
+## Slide 4 — Core concept: why multiple agents (§9.1)
 
 **On slide:** Research Agent, Qualification Agent, Evidence Reviewer, Drafting Agent — each with one responsibility.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Workflow patterns (§11.2); typed handoffs (§11.4)
+## Slide 5 — Workflow patterns (§9.2); typed handoffs (§9.4)
 
 **On slide:** Sequential for Book 1. Pass contracts, never transcripts.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: state machine before agent prompt (§11.3)
+## Slide 6 — Architecture: state machine before agent prompt (§9.3)
 
 **On slide:** Ten explicit states, an allowed-transitions table, checked before any agent's own words are trusted.
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: human-in-the-loop approval (§11.6)
+## Slide 9 — Security: human-in-the-loop approval (§9.6)
 
 **On slide:** Approval is a state and a policy decision — not an instruction asking the model to check first.
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: partial failure (§11.7)
+## Slide 11 — Lab architecture: partial failure (§9.7)
 
 **On slide:** A visible state and a next action for every failure — never restart everything.
 

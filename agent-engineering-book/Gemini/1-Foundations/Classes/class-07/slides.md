@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: a tool lets the agent do something outside the model (§9.1)
+## Slide 4 — Core concept: a tool lets the agent do something outside the model (§7.1)
 
 **On slide:** A Skill tells the agent how. A tool lets it reach outside itself and act.
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Terminology: tool descriptions are part of control (§9.2)
+## Slide 5 — Terminology: tool descriptions are part of control (§7.2)
 
 **On slide:** The model selects tools by name and description alone — not by reading the implementation.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: three narrow, read-only tools (§9.3)
+## Slide 6 — Architecture: three narrow, read-only tools (§7.3)
 
 **On slide:** `get_account_profile`, `get_widgetware_product`, `get_icp_policy` — each does exactly one lookup, nothing else.
 
@@ -54,7 +54,7 @@
 
 ## Slide 7 — Seven Steps mapping: Design Agent Capabilities continues
 
-**On slide:** Chapter 7 gave the agent a Skill. Chapter 9 gives it a tool — the same step, from the opposite direction.
+**On slide:** Chapter 5 gave the agent a Skill. Chapter 7 gives it a tool — the same step, from the opposite direction.
 
 **Say:** "A Skill shapes what the model knows how to do. A tool shapes what it can reach outside itself. Both are capability engineering."
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: least privilege for tools (§9.5)
+## Slide 9 — Security: least privilege for tools (§7.5)
 
 **On slide:** A read-only lookup should never hold write-capable credentials, even if the platform account technically could.
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: tool testing without the agent (§9.8)
+## Slide 11 — Lab architecture: tool testing without the agent (§7.8)
 
 **On slide:** Valid input, invalid input, missing record, deterministic output shape — tested completely independent of any model call.
 

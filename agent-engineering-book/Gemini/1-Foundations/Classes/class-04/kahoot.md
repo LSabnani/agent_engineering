@@ -4,7 +4,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What four abstractions does ADK give you (§6.1)?
+**1. (Terminology)** What four abstractions does ADK give you (§4.1)?
 - **✓** A) Agent, Session, Event, Runner
 - B) Model, Prompt, Response, Token
 - C) Workflow, Skill, Tool, Contract
@@ -16,23 +16,23 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) The user's identity from the agent's identity
 - D) The model's confidence from its final answer
 
-**3. (Architecture)** Why does Chapter 6 draw such a narrow boundary around the agent's first version?
+**3. (Architecture)** Why does Chapter 4 draw such a narrow boundary around the agent's first version?
 - **✓** A) A small, well-understood first agent is easier to diagnose than an ambitious one
 - B) ADK technically cannot support a broader agent yet
 - C) Narrow agents run faster
 - D) There's no real reason — it's just a stylistic choice
 
-**4. (Architecture)** What's still missing from this agent's output that Chapter 8 will add?
+**4. (Architecture)** What's still missing from this agent's output that Chapter 6 will add?
 - **✓** A) A machine-validated, typed contract — the output today is still free-form prose
 - B) A model call — there isn't one yet
-- C) Tools — those come in Chapter 8
+- C) Tools — those come in Chapter 6
 - D) Nothing is missing; this chapter's output is already final
 
 **5. (Failure analysis)** The agent confidently qualifies an account with clearly insufficient evidence. Where's the fix likely to be?
 - **✓** A) The embedded qualification procedure text inside `qualification_agent.py`
 - B) The ADK `Runner` configuration
 - C) The `InMemorySessionService`
-- D) It can't be fixed until Chapter 7 introduces Skills
+- D) It can't be fixed until Chapter 5 introduces Skills
 
 **6. (Security/governance)** What should the agent do when required account information is simply missing?
 - **✓** A) Say so explicitly rather than guessing a plausible value
@@ -46,10 +46,10 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) DO_NOT_QUALIFY, since the pain signal isn't from a decisive source
 - D) The agent cannot recommend anything without a tool call
 
-**8. (Connecting back)** How does this chapter's local playground (§6.6) build on Class 3's "print the assembled context" habit?
+**8. (Connecting back)** How does this chapter's local playground (§4.6) build on Class 3's "print the assembled context" habit?
 - **✓** A) It extends the same inspection habit to a real event sequence and generated response, not just the input
 - B) It replaces the need to ever look at assembled context again
-- C) It only applies once tools exist, in Chapter 9
+- C) It only applies once tools exist, in Chapter 7
 - D) There's no connection — they're unrelated practices
 
 ---

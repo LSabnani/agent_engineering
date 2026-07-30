@@ -28,15 +28,15 @@
 
 ---
 
-## Slide 4 — Core concept: a loop is not `max_iterations` alone (§13.4)
+## Slide 4 — Core concept: a loop is not `max_iterations` alone (§11.4)
 
-**On slide:** Seven things §13.4 says `max_iterations` doesn't give you: work selection, durable state, verification, budgets, decisions, reporting, and a stop reason.
+**On slide:** Seven things §11.4 says `max_iterations` doesn't give you: work selection, durable state, verification, budgets, decisions, reporting, and a stop reason.
 
 **Say:** "The obvious, minimal version of a loop — just repeat until a counter runs out — is not the real thing. Today builds the real thing."
 
 ---
 
-## Slide 5 — Terminology: the inner loop vs. the outer loop (§13.2–11.3)
+## Slide 5 — Terminology: the inner loop vs. the outer loop (§11.2–11.3)
 
 **On slide:** The inner ADK reasoning loop is one agent's own observe-reason-act cycle within a single call. The outer loop this chapter adds decides what to work on next, across many separate invocations.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: the five-way decision (§13.8)
+## Slide 6 — Architecture: the five-way decision (§11.8)
 
 **On slide:** CONTINUE, RETRY, STOP, DEFER, ESCALATE.
 
@@ -54,7 +54,7 @@
 
 ## Slide 7 — Seven Steps mapping: Engineer Loops
 
-**On slide:** Chapter 13 — the final primary step of Book 1.
+**On slide:** Chapter 11 — the final primary step of Book 1.
 
 **Say:** "We've built a harness, capabilities, a validated workflow, and proof it's good enough to ship. The last piece is making it run without someone watching."
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: authority doesn't change inside a loop (§13.10)
+## Slide 9 — Security: authority doesn't change inside a loop (§11.10)
 
 **On slide:** The approval table from Class 9, unchanged, still enforced per account.
 
@@ -84,7 +84,7 @@
 
 ---
 
-## Slide 11 — Lab architecture: verification before advancing (§13.7)
+## Slide 11 — Lab architecture: verification before advancing (§11.7)
 
 **On slide:** Trust only the state the workflow actually reached — never an agent's own unverified claim about what happened.
 

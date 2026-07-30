@@ -1,6 +1,6 @@
 # Class 10 — Evaluation and the Release Gate
 
-**Manuscript source:** Book 1, Chapter 12 — Evaluation and the Release Gate
+**Manuscript source:** Book 1, Chapter 10 — Evaluation and the Release Gate
 **Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Orchestrate Workflows
 **Golden solution produced:** `class-10/golden-solution/`
 **Starting checkpoint:** `class-09/golden-solution/`
@@ -16,19 +16,19 @@
 1. Current WidgetWare state: a complete bounded workflow that's only ever been checked by watching it run
 2. Today's dependency: the state machine and contracts from Classes 6–9 don't change — today wraps them in a repeatable, automatic check
 3. Business objective: a mechanical yes/no answer to "is this system good enough to ship right now?"
-4. Core concept: a golden dataset (§12.2) — a fixed, representative, version-controlled set of cases with known-correct outcomes
-5. Terminology: metric vs. release gate (§12.3–10.4) — a metric measures; a gate decides, based on thresholds applied to metrics
-6. Architecture: `GOLDEN_DATASET`'s required categories (§12.2) — qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt, and more, each represented on purpose
+4. Core concept: a golden dataset (§10.2) — a fixed, representative, version-controlled set of cases with known-correct outcomes
+5. Terminology: metric vs. release gate (§10.3–10.4) — a metric measures; a gate decides, based on thresholds applied to metrics
+6. Architecture: `GOLDEN_DATASET`'s required categories (§10.2) — qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt, and more, each represented on purpose
 7. Seven Steps mapping: Evaluate & Govern deepens — Class 6 validated one result; today validates the whole system's behavior across representative cases
 8. Gemini vs. deterministic code: evaluation itself is entirely deterministic — no model call is needed to know whether the system met its own golden dataset's expectations
-9. Security: a gate that fails loudly (§12.5) — `ReleaseGateResult` reports every unmet condition, not just the first one found
+9. Security: a gate that fails loudly (§10.5) — `ReleaseGateResult` reports every unmet condition, not just the first one found
 10. Today's increment: `eval/golden_dataset.py`, `eval/metrics.py`, `eval/release_gate.py`, `eval/observability.py`
 11. Lab architecture: running the full golden dataset through the real workflow and computing pass/fail per category
 12. Acceptance criteria: a release gate that's too easy to pass is as useless as one that's too strict to ever pass — both need to be argued, not assumed
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a metric and a release gate (§12.3–10.4)?
+- Terminology: What is the difference between a metric and a release gate (§10.3–10.4)?
 - Terminology: Why does a golden dataset need to be version-controlled, not regenerated fresh each run?
 - Architecture: Why does `GOLDEN_DATASET` deliberately include an injection-attempt case and a conflicting-evidence case, not just qualified/disqualified pairs?
 - Architecture: Why does `check_release_gate()` collect and report every failing reason instead of stopping at the first one?

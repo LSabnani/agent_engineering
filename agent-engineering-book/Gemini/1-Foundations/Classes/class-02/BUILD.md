@@ -11,17 +11,17 @@ Goal: a runnable, inspectable Python workspace for WidgetWare SDR Lab — reposi
 
 1. Copy your Class 01 charter files (`README.md`, `SPEC.md`, `docs/`, `tests/scenarios/`) into your working directory. Initialize git if you haven't already.
 
-2. Open Antigravity in that directory and ask it directly for the workspace — don't hand-build it yourself, this class is about learning what Antigravity can do for you, following Book 1 §4.2's disciplined cycle (state objective, provide spec, ask for a plan, review, permit bounded implementation, inspect the diff, run tests, accept/revise/revert):
+2. Open Antigravity in that directory and ask it directly for the workspace — don't hand-build it yourself, this class is about learning what Antigravity can do for you, following Book 1 §2.2's disciplined cycle (state objective, provide spec, ask for a plan, review, permit bounded implementation, inspect the diff, run tests, accept/revise/revert):
 
    > "Set up a Python package workspace for WidgetWare SDR Lab, following the repository structure in `SPEC.md`. I need: `pyproject.toml` with `pytest` and `ruff` as dev dependencies, a `src/widgetware_sdr` package with an `__init__.py` and a deterministic `health_check()` function that returns a status payload (no network call, no model call), a matching test in `tests/unit/`, `config/`, `docs/`, and `tests/{unit,contracts,scenarios}/` directories, a `.env.example` documenting `GOOGLE_CLOUD_PROJECT` and `WIDGETWARE_MODEL_ID` with no real values, a `.gitignore` covering `.venv/`, `__pycache__/`, `.env`, and a `scripts/check.sh` that runs `ruff format --check`, `ruff check`, and `pytest` in that order, failing on the first error."
 
-3. Before accepting the plan, confirm you understand what each generated file actually does — ask Antigravity to explain the difference between what `.gitignore` controls (what gets *committed*) and what `.env.example` versus a real `.env` controls (what gets *read*, locally, and never shared). This is Book 1 §4.7's point: least privilege applies to secrets and credentials even before anything sensitive actually exists yet.
+3. Before accepting the plan, confirm you understand what each generated file actually does — ask Antigravity to explain the difference between what `.gitignore` controls (what gets *committed*) and what `.env.example` versus a real `.env` controls (what gets *read*, locally, and never shared). This is Book 1 §2.7's point: least privilege applies to secrets and credentials even before anything sensitive actually exists yet.
 
 4. Deliberately give Antigravity one more task, scoped badly, and watch what happens:
 
    > "Set up the project."
 
-   Compare what it does with no scope against what it did with the properly bounded task in step 2. This comparison — not either output alone — is Book 1 §4.6's actual lesson.
+   Compare what it does with no scope against what it did with the properly bounded task in step 2. This comparison — not either output alone — is Book 1 §2.6's actual lesson.
 
 5. Ask Antigravity to inspect the project and produce a gap report against `SPEC.md`:
 

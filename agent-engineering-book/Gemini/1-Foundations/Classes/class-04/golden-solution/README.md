@@ -2,7 +2,7 @@
 
 A bounded agent system that researches, qualifies, and drafts outreach to prospective manufacturing and industrial-automation accounts on WidgetWare's behalf — and stops for human approval before anything leaves the building.
 
-This checkpoint (Class 4 / `golden-solutions/class-04/`) adds the first working ADK agent and its first real Gemini model call. The qualification procedure is embedded directly in the agent's instruction as a plain string — Chapter 7 is where this gets extracted into a reusable Skill, deliberately not done here yet.
+This checkpoint (Class 4 / `golden-solutions/class-04/`) adds the first working ADK agent and its first real Gemini model call. The qualification procedure is embedded directly in the agent's instruction as a plain string — Chapter 5 is where this gets extracted into a reusable Skill, deliberately not done here yet.
 
 ## Quick start
 

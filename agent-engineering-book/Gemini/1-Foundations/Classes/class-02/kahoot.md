@@ -10,7 +10,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) `SPEC.md` is only used by Antigravity, never read by humans
 - D) `README.md` is generated automatically and should never be edited
 
-**2. (Terminology)** What is a specification-driven task (§4.6)?
+**2. (Terminology)** What is a specification-driven task (§2.6)?
 - A) Any task given to Antigravity, regardless of detail
 - **✓** B) A task with one bounded objective, explicit scope, acceptance criteria, exclusions, and an expected deliverable
 - C) A task written entirely in YAML
@@ -22,19 +22,19 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) Because Antigravity cannot read `.env` files
 - D) There's no real reason — it's just convention
 
-**4. (Architecture)** What makes an Antigravity task "bounded," per §4.6?
+**4. (Architecture)** What makes an Antigravity task "bounded," per §2.6?
 - A) It takes less than five minutes to run
 - **✓** B) It has one objective, explicit scope, exclusions, and a way to verify completion
 - C) It only touches one file
 - D) It doesn't require any tests
 
 **5. (Failure analysis)** A generated script silently broadens tool permissions. What review step should have caught this?
-- **✓** A) Inspecting the diff before accepting it, per §4.2's disciplined cycle
+- **✓** A) Inspecting the diff before accepting it, per §2.2's disciplined cycle
 - B) Running the health-check test
 - C) Reading the README
 - D) Nothing could have caught this in advance
 
-**6. (Security/governance)** Name one thing "least privilege" means for a *development* agent specifically (§4.7).
+**6. (Security/governance)** Name one thing "least privilege" means for a *development* agent specifically (§2.7).
 - **✓** A) Restrict its access to production credentials, even though it can execute commands and modify files
 - B) Give it full production access so it can fix anything
 - C) Development agents don't need permission restrictions, only production agents do

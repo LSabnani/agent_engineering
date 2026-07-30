@@ -4,13 +4,13 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What are the five evidence-policy categories (§5.5)?
+**1. (Terminology)** What are the five evidence-policy categories (§3.5)?
 - A) Fact, opinion, guess, rumor, unknown
 - **✓** B) Verified fact, derived fact, inference, unknown, conflict
 - C) High confidence, medium confidence, low confidence, no confidence, error
 - D) Source, claim, excerpt, freshness, reliability
 
-**2. (Terminology)** What is a "context quality failure" (§5.6)? Give one example.
+**2. (Terminology)** What is a "context quality failure" (§3.6)? Give one example.
 - A) A model call that times out
 - **✓** B) A failure in what information reaches the model — for example, stale data presented as current, or user content overriding system policy
 - C) A syntax error in a YAML config file
@@ -37,7 +37,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 **6. (Security/governance)** What does "the context identifies evidence provenance" mean in practice?
 - **✓** A) Every evidence item records where it came from and when, not just its content
 - B) The model must cite a legal statute for every claim
-- C) Evidence provenance only matters once external research (Chapter 10) is added
+- C) Evidence provenance only matters once external research (Chapter 8) is added
 - D) It means the context must be encrypted at rest
 
 **7. (WidgetWare scenario)** Given stale account data next to fresh account data, what should the context builder do?

@@ -1,6 +1,6 @@
 # Class 8 — MCP and Evidence-Backed Research
 
-**Manuscript source:** Book 1, Chapter 10
+**Manuscript source:** Book 1, Chapter 8
 **Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build Context, Evaluate & Govern
 **Starting checkpoint:** [`../class-07/golden-solution/`](../class-07/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 60 passed, 3 skipped without live credentials)

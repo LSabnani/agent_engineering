@@ -4,7 +4,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What does a "typed handoff" pass between agents that an open conversation history wouldn't (§11.4)?
+**1. (Terminology)** What does a "typed handoff" pass between agents that an open conversation history wouldn't (§9.4)?
 - **✓** A) A compact, well-defined contract — exactly the fields the next stage needs, nothing more
 - B) The full transcript of every previous agent's reasoning
 - C) A single free-text summary string
@@ -16,7 +16,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - C) PENDING, PROCESSING, DONE
 - D) QUALIFY, REVIEW, SEND
 
-**3. (Architecture)** Why is the state machine designed before the agent prompts, per §11.3?
+**3. (Architecture)** Why is the state machine designed before the agent prompts, per §9.3?
 - **✓** A) So valid transitions are enforced by code, not left to whatever a model happens to recommend
 - B) Because ADK requires state machines to be defined first, as a technical constraint
 - C) It isn't — prompts should always come first
@@ -29,7 +29,7 @@ Run during 0:55–1:05. Correct answer marked with **✓**.
 - D) To decide the final approval — reviewers and approvers are the same role here
 
 **5. (Failure analysis)** The Drafting Agent fails mid-workflow. Does the whole run restart?
-- **✓** A) No — §11.7 says a visible state and next action should result, without losing the completed research and qualification work
+- **✓** A) No — §9.7 says a visible state and next action should result, without losing the completed research and qualification work
 - B) Yes, always restart from RECEIVED
 - C) The workflow silently retries forever until it succeeds
 - D) The account is permanently discarded

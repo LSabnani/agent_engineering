@@ -4,13 +4,13 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What is the difference between a Skill and a tool (§9.1 recap of §7.3)?
+**1. (Terminology)** What is the difference between a Skill and a tool (§7.1 recap of §5.3)?
 - A) They're interchangeable terms for the same thing
 - **✓** B) A Skill tells the agent how to perform a task; a tool lets it reach outside the model and act
 - C) A tool is written in Markdown; a Skill is written in Python
 - D) A Skill requires network access; a tool never does
 
-**2. (Terminology)** Why does a tool's description matter as much as its implementation (§9.2)?
+**2. (Terminology)** Why does a tool's description matter as much as its implementation (§7.2)?
 - **✓** A) The model selects tools based on their names and descriptions — a vague description leads to misuse regardless of how correct the code is
 - B) Descriptions are only used for human documentation, never read by the model
 - C) ADK requires descriptions to be under 10 words
@@ -22,19 +22,19 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 - C) Because the model cannot perform arithmetic reliably at all
 - D) There's no real reason; it could be either
 
-**4. (Architecture)** What should `get_account_profile` return for a missing record (§9.4)?
+**4. (Architecture)** What should `get_account_profile` return for a missing record (§7.4)?
 - **✓** A) A typed dict with `error` and `error_category` keys — never an unhandled exception, never a fabricated result
 - B) `None`, silently
 - C) An exception the caller must catch
 - D) A default, generic account profile
 
 **5. (Failure analysis)** The agent calls `get_widgetware_product` with a malformed `product_id`. What should happen, and where does that get tested?
-- **✓** A) The tool returns a typed error result, and this is tested completely independent of the agent per §9.8
+- **✓** A) The tool returns a typed error result, and this is tested completely independent of the agent per §7.8
 - B) The model should catch the malformation itself before calling the tool
 - C) The application should crash with a stack trace
 - D) This can only be tested with live model credentials
 
-**6. (Security/governance)** What does "permissions narrower than the underlying platform account" mean for a read-only tool (§9.5)?
+**6. (Security/governance)** What does "permissions narrower than the underlying platform account" mean for a read-only tool (§7.5)?
 - **✓** A) A read-only lookup tool should never hold credentials capable of a write, even if the platform account technically could
 - B) The tool should have root access for convenience
 - C) It refers only to file-system permissions, not data access
@@ -46,11 +46,11 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 - C) The tool itself is broken
 - D) This is expected and gets fixed automatically in Class 8
 
-**8. (Connecting back)** How does §9.8's tool-testing checklist relate to the fail-safe pipeline Class 6 built for `parse_qualification_result`?
+**8. (Connecting back)** How does §7.8's tool-testing checklist relate to the fail-safe pipeline Class 6 built for `parse_qualification_result`?
 - **✓** A) Both apply the same principle at a different layer — malformed input should produce a typed, informative error, never a crash or a silent guess
 - B) They're unrelated — tool testing has nothing to do with contract validation
 - C) Tool testing replaces the need for contract validation
-- D) §9.8 only applies once live credentials are available
+- D) §7.8 only applies once live credentials are available
 
 ---
 

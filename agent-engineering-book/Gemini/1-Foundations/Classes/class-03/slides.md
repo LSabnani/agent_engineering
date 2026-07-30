@@ -28,7 +28,7 @@
 
 ---
 
-## Slide 4 — Core concept: model choice is an architectural decision (§5.1)
+## Slide 4 — Core concept: model choice is an architectural decision (§3.1)
 
 **On slide:** One question: "Which model provides sufficient quality for this task under the required latency and cost constraints?"
 
@@ -36,7 +36,7 @@
 
 ---
 
-## Slide 5 — Layers of context (§5.2)
+## Slide 5 — Layers of context (§3.2)
 
 **On slide:** System instructions, business context, task context, retrieved evidence, state — five layers, five different lifecycles.
 
@@ -44,7 +44,7 @@
 
 ---
 
-## Slide 6 — Architecture: instruction hierarchy (§5.4)
+## Slide 6 — Architecture: instruction hierarchy (§3.4)
 
 **On slide:** Who is the agent? What may it use? How does it reason about uncertainty? What must it never do?
 
@@ -68,7 +68,7 @@
 
 ---
 
-## Slide 9 — Security: prompt-injection-shaped failures (§5.6)
+## Slide 9 — Security: prompt-injection-shaped failures (§3.6)
 
 **On slide:** "A malicious note that attempts to override policy" — one of today's four required tests.
 

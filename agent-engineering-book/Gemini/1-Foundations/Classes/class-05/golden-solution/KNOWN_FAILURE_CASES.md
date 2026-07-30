@@ -14,7 +14,7 @@
 
 ### 2. `data/sample_accounts/` and `tests/fixtures/accounts/` are duplicated, not shared
 
-Book 1 §6's Hands-on Lab asks for sample account profiles under `data/sample_accounts/`, and this checkpoint already had `tests/fixtures/accounts/` from Class 3. Rather than pick one, this checkpoint keeps both, with identical content, for two different audiences (`data/` for someone exploring the agent locally; `tests/fixtures/` for the test suite). They are not read from a single source — if one is edited without the other, they will silently drift. A future class could fix this properly with a single source of truth; this checkpoint does not.
+Book 1 §4's Hands-on Lab asks for sample account profiles under `data/sample_accounts/`, and this checkpoint already had `tests/fixtures/accounts/` from Class 3. Rather than pick one, this checkpoint keeps both, with identical content, for two different audiences (`data/` for someone exploring the agent locally; `tests/fixtures/` for the test suite). They are not read from a single source — if one is edited without the other, they will silently drift. A future class could fix this properly with a single source of truth; this checkpoint does not.
 
 ### 3. `build_agent_instruction()` re-reads and re-renders YAML on every call
 
@@ -22,4 +22,4 @@ There is no caching. For a single local run this is invisible; at any real scale
 
 ### 4. The agent's prose output format (`QUALIFY` / `DO_NOT_QUALIFY` / `NEEDS_RESEARCH`) is not yet validated
 
-Nothing in this checkpoint checks that the model's response actually uses one of these three exact tokens, or in what format. That's precisely the gap Class 6 (Book 1 Chapter 8, structured outputs) exists to close — this checkpoint's output is still free-form prose, exactly as intended, but it means a subtly malformed or off-format response would currently go undetected by any test here.
+Nothing in this checkpoint checks that the model's response actually uses one of these three exact tokens, or in what format. That's precisely the gap Class 6 (Book 1 Chapter 6, structured outputs) exists to close — this checkpoint's output is still free-form prose, exactly as intended, but it means a subtly malformed or off-format response would currently go undetected by any test here.

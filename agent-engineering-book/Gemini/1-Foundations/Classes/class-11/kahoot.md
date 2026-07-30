@@ -4,19 +4,19 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What are the five outcomes of the loop's per-account decision (§13.8)?
+**1. (Terminology)** What are the five outcomes of the loop's per-account decision (§11.8)?
 - **✓** A) CONTINUE, RETRY, STOP, DEFER, ESCALATE
 - B) PASS, FAIL, SKIP, RETRY, ABORT
 - C) QUALIFIED, NOT_QUALIFIED, NEEDS_RESEARCH, BLOCKED, APPROVED
 - D) SUCCESS, ERROR, TIMEOUT, PENDING, DONE
 
-**2. (Terminology)** What's the difference between the inner agent loop ADK already runs and the outer loop this chapter adds (§13.2–11.3)?
+**2. (Terminology)** What's the difference between the inner agent loop ADK already runs and the outer loop this chapter adds (§11.2–11.3)?
 - **✓** A) The inner loop is one agent's own observe-reason-act cycle within a single call; the outer loop decides what to work on next across many separate invocations
 - B) There is no difference — both terms describe the same mechanism
 - C) The inner loop only exists in Book 2
 - D) The outer loop replaces the inner loop entirely
 
-**3. (Architecture)** Why is `max_iterations` alone not an engineered loop (§13.4)?
+**3. (Architecture)** Why is `max_iterations` alone not an engineered loop (§11.4)?
 - **✓** A) It bounds how many times the loop can run but says nothing about work selection, durable state, verification, or budgets
 - B) ADK does not actually support `max_iterations` as a real parameter
 - C) It is sufficient on its own; the rest of the chapter is optional polish
@@ -35,7 +35,7 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 - D) Nothing is missing; re-researching a finished account is expected behavior
 
 **6. (Security/governance)** Does an account processed inside an unattended batch loop get less approval scrutiny than one processed on request?
-- **✓** A) No — §13.10 says the authority table from Class 9 applies identically, whether or not a person is watching
+- **✓** A) No — §11.10 says the authority table from Class 9 applies identically, whether or not a person is watching
 - B) Yes, batch-processed accounts are auto-approved for efficiency
 - C) Only accounts above a certain fit score skip approval
 - D) Approval only matters for the first account in a batch
@@ -46,7 +46,7 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 - C) STOP — the entire batch run halts because of one account
 - D) CONTINUE — silently skip and move to the next account with no record
 
-**8. (Connecting back)** How does the loop's verification-before-advancing step (§13.7) reuse Class 6's contracts and Class 9's state machine?
+**8. (Connecting back)** How does the loop's verification-before-advancing step (§11.7) reuse Class 6's contracts and Class 9's state machine?
 - **✓** A) It trusts only the state the Class 9 state machine actually reached and only contract objects that passed Class 6's validation — never an agent's own unverified claim about what happened
 - B) It doesn't — verification is a new mechanism unrelated to earlier classes
 - C) It replaces the state machine with a simpler boolean flag

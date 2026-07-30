@@ -1,6 +1,6 @@
 # Class 5 — Skills and Reusable Agent Capabilities
 
-**Manuscript source:** Book 1, Chapter 7 — Skills and Reusable Agent Capabilities
+**Manuscript source:** Book 1, Chapter 5 — Skills and Reusable Agent Capabilities
 **Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build Context, Build the Harness, Evaluate & Govern
 **Golden solution produced:** `class-05/golden-solution/`
 **Starting checkpoint:** `class-04/golden-solution/`
@@ -16,26 +16,26 @@
 1. Current WidgetWare state: an agent whose procedure is embedded prose
 2. Today's dependency: Class 4's agent boundary and model call don't change — only where the procedure lives
 3. Business objective: a reusable, versioned qualification procedure, usable by more than one agent
-4. Core concept: Skill vs. prompt vs. tool (§7.2–5.3) — a Skill tells the agent how; a tool lets it do
-5. Terminology: anatomy of a useful Skill (§7.5) — identity, inputs, procedure, quality criteria, examples
-6. Architecture: progressive disclosure (§7.6) — a concise discovery description, full detail only when selected
+4. Core concept: Skill vs. prompt vs. tool (§5.2–5.3) — a Skill tells the agent how; a tool lets it do
+5. Terminology: anatomy of a useful Skill (§5.5) — identity, inputs, procedure, quality criteria, examples
+6. Architecture: progressive disclosure (§5.6) — a concise discovery description, full detail only when selected
 7. Seven Steps mapping: Design Agent Capabilities — the first chapter primarily about making a capability reusable
 8. Gemini vs. deterministic code: the agent reasons; `skills.py`'s file loading stays deterministic
-9. Security: versioning and ownership (§7.7) — a Skill is an organizational asset, not an anonymous prompt fragment
+9. Security: versioning and ownership (§5.7) — a Skill is an organizational asset, not an anonymous prompt fragment
 10. Today's increment: `skills/icp_qualification/`, `skills/evidence_classification/`, `skills.py`
 11. Lab architecture: three worked examples per Skill — one positive, one negative, one ambiguous
 12. Acceptance criteria: the agent file contains no qualification logic of its own afterward
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a Skill and a tool (§7.3)?
-- Terminology: What is the difference between a Skill and a workflow (§7.4)?
-- Architecture: Why does progressive disclosure (§7.6) matter for context consumption?
+- Terminology: What is the difference between a Skill and a tool (§5.3)?
+- Terminology: What is the difference between a Skill and a workflow (§5.4)?
+- Architecture: Why does progressive disclosure (§5.6) matter for context consumption?
 - Architecture: Why move the qualification procedure out of the agent's embedded instructions and into a Skill?
 - Failure analysis: The agent confidently qualifies an account with clearly insufficient evidence — where's the fix, agent code or Skill procedure?
-- Security/governance: What does §7.7 say a Skill needs that "an anonymous prompt fragment" doesn't?
+- Security/governance: What does §5.7 say a Skill needs that "an anonymous prompt fragment" doesn't?
 - WidgetWare scenario: A second agent needs the same qualification logic — what does the Skill's reusability buy you here?
-- Connecting back: How does §5.5's evidence-policy vocabulary (Class 3) show up inside the Skill's procedure?
+- Connecting back: How does §3.5's evidence-policy vocabulary (Class 3) show up inside the Skill's procedure?
 
 ## Build together (1:05–1:35)
 
@@ -66,11 +66,11 @@
 - **Expected behavior:** the agent's qualification procedure lives entirely in the Skill; the agent code only wires context, Skill, and model together
 - **Tests that must pass:** all three scenario tests, plus the "no embedded procedure" structural test
 - **Submission:** local-playground event-sequence printout for one scenario, plus test output
-- **Constraints:** no structured/typed output yet (Chapter 8) — the agent's result is still prose at this stage, on purpose; no tools yet (Chapter 9)
+- **Constraints:** no structured/typed output yet (Chapter 6) — the agent's result is still prose at this stage, on purpose; no tools yet (Chapter 7)
 
 ## Golden solution: `class-05/`
 
-Adds both Skills and the loader on top of `class-04/`, and refactors the agent to load from them. README notes the Chapter 6 checkpoint's own framing — "it does not yet expose its procedure as a reusable Skill" — and shows this checkpoint closing that gap.
+Adds both Skills and the loader on top of `class-04/`, and refactors the agent to load from them. README notes the Chapter 4 checkpoint's own framing — "it does not yet expose its procedure as a reusable Skill" — and shows this checkpoint closing that gap.
 
 ## Bridge to Class 6
 

@@ -1,6 +1,6 @@
 # Class 4 — First ADK Agent
 
-**Manuscript source:** Book 1, Chapter 6
+**Manuscript source:** Book 1, Chapter 4
 **Seven-Step mapping:** Primary: Build the Harness / Supporting: Design Agent Capabilities, Evaluate & Govern
 **Starting checkpoint:** [`../class-03/golden-solution/`](../class-03/golden-solution/)
 **This class's golden solution:** [`golden-solution/`](golden-solution/) — verified runnable (`pytest`: 18 passed, 3 skipped without live credentials)

@@ -13,7 +13,7 @@ Goal: compose the Research and Qualification agents plus two new ones (Evidence 
 
 2. Confirm, explicitly, that no state in your enum could mean "sent" — write the test for this before writing anything else.
 
-3. Write `workflow/approval.py`: `ApprovalPackage` (the fields Book 1 §11.6 requires) and `record_approval_decision()`, which returns a state, never performs an action.
+3. Write `workflow/approval.py`: `ApprovalPackage` (the fields Book 1 §9.6 requires) and `record_approval_decision()`, which returns a state, never performs an action.
 
 4. Ask Antigravity for the two new agents, but review the instructions closely — this is where the chapter's real safety property lives:
 
