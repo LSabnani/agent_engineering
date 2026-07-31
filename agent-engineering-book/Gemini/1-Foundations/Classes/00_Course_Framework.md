@@ -1,6 +1,6 @@
-# Agent Engineering with Gemini, ADK & Antigravity — Book 1 Eleven-Class Program
+# Agent Engineering with Gemini, ADK & Antigravity — Book 1 Ten-Class Program
 
-This is the instructor-facing companion to the Gemini edition's **Book 1**. It turns Book 1 into an **eleven-class, cumulative course** — two hours per class, one class per chapter, same rhythm every class, one running codebase (WidgetWare SDR Lab) from Class 1 through the close of Book 1.
+This is the instructor-facing companion to the Gemini edition's **Book 1**. It turns Book 1 into an **ten-class, cumulative course** — two hours per class, one class per chapter, same rhythm every class, one running codebase (WidgetWare SDR Lab) from Class 1 through the close of Book 1.
 
 Book 2 is a separate, equally-sized program — its own ten classes, one per Book 2 chapter — continuing the same WidgetWare system into enterprise-platform territory. It is not part of this document's numbering.
 
@@ -8,7 +8,7 @@ The manuscript teaches the reader. This program teaches a cohort, together, in a
 
 ## Why the cadence is fixed and the topic isn't
 
-Every class uses the same nine-segment structure, in the same order, for the same durations. Only the content changes. This is deliberate: a participant should never spend classroom time relearning how class works — attention should go entirely to the material. By Class 3, the rhythm is invisible; by Class 11, it is the thing that made eleven different chapters feel like one course instead of eleven lectures stitched together.
+Every class uses the same nine-segment structure, in the same order, for the same durations. Only the content changes. This is deliberate: a participant should never spend classroom time relearning how class works — attention should go entirely to the material. By Class 2, the rhythm is invisible; by Class 10, it is the thing that made eleven different chapters feel like one course instead of eleven lectures stitched together.
 
 ## Standard Two-Hour Class Cadence
 
@@ -45,7 +45,7 @@ Class 1 has no previous homework and no previous golden solution to reveal. Its 
 |      Time | Class 1 opening                                                                |
 | --------: | -------------------------------------------------------------------------------- |
 | 0:00–0:10 | Introductions, course goals, participant expectations                          |
-| 0:10–0:20 | Eleven-class Book 1 course architecture and final outcome (a loop-ready, evaluated agent platform) |
+| 0:10–0:20 | Ten-class Book 1 course architecture and final outcome (a loop-ready, evaluated agent platform) |
 | 0:20–0:30 | WidgetWare SDR case study, repository structure, and the cumulative learning model |
 
 From **Class 2 onward**, use the standard nine-segment cadence without modification.
@@ -58,6 +58,7 @@ Every class produces a versioned, runnable reference checkpoint:
 golden-solutions/
 ├── class-01/
 ├── class-02/
+├── class-02/
 ├── class-03/
 ├── class-04/
 ├── class-05/
@@ -65,8 +66,7 @@ golden-solutions/
 ├── class-07/
 ├── class-08/
 ├── class-09/
-├── class-10/
-└── class-11/
+└── class-10/
 ```
 
 Each checkpoint includes:
@@ -81,7 +81,7 @@ Each checkpoint includes:
 - a completion checklist; and
 - instructions for starting the next class.
 
-Every checkpoint is **cumulative and independently runnable**. A participant who misses Class 4 starts Class 5 from the Class 4 golden solution, not from their own unfinished work — the golden solution is the course's actual continuity mechanism, not a bonus artifact.
+Every checkpoint is **cumulative and independently runnable**. A participant who misses Class 3 starts Class 4 from the Class 3 golden solution, not from their own unfinished work — the golden solution is the course's actual continuity mechanism, not a bonus artifact.
 
 ## Homework Pattern
 
@@ -149,22 +149,21 @@ The 1:35–1:50 segment follows the same seven-step sequence every class:
 
 This reinforces that testing and diagnosis are part of Agent Engineering, not activities postponed until the final class — the same discipline the manuscript itself insists on from Book 1, Chapter 4.5 onward.
 
-## Eleven-Class Application
+## Ten-Class Application
 
 | Class | Manuscript source | Main capability | Homework outcome |
 | ----: | ------------------ | ---------------------------------------------------------- | ------------------------------------------------------ |
-|     1 | Book 1, Ch. 1 | Agent Engineering foundations and the WidgetWare specification | Complete the scoped use case and acceptance criteria |
-|     2 | Book 1, Ch. 2 | Antigravity workspace and repository harness | Complete and validate the project workspace |
-|     3 | Book 1, Ch. 3 | Gemini context and instruction architecture | Refine WidgetWare context and test prompt behavior |
-|     4 | Book 1, Ch. 4 | First ADK agent (embedded procedure) | Complete the account-qualification agent |
-|     5 | Book 1, Ch. 5 | Skills and reusable agent capabilities | Extract the qualification procedure into a Skill |
-|     6 | Book 1, Ch. 6 | Structured outputs and agent contracts | Add a validated `QualificationResult` contract |
-|     7 | Book 1, Ch. 7 | Tool engineering | Attach the agent's first read-only tools |
-|     8 | Book 1, Ch. 8 | MCP and evidence-backed research | Produce a cited account-research brief |
-|     9 | Book 1, Ch. 9 | Multi-agent workflow and human approval | Complete the approved outreach workflow |
-|    10 | Book 1, Ch. 10 | Evaluate, deploy, and demonstrate | Pass the golden-dataset release gate |
-|    11 | Book 1, Ch. 11 | Loop engineering with ADK | Run the unattended batch loop to completion |
+|     1 | Book 1, Ch. 1–2 | Agent Engineering foundations, the WidgetWare specification, and the Antigravity repository harness | Complete the scoped use case, acceptance criteria, and a passing `./scripts/check.sh` |
+|     2 | Book 1, Ch. 3 | Gemini context and instruction architecture | Refine WidgetWare context and test prompt behavior |
+|     3 | Book 1, Ch. 4 | First ADK agent (embedded procedure) | Complete the account-qualification agent |
+|     4 | Book 1, Ch. 5 | Skills and reusable agent capabilities | Extract the qualification procedure into a Skill |
+|     5 | Book 1, Ch. 6 | Structured outputs and agent contracts | Add a validated `QualificationResult` contract |
+|     6 | Book 1, Ch. 7 | Tool engineering | Attach the agent's first read-only tools |
+|     7 | Book 1, Ch. 8 | MCP and evidence-backed research | Produce a cited account-research brief |
+|     8 | Book 1, Ch. 9 | Multi-agent workflow and human approval | Complete the approved outreach workflow |
+|     9 | Book 1, Ch. 10 | Evaluate, deploy, and demonstrate | Pass the golden-dataset release gate |
+|    10 | Book 1, Ch. 11 | Loop engineering with ADK | Run the unattended batch loop to completion |
 
-Every class tracks exactly one Book 1 chapter, at a one-to-one pace — no chapter is split across classes and no two chapters share a class. Class 1 additionally carries the course's own orientation content (introductions, course architecture, the cumulative learning model), since Chapter 1 itself is conceptual and produces no code, making it a natural fit for both. Class 11 closes Book 1.
+Every class tracks exactly one Book 1 chapter, at a one-to-one pace, with one deliberate exception: Class 1 merges Chapters 1 and 2 — the charter and the repository harness — because a charter nobody can run is a weaker first checkpoint than one paired with a workspace that proves it's real (see `class-01/golden-solution/docs/architecture-decisions/0003-repository-harness.md`). No other chapter is split across classes and no other two chapters share a class. Class 10 closes Book 1.
 
 Per-class lesson plans: `class-0N/lesson-plan.md`.

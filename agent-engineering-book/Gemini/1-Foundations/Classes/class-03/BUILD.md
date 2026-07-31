@@ -1,31 +1,27 @@
-# Building Class 03 with Antigravity
+# Building Class 3 with Antigravity
 
-Goal: a deliberate context architecture — WidgetWare's business rules as data, fixed system instructions, and a context-assembly pipeline that keeps account-supplied content structurally isolated from system policy. Still no model call anywhere in this codebase. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-03/`, then diff.
+Goal: a real ADK agent — the Account Qualification Assistant — with its qualification procedure embedded directly in its instruction. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-03/`, then diff.
 
 ## Prerequisites
 
-- **`../SETUP.md` complete.**
-- Your Class 02 workspace, working and passing `./scripts/check.sh` (or `../class-02/golden-solution/` if you didn't do the self-paced Class 02).
+- **`../SETUP.md` complete**, including a way to actually call Gemini: `GOOGLE_API_KEY`, or `GOOGLE_CLOUD_PROJECT` + Vertex AI access. You can build and test most of this class without one (agent construction is fully offline), but you can't observe real reasoning without it.
+- Your Class 2 checkpoint, passing `./scripts/check.sh`.
 
 ## Steps
 
-1. Start from your Class 02 checkpoint. Confirm `./scripts/check.sh` passes before adding anything — Class 03 adds a new dependency (`PyYAML`) and new tests, and it will be much harder to tell new failures from old ones if you start broken.
+1. Add `google-adk` as a dependency: `pip install google-adk` and add it to `pyproject.toml`.
 
-2. Ask Antigravity to draft the three business-configuration files, giving it the actual facts rather than letting it invent them:
+2. Write the qualification procedure yourself, by hand, as a plain string constant — not a file, not a Skill, just a Python string in `qualification_agent.py`. It should cover: check exclusions first, compare thresholds, identify pain signals, identify missing evidence, distinguish fact from inference, select a provisional outcome (`QUALIFY`/`DO_NOT_QUALIFY`/`NEEDS_RESEARCH`), explain it.
 
-   > "Create `config/products.yaml`, `config/icp.yaml`, and `config/policies.yaml` for WidgetWare. WidgetWare sells software that helps manufacturing and industrial-automation companies modernize plant operations and adopt AI-enabled automation. The ICP: minimum 5,000 employees, no upper bound, preferred industries manufacturing and industrial_automation, excluded industries financial_services/healthcare/retail, preferred regions united_states/europe/india, buying signals new_ai_leadership/digital_transformation_program/genai_hiring. Policies should list the five evidence categories (verified_fact, derived_fact, inference, unknown, conflict), prohibited actions, and an escalation rule: insufficient evidence must produce NEEDS_RESEARCH rather than a guess."
+3. Ask Antigravity for the agent, but hand it the procedure text as the source of truth:
 
-3. Write `src/widgetware_sdr/instructions.py` yourself, by hand, before asking Antigravity for help — this file is short, and the discipline of writing fixed system instructions without letting any account data leak into them is the entire point of the chapter. It should centralize model selection (read from an environment variable, with a default) and define a `SYSTEM_INSTRUCTIONS` constant covering role, scope, evidence requirements, how to treat untrusted content, and prohibited actions.
+   > "Write `src/widgetware_sdr/agents/qualification_agent.py`. It should build a `google.adk.agents.Agent` named `qualification_agent`, model from `get_model_id()`. Its instruction should be assembled from `SYSTEM_INSTRUCTIONS`, the rendered ICP and escalation-rule config, and this embedded qualification procedure. The instruction must never include any specific account's data."
 
-4. Now the context builder. Ask Antigravity for a first draft, then read every line before accepting:
+4. Write `src/widgetware_sdr/app.py` yourself: a function that constructs the agent, an `InMemorySessionService`, a `Runner`, renders the account (and any notes, delimited exactly like Class 2's evidence section) as the per-call user message, and runs the agent via `runner.run_async(...)`, returning the list of events.
 
-   > "Write `src/widgetware_sdr/context_builder.py`. It should build a `ContextPackage` from an account dict and optional notes, combining: fixed system instructions (imported, never derived from account data), business context (loaded from the three YAML files), task context (the account and workflow stage), and evidence (each note wrapped as an `EvidenceItem` with `origin` and `trust` fields, always `untrusted`). The assembled prompt must render system instructions first, business and task context next, and all evidence last, inside clearly delimited `BEGIN EVIDENCE`/`END EVIDENCE` markers — in that fixed order, every time."
+5. Write the offline tests first: agent name and model, instruction contains the real ICP figures and the embedded procedure text, instruction contains **no** specific account data, agent has no tools, and — specifically for this checkpoint — no `skills/` directory exists anywhere in the repo yet.
 
-5. Write the four required context tests yourself: a clearly qualified account, a clearly unqualified account, an account with insufficient evidence, and a malicious note. Build the malicious-note test last, and deliberately run it before you're confident the delimiting is correct — watch it fail, then fix `context_builder.py` until it passes. Seeing the failure mode matters more than skipping straight to green.
-
-   The malicious-note test should assert two separate things, not one: that the injected text is present somewhere in the assembled prompt (you don't silently drop real input), and that it appears strictly *after* the `BEGIN EVIDENCE` marker — never before or inside the instructions or business-context sections. Presence alone is a weaker test than position.
-
-6. Optional but recommended: pull your test accounts into `tests/fixtures/accounts/*.yaml` and `tests/fixtures/expected/*.yaml` instead of hardcoding them inline, and load them in your tests. This is what Class 03's own golden solution does, and it's the difference between a test file that's also documentation and one that isn't.
+6. If you have credentials, write and run the three semantic scenario tests (qualified, unqualified, insufficient-evidence) against the real agent. If you don't, write these tests anyway, guarded with `pytest.mark.skipif`.
 
 ## Verify
 
@@ -36,22 +32,12 @@ pip install -e ".[dev]"
 ./scripts/check.sh
 ```
 
-Expect 8 tests to pass (3 health-check, 5 context). Print the assembled context for at least one scenario and actually read it:
-
-```
-python3 -c "
-from widgetware_sdr.context_builder import build_context
-ctx = build_context({'account_id': 'acme-001', 'company_name': 'Acme Manufacturing', 'industry': 'manufacturing', 'employee_count': 22000, 'region': 'united_states'})
-print(ctx.assembled_prompt)
-"
-```
-
-If you can't hold the whole thing in your head while reading it top to bottom, it's already too big.
+Expect offline tests to pass and integration tests to skip (without credentials) or pass (with them).
 
 ## Compare against the reference
 
-`golden-solution/tests/unit/test_context_builder.py` is the reference. Pay particular attention to how its malicious-note test asserts on section *ordering* (`instructions_index < evidence_begin_index < malicious_index`), not just text presence — if yours only checks presence, strengthen it.
+`golden-solution/tests/unit/test_qualification_agent_construction.py` is the reference for what "constructs correctly" means here. Pay attention to the test confirming no `skills/` directory exists — a submission that jumps ahead to Skills here has skipped the point of building the "before" state.
 
 ## Grade it
 
-Passing tests proves the context assembles and stays structurally isolated. It does not prove the isolation is actually robust, or that your system instructions are well-written. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.
+Passing construction tests doesn't prove the embedded procedure is actually good, or that the agent's boundary is genuinely narrow. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.

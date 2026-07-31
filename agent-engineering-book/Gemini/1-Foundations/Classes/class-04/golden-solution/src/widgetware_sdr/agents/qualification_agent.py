@@ -1,16 +1,19 @@
-"""The Account Qualification Assistant — Book 1, Chapter 4.
+"""The Account Qualification Assistant — Book 1, Chapters 4 and 5.
 
-Chapter 4 gives this agent a narrow boundary: reason about a supplied
-account profile and recommend an outcome in prose. It may not search
-the internet, call external services, update CRM data, or draft
-outreach — none of those capabilities exist anywhere in this codebase
-yet, and neither do tools of any kind.
+Chapter 4 gave this agent a narrow boundary: reason about a supplied
+account profile, recommend QUALIFY / DO_NOT_QUALIFY / NEEDS_RESEARCH in
+prose, and explain the reasoning. It may not search the internet, call
+external services, update CRM data, or draft outreach — none of those
+capabilities exist anywhere in this codebase yet.
 
-The qualification procedure below is embedded directly in this agent's
-instruction, as a plain string. Chapter 5 is where this gets extracted
-into a reusable Skill — deliberately not done here yet, so the "before"
-state is real and inspectable, not glossed over. If you're looking for
-`skills/`, it doesn't exist in this checkpoint on purpose.
+Chapter 5 moved the qualification procedure itself out of this file and
+into skills/icp_qualification/skill.md. This module assembles the
+agent's *static* instruction from the fixed system instructions,
+WidgetWare's business configuration, and the Skill's procedure — it
+contains no qualification logic of its own. The specific account being
+evaluated is never part of this static instruction; it arrives per-call
+as the user message (see app.py), the same instruction-hierarchy
+discipline Class 3 established.
 """
 
 from __future__ import annotations
@@ -19,44 +22,22 @@ from google.adk.agents import Agent
 
 from widgetware_sdr.context_builder import load_config
 from widgetware_sdr.instructions import SYSTEM_INSTRUCTIONS, get_model_id
-
-EMBEDDED_QUALIFICATION_PROCEDURE = """\
-=== QUALIFICATION PROCEDURE ===
-
-1. Check explicit exclusion criteria first. If the account's industry
-   is in the excluded-industries list, the outcome is DO_NOT_QUALIFY
-   regardless of any other positive signal.
-2. Compare the account's attributes against the ICP thresholds:
-   employee count against the minimum, industry against the preferred
-   list, region against the preferred list.
-3. Identify confirmed pain signals in the account's known challenges
-   and source notes — concrete, specific statements, not vague
-   mentions.
-4. Identify what information is missing that would be needed to
-   qualify or disqualify confidently.
-5. Distinguish fact (directly stated) from inference (your own
-   reasoning about what a fact implies). Never state an inference with
-   the confidence of a fact.
-6. Select a provisional outcome: QUALIFY, DO_NOT_QUALIFY, or
-   NEEDS_RESEARCH (when a decisive fact, most commonly employee count,
-   is missing, or the available signal is too vague to be decisive).
-7. Explain the outcome: which specific criteria were matched or
-   failed, which evidence supports the pain signal (if any), and what
-   remains unknown.
-
-Never fabricate an account attribute. Exclusions override positive
-heuristics. Insufficient evidence produces NEEDS_RESEARCH, never a
-guess.
-"""
+from widgetware_sdr.skills import load_skill
 
 
 def build_agent_instruction() -> str:
-    """Assemble the agent's static instruction: fixed system
-    instructions, WidgetWare's ICP (rendered from config), and the
-    qualification procedure — embedded here, in this file, for now.
+    """Assemble the agent's static instruction.
+
+    Includes: fixed system instructions, WidgetWare's ICP and escalation
+    policy (rendered from config, not restated by hand), and the ICP
+    Qualification Skill's procedure. Deliberately excludes any specific
+    account — that would make this "static" instruction actually
+    per-request, defeating the whole point of separating it from task
+    context (Book 1 §3.2).
     """
     icp = load_config("icp.yaml")
     policies = load_config("policies.yaml")
+    skill = load_skill("icp_qualification")
 
     return "\n\n".join(
         [
@@ -69,7 +50,8 @@ def build_agent_instruction() -> str:
             f"Buying signals: {', '.join(icp['buying_signals'])}",
             "=== ESCALATION RULE ===",
             policies["escalation_rule"].strip(),
-            EMBEDDED_QUALIFICATION_PROCEDURE.strip(),
+            "=== PROCEDURE (ICP Qualification Skill) ===",
+            skill.strip(),
         ]
     )
 

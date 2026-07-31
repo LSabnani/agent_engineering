@@ -12,7 +12,10 @@ def test_evidence_reviewer_constructs_with_no_tools() -> None:
 
 def test_evidence_reviewer_instruction_forbids_independent_browsing() -> None:
     instruction = reviewer_instruction()
-    assert "not independently browse" in instruction.lower() or "do not independently browse" in instruction.lower()
+    assert (
+        "not independently browse" in instruction.lower()
+        or "do not independently browse" in instruction.lower()
+    )
 
 
 def test_drafting_agent_constructs_with_no_tools() -> None:

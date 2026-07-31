@@ -1,77 +1,76 @@
-# Class 5 — Skills and Reusable Agent Capabilities
+# Class 5 — Structured Outputs and Agent Contracts
 
-**Manuscript source:** Book 1, Chapter 5 — Skills and Reusable Agent Capabilities
-**Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build Context, Build the Harness, Evaluate & Govern
+**Manuscript source:** Book 1, Chapter 6 — Structured Outputs and Agent Contracts
+**Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Design Agent Capabilities, Build the Harness
 **Golden solution produced:** `class-05/golden-solution/`
 **Starting checkpoint:** `class-04/golden-solution/`
 
-## 0:00–0:30 — Homework review, common mistakes, golden solution reveal
+## 0:00–0:20 — Homework review, common mistakes, golden solution reveal
 
-- **Review homework:** ask participants to show the boundary-condition test they added (exactly 5,000 employees) and confirm the embedded procedure handled it correctly.
-- **Common mistakes to flag:** procedure text that reads well but hides an ambiguity at exactly the threshold; sample account data that drifted slightly from the canonical WidgetWare business brief.
-- **Golden solution reveal:** walk `class-04/`'s agent, run it once, and ask: "If a second agent needed this exact same reasoning, what would you have to do right now?" (Copy-paste the string. That's the problem today solves.)
+- **Review homework:** ask participants to show their independent Skill consumer script, and confirm it loads `icp_qualification` without touching `qualification_agent.py`.
+- **Common mistakes to flag:** Skill procedures that read well but never actually got tested against the boundary case; Evidence Classification examples with no genuinely ambiguous case.
+- **Golden solution reveal:** run Class 4's agent live, print its raw prose response, then ask: "If I asked your production system to route on this response's outcome right now, in code — how would you do it?" (Answer: string matching against prose that might rephrase itself any call. That's the problem today solves.)
 
-## Slide outline (0:30–0:55)
+## Slide outline (0:20–0:45)
 
-1. Current WidgetWare state: an agent whose procedure is embedded prose
-2. Today's dependency: Class 4's agent boundary and model call don't change — only where the procedure lives
-3. Business objective: a reusable, versioned qualification procedure, usable by more than one agent
-4. Core concept: Skill vs. prompt vs. tool (§5.2–5.3) — a Skill tells the agent how; a tool lets it do
-5. Terminology: anatomy of a useful Skill (§5.5) — identity, inputs, procedure, quality criteria, examples
-6. Architecture: progressive disclosure (§5.6) — a concise discovery description, full detail only when selected
-7. Seven Steps mapping: Design Agent Capabilities — the first chapter primarily about making a capability reusable
-8. Gemini vs. deterministic code: the agent reasons; `skills.py`'s file loading stays deterministic
-9. Security: versioning and ownership (§5.7) — a Skill is an organizational asset, not an anonymous prompt fragment
-10. Today's increment: `skills/icp_qualification/`, `skills/evidence_classification/`, `skills.py`
-11. Lab architecture: three worked examples per Skill — one positive, one negative, one ambiguous
-12. Acceptance criteria: the agent file contains no qualification logic of its own afterward
+1. Current WidgetWare state: an agent that reasons well but returns free-form prose
+2. Today's dependency: Class 4's Skill-driven agent doesn't change — only what happens to its output
+3. Business objective: a validated, machine-checkable qualification result, safe to route on
+4. Core concept: why prose isn't enough (§6.1–6.2) — a downstream system can't safely branch on "it looks qualified"
+5. Terminology: schema vs. contract vs. validation (§6.3) — a schema describes shape; a contract adds business invariants; validation enforces both
+6. Architecture: `QualificationResult`'s four business invariants (§6.4) — QUALIFIED needs evidence, NOT_QUALIFIED needs exclusions, NEEDS_RESEARCH needs missing info, BLOCKED needs an error
+7. Seven Steps mapping: Evaluate & Govern — the first chapter squarely about making an agent's output trustworthy
+8. Gemini vs. deterministic code: the agent still reasons in prose; parsing, schema validation, and invariant checks are pure deterministic code
+9. Security: fail-safe design (§6.5) — malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through
+10. Today's increment: `contracts/evidence.py`, `contracts/qualification.py`, `parse_qualification_result()`
+11. Lab architecture: one failing-case test per invariant — four ways to be wrong, one way to be right
+12. Acceptance criteria: the agent itself is byte-for-byte unchanged — this is a validation layer, not a rewiring
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a Skill and a tool (§5.3)?
-- Terminology: What is the difference between a Skill and a workflow (§5.4)?
-- Architecture: Why does progressive disclosure (§5.6) matter for context consumption?
-- Architecture: Why move the qualification procedure out of the agent's embedded instructions and into a Skill?
-- Failure analysis: The agent confidently qualifies an account with clearly insufficient evidence — where's the fix, agent code or Skill procedure?
-- Security/governance: What does §5.7 say a Skill needs that "an anonymous prompt fragment" doesn't?
-- WidgetWare scenario: A second agent needs the same qualification logic — what does the Skill's reusability buy you here?
-- Connecting back: How does §3.5's evidence-policy vocabulary (Class 3) show up inside the Skill's procedure?
+- Terminology: What is the difference between a schema and a business invariant (§6.3–6.4)?
+- Terminology: What does "fail-safe" mean for a parsing pipeline (§6.5), and how is it different from "fail-fast"?
+- Architecture: Why does `QUALIFIED` require `evidence_refs` to be non-empty as a business rule, not just a type check?
+- Architecture: What does `parse_qualification_result()` return when given malformed input, and why is that the right answer?
+- Failure analysis: A qualification result claims `NOT_QUALIFIED` but has an empty `exclusion_reasons` list — what should happen?
+- Security/governance: Why is preserving the original error on a `BLOCKED` result more useful than just discarding bad input silently?
+- WidgetWare scenario: The agent's prose rephrases itself between calls but its meaning is the same — how does the contract layer stay stable regardless?
+- Connecting back: How do Class 2's evidence-policy categories (fact vs. inference) show up as fields inside `EvidenceItem`?
 
-## Build together (1:05–1:35)
+## Build together (0:55–1:35)
 
-- `skills/icp_qualification/skill.md`, `examples/{qualified,unqualified,needs_research}.md`, `tests/cases.yaml`
-- refactor `qualification_agent.py` to read its procedure from the Skill instead of an embedded instruction block
-- add the lightweight **Evidence Classification** Skill (verified fact / derived fact / inference / unknown / conflict)
+- `contracts/evidence.py` — `EvidenceItem` (Pydantic v2, `extra="forbid"`)
+- `contracts/qualification.py` — `QualificationResult` with `@model_validator(mode="after")` enforcing all four invariants
+- `parse_qualification_result(raw, account_id)` — the fail-safe pipeline: parse, validate, on any failure return `BLOCKED` with the error preserved, never raise
 
 ## Test and diagnose (1:35–1:50)
 
-1. Run the qualified-account scenario test (happy path).
-2. Run the uncertain-account test: does the agent still correctly say "insufficient evidence"?
-3. Trigger a comparison: run the *pre-refactor* agent (embedded prompt) against a scenario, then the *post-refactor* Skill-driven agent against the same scenario, and diff the reasoning.
-4. Inspect the event sequence and assembled instructions — confirm the instruction now contains the Skill's text, loaded, not retyped.
-5. Diagnose: is a discrepancy caused by the Skill's procedure being under-specified, or a loading bug in `skills.py`?
-6. Apply the smallest fix — usually tightening the Skill's procedure or examples, not the agent's Python code.
-7. Re-run all three scenario tests.
+1. Run the four happy-path tests: one per status value, each with valid supporting fields.
+2. Run the four failing-case tests: one per invariant, each deliberately violating it.
+3. Feed `parse_qualification_result` a completely malformed dict (wrong types, missing fields) — confirm it returns `BLOCKED`, never raises.
+4. Diagnose: is a failure in the schema (wrong type) or the business invariant (right type, wrong business logic)?
+5. Apply the smallest fix — usually one `model_validator` condition, not a schema redesign.
+6. Re-run the full contract test suite.
 
 ## Homework
 
 | Level | Task |
 | ----- | ---- |
-| **Required** | Qualification agent runs reproducibly against all three scenario accounts, driven entirely by the Skill (no embedded procedure left in Python) |
-| **Diagnostic** | The Evidence Classification Skill misclassifies one deliberately ambiguous fact in the provided test case — fix the Skill, not the agent |
-| **Extension** | Write a second, independent Skill consumer — a small script that loads `icp_qualification` and prints its procedure, proving the Skill is genuinely reusable outside `qualification_agent.py` |
+| **Required** | `QualificationResult` and `EvidenceItem` contracts built and passing all eight contract tests (four happy-path, four failing-case) |
+| **Diagnostic** | The provided `parse_qualification_result` test suite has a gap: no test confirms `BLOCKED` results preserve the *original* raw input for debugging, not just the error message. Add that test, then confirm the implementation actually satisfies it |
+| **Extension** | Add a fifth business invariant of your own devising (e.g., `rationale` must reference at least one `evidence_refs` entry by ID) and demonstrate it catches a case the existing four miss |
 
 - **Starting checkpoint:** `class-04/golden-solution/`
-- **Files participants may modify:** `skills/`, `src/widgetware_sdr/agents/qualification_agent.py`, `src/widgetware_sdr/skills.py`, `tests/`
-- **Expected behavior:** the agent's qualification procedure lives entirely in the Skill; the agent code only wires context, Skill, and model together
-- **Tests that must pass:** all three scenario tests, plus the "no embedded procedure" structural test
-- **Submission:** local-playground event-sequence printout for one scenario, plus test output
-- **Constraints:** no structured/typed output yet (Chapter 6) — the agent's result is still prose at this stage, on purpose; no tools yet (Chapter 7)
+- **Files participants may modify:** `src/widgetware_sdr/contracts/`, `tests/contracts/`
+- **Expected behavior:** malformed or invariant-violating input never crashes the pipeline — it always yields a `BLOCKED` result with the error preserved
+- **Tests that must pass:** all contract tests, both happy-path and failing-case
+- **Submission:** test output showing all eight (or more) contract tests passing
+- **Constraints:** the agent itself (`qualification_agent.py`) must remain byte-for-byte unchanged from Class 4 — no tools yet (Chapter 7)
 
 ## Golden solution: `class-05/`
 
-Adds both Skills and the loader on top of `class-04/`, and refactors the agent to load from them. README notes the Chapter 4 checkpoint's own framing — "it does not yet expose its procedure as a reusable Skill" — and shows this checkpoint closing that gap.
+Adds the contracts layer on top of `class-04/` without touching the agent. README explicitly notes: "The agent itself, its Skill, and its model call are unchanged from Class 4 — this chapter is a standalone validation layer, not a rewiring of the agent."
 
 ## Bridge to Class 6
 
-Class 6 replaces the agent's prose output with a typed, validated contract — the Skill's procedure still describes the reasoning; Class 6 only changes how the result is captured afterward.
+Class 6 gives the agent its first real tools — three narrow, read-only functions for account, product, and ICP data. The `QualificationResult` and `EvidenceItem` contracts don't change structurally, but `EvidenceItem` starts getting real exercise once tool-retrieved facts need evidence identifiers.

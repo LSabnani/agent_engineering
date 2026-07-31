@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "PyYAML>=6.0",
     "google-adk>=2.0",
+    "pydantic>=2.0",
 ]
 
 [project.optional-dependencies]

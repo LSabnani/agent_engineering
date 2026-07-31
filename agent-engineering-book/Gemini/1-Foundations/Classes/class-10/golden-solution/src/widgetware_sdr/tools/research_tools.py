@@ -15,7 +15,9 @@ from typing import Any
 
 import yaml
 
-MOCK_SOURCES_PATH = Path(__file__).resolve().parent.parent.parent.parent / "data" / "mock_public_sources.yaml"
+MOCK_SOURCES_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent / "data" / "mock_public_sources.yaml"
+)
 
 
 def search_public_records(account_id: str) -> list[dict[str, Any]]:

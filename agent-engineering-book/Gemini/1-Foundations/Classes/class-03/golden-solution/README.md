@@ -2,7 +2,7 @@
 
 A bounded agent system that researches, qualifies, and drafts outreach to prospective manufacturing and industrial-automation accounts on WidgetWare's behalf — and stops for human approval before anything leaves the building.
 
-This checkpoint (Class 3 / `golden-solutions/class-03/`) adds a deliberate model and context architecture on top of Class 2's workspace: system instructions, business configuration as data, and a context-assembly pipeline that keeps account-supplied content structurally isolated from system policy. No ADK agent exists yet — there is still no model call anywhere in this codebase.
+This checkpoint (Class 3 / `golden-solutions/class-03/`) adds the first working ADK agent and its first real Gemini model call. The qualification procedure is embedded directly in the agent's instruction as a plain string — Chapter 5 is where this gets extracted into a reusable Skill, deliberately not done here yet.
 
 ## Quick start
 
@@ -10,78 +10,81 @@ This checkpoint (Class 3 / `golden-solutions/class-03/`) adds a deliberate model
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-cp .env.example .env  # fill in any local values; never commit .env
-./scripts/check.sh    # runs format check, lint, and tests in one command
+cp .env.example .env  # fill in GOOGLE_API_KEY (or GOOGLE_CLOUD_PROJECT) to run the agent for real
+./scripts/check.sh    # runs format check, lint, and tests — live-model tests skip automatically without credentials
 ```
 
 ## What's new this class
 
-- `config/products.yaml`, `config/icp.yaml`, `config/policies.yaml` — WidgetWare's stable business rules, as data
-- `src/widgetware_sdr/instructions.py` — fixed system instructions and centralized model selection
-- `src/widgetware_sdr/context_builder.py` — assembles system instructions, business context, task context, and evidence into one `ContextPackage`, with account-supplied content always confined to a clearly delimited, labeled evidence section
-- `tests/unit/test_context_builder.py` — five tests: required policy language present, a clearly qualified account, a clearly unqualified account, an account with insufficient evidence, and a malicious note that cannot override system instructions
+- `src/widgetware_sdr/agents/qualification_agent.py` — the Account Qualification Assistant: a real `google.adk.agents.Agent`, its instruction assembled from fixed system instructions + business config + an embedded qualification procedure (a plain string constant, not yet a Skill)
+- `src/widgetware_sdr/app.py` — the local run harness: `Runner` + `InMemorySessionService`, renders the account and evidence as the per-call user message
+- `data/sample_accounts/` — the three scenario accounts, as the book's own Hands-on Lab structure expects (see `KNOWN_FAILURE_CASES.md` #2 for how this relates to `tests/fixtures/`)
+- `tests/unit/` — offline, deterministic tests: agent construction, instruction content (including a check that no `skills/` directory exists yet), message rendering
+- `tests/integration/test_qualification_agent_live.py` — 3 semantic evaluation tests that make a real Gemini call; skip automatically without credentials
 
 ## Repository structure
 
 ```text
 widgetware-sdr/
-├── README.md
-├── SPEC.md
-├── pyproject.toml
-├── .env.example
+├── README.md / SPEC.md / pyproject.toml / .env.example
 ├── docs/
-│   ├── widgetware-business-brief.md
-│   └── acceptance-criteria.md
 ├── config/
-│   ├── products.yaml
-│   ├── icp.yaml
-│   └── policies.yaml
-├── src/
-│   └── widgetware_sdr/
-│       ├── __init__.py
-│       ├── health.py
-│       ├── instructions.py
-│       └── context_builder.py
+├── data/sample_accounts/
+├── src/widgetware_sdr/
+│   ├── instructions.py
+│   ├── context_builder.py
+│   ├── app.py
+│   └── agents/qualification_agent.py   # procedure embedded here, no skills/ yet
 ├── tests/
 │   ├── unit/
-│   ├── contracts/      # populated starting Class 5
+│   ├── integration/     # requires live credentials; skips otherwise
+│   ├── contracts/        # populated starting Class 5
 │   ├── scenarios/
 │   └── fixtures/
-│       ├── accounts/
-│       └── expected/
-└── scripts/
-    └── check.sh
+└── scripts/check.sh
 ```
 
-## Sample inputs and expected outputs
+## Running the agent for real
 
-`tests/fixtures/accounts/*.yaml` and `tests/fixtures/expected/*.yaml` are no longer just carried forward — `test_context_builder.py` now loads the three scenario accounts directly from `accounts/` and asserts against the `icp_match` section of `expected/`, instead of hardcoding account data inline in the test. This is the first checkpoint where the fixture files are actually load-bearing, not just documentation.
+Requires `GOOGLE_API_KEY` (or a configured Vertex AI project) in your environment:
 
-`icp_match` deliberately encodes "unknown" (`null`) separately from "fails the criterion" (`false`) for Meridian's employee count — see `KNOWN_FAILURE_CASES.md` #2 for why that distinction matters.
+```python
+from widgetware_sdr.app import run_qualification_sync
+import yaml
+
+with open("data/sample_accounts/acme-001.yaml") as f:
+    account = yaml.safe_load(f)
+
+events = run_qualification_sync(account)
+for event in events:
+    print(event)
+```
+
+Without credentials, agent *construction* still works — only actually running it requires a live call.
 
 ## Known failure cases
 
-See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md).
+See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md) — in particular #1: a clean test run in this environment proves construction, not reasoning quality.
 
 ## Completion checklist
 
 Before treating this checkpoint as done:
 
-- [ ] `config/icp.yaml`, `config/products.yaml`, `config/policies.yaml` match `docs/widgetware-business-brief.md` exactly — no drift between the two.
-- [ ] `instructions.py`'s `SYSTEM_INSTRUCTIONS` is a fixed constant with no account-derived content anywhere in it.
-- [ ] `context_builder.py` has no model call anywhere in it — verify with `grep -ri "generate_content\|gemini\|adk" src/widgetware_sdr/context_builder.py` and confirm no real hits.
-- [ ] All five tests in `test_context_builder.py` pass, and the malicious-note test specifically asserts on section *ordering*, not just text presence.
-- [ ] You have printed `context.assembled_prompt` at least once for a real scenario and read it end to end.
+- [ ] `build_agent_instruction()` contains the real ICP thresholds (read from config) and the embedded qualification procedure — not a hardcoded restatement of the config values.
+- [ ] The agent's static instruction contains no specific account data anywhere.
+- [ ] The agent has no tools attached — tools arrive in Class 6.
+- [ ] No `skills/` directory exists yet — that's Class 4's deliverable, not this one's.
+- [ ] `./scripts/check.sh` passes with the live-model tests reporting **skipped**, not failed, when no credentials are set.
 
 ## Starting Class 4
 
-1. Start from this checkpoint. Class 4 adds the first real ADK `Agent` and its first real Gemini model call — everything built so far (`context_builder.py`, `instructions.py`, the fixtures) becomes the input to that agent, unchanged.
-2. The malicious-note test's guarantee is about to be tested for real. Class 4 is the first checkpoint where you can actually observe whether a live Gemini call, given this exact assembled context, behaves the way the structural isolation intends.
-3. See `../../class-04/` (once built) for what Class 4 adds.
+1. Start from this checkpoint. Class 4 does not touch `app.py` or the agent's boundary — it extracts the qualification procedure out of `qualification_agent.py`'s embedded string and into `skills/icp_qualification/skill.md`, then updates the agent to load it instead.
+2. Everything this checkpoint's tests verify about the agent's construction should still hold after Class 4 — only *where* the procedure text lives changes.
+3. See `../../class-04/` for what Class 4 adds.
 
 ## Status
 
-- [x] Class 1 — Project charter
-- [x] Class 2 — Antigravity workspace and repository harness
-- [x] Class 3 — Gemini context and instruction architecture
+- [x] Class 1 — Project charter, and the Antigravity workspace and repository harness
+- [x] Class 2 — Gemini context and instruction architecture
+- [x] Class 3 — First ADK agent (embedded procedure)
 - [ ] Classes 4–10 — see `../../00_Course_Framework.md`

@@ -6,7 +6,7 @@ Accepted. (Supersedes the previous course structure, in which the harness was Cl
 
 ## Context
 
-The original ten-class... eleven-class structure treated "frame the use case" (charter, specification, business brief) and "build the harness" (installable package, health check, quality gate) as two separate classes, in that order, with Class 1 producing no code whatsoever. That ordering has a real pedagogical rationale — Frame the Use Case genuinely is a discipline independent of any implementation technology, and demonstrating that with zero code is a legitimate teaching choice.
+The original eleven-class structure treated "frame the use case" (charter, specification, business brief) and "build the harness" (installable package, health check, quality gate) as two separate classes, in that order, with Class 1 producing no code whatsoever. That ordering has a real pedagogical rationale — Frame the Use Case genuinely is a discipline independent of any implementation technology, and demonstrating that with zero code is a legitimate teaching choice.
 
 In practice, it also meant the course's first checkpoint was not runnable, not verifiable by an automated test, and not something a learner could confirm they'd completed correctly except by comparing prose against prose. Every class after it, by contrast, is judged by a deterministic gate plus a qualitative review. Class 1 was the one exception, and it stayed the exception for an entire class's worth of material.
 

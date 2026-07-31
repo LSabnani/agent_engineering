@@ -34,7 +34,7 @@ Help a WidgetWare SDR decide, quickly and defensibly, whether a target company i
 
 ## State transitions
 
-Defined in full starting in Class 9 (Book 1, Chapter 9). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
+Defined in full starting in Class 8 (Book 1, Chapter 9). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
 
 ## Error behavior
 

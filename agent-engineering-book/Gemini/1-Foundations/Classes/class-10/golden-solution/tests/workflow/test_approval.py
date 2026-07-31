@@ -1,7 +1,11 @@
 import pytest
 from pydantic import ValidationError
 
-from widgetware_sdr.workflow.approval import ApprovalDecision, ApprovalPackage, record_approval_decision
+from widgetware_sdr.workflow.approval import (
+    ApprovalDecision,
+    ApprovalPackage,
+    record_approval_decision,
+)
 from widgetware_sdr.workflow.state_machine import WorkflowState
 
 

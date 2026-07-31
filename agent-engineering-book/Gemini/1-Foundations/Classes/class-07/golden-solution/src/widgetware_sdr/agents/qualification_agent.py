@@ -28,7 +28,11 @@ from google.adk.agents import Agent
 from widgetware_sdr.context_builder import load_config
 from widgetware_sdr.instructions import SYSTEM_INSTRUCTIONS, get_model_id
 from widgetware_sdr.skills import load_skill
-from widgetware_sdr.tools.account_data import get_account_profile, get_icp_policy, get_widgetware_product
+from widgetware_sdr.tools.account_data import (
+    get_account_profile,
+    get_icp_policy,
+    get_widgetware_product,
+)
 
 
 def build_agent_instruction() -> str:

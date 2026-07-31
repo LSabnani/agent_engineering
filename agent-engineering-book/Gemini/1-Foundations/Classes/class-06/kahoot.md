@@ -4,57 +4,57 @@ Run during 0:45–0:55. Correct answer marked with **✓**.
 
 ---
 
-**1. (Terminology)** What is the difference between a schema and a business invariant (§6.3–6.4)?
+**1. (Terminology)** What is the difference between a Skill and a tool (§7.1 recap of §5.3)?
 - A) They're interchangeable terms for the same thing
-- **✓** B) A schema checks shape and types; a business invariant checks domain-specific rules a valid-shaped object can still violate
-- C) A schema is written in Python; a business invariant is written in YAML
-- D) Business invariants only apply to numeric fields
+- **✓** B) A Skill tells the agent how to perform a task; a tool lets it reach outside the model and act
+- C) A tool is written in Markdown; a Skill is written in Python
+- D) A Skill requires network access; a tool never does
 
-**2. (Terminology)** What does "fail-safe" mean for a parsing pipeline (§6.5), and how is it different from "fail-fast"?
-- **✓** A) Fail-safe returns a well-formed error result (`BLOCKED`) instead of crashing; fail-fast raises immediately on the first problem
-- B) They're the same design pattern with different names
-- C) Fail-safe means the pipeline retries automatically until it succeeds
-- D) Fail-fast means errors are logged but otherwise ignored
+**2. (Terminology)** Why does a tool's description matter as much as its implementation (§7.2)?
+- **✓** A) The model selects tools based on their names and descriptions — a vague description leads to misuse regardless of how correct the code is
+- B) Descriptions are only used for human documentation, never read by the model
+- C) ADK requires descriptions to be under 10 words
+- D) It doesn't — only the function signature matters
 
-**3. (Architecture)** Why does `QUALIFIED` require `evidence_refs` to be non-empty as a business rule, not just a type check?
-- **✓** A) A list can be present and correctly typed while still being empty — the business rule is that a qualified claim needs actual supporting evidence, which a type check alone can't enforce
-- B) Pydantic doesn't support empty-list validation at all
-- C) It's arbitrary — any status could require any field
-- D) Evidence is only needed for `NOT_QUALIFIED` results
+**3. (Architecture)** Why is `calculate_fit_score()` deterministic code and not a model judgment?
+- **✓** A) It's a fixed, auditable arithmetic formula — exactly the kind of calculation that belongs outside model reasoning
+- B) Because ADK does not allow tools to return numbers
+- C) Because the model cannot perform arithmetic reliably at all
+- D) There's no real reason; it could be either
 
-**4. (Architecture)** What does `parse_qualification_result()` return when given malformed input, and why is that the right answer?
-- **✓** A) A `BLOCKED` result with the original error preserved — never an unhandled exception, and never a silently "successful" invalid result
-- B) `None`, so callers must remember to check for it
-- C) It raises `ValueError` immediately
-- D) It retries with a corrected version of the input
+**4. (Architecture)** What should `get_account_profile` return for a missing record (§7.4)?
+- **✓** A) A typed dict with `error` and `error_category` keys — never an unhandled exception, never a fabricated result
+- B) `None`, silently
+- C) An exception the caller must catch
+- D) A default, generic account profile
 
-**5. (Failure analysis)** A qualification result claims `NOT_QUALIFIED` but has an empty `exclusion_reasons` list — what should happen?
-- **✓** A) The `model_validator` rejects it, and `parse_qualification_result` converts that into a `BLOCKED` result with the error preserved
-- B) It should pass — exclusion reasons are optional documentation, not a requirement
-- C) It should silently default to `QUALIFIED` instead
-- D) It should raise an unhandled exception that crashes the caller
+**5. (Failure analysis)** The agent calls `get_widgetware_product` with a malformed `product_id`. What should happen, and where does that get tested?
+- **✓** A) The tool returns a typed error result, and this is tested completely independent of the agent per §7.8
+- B) The model should catch the malformation itself before calling the tool
+- C) The application should crash with a stack trace
+- D) This can only be tested with live model credentials
 
-**6. (Security/governance)** Why is preserving the original error on a `BLOCKED` result more useful than just discarding bad input silently?
-- **✓** A) It gives a human or downstream system enough information to actually diagnose and fix the source of the bad input, instead of just knowing something failed
-- B) It has no practical benefit — it's just convention
-- C) It's required by Pydantic's API and can't be turned off
-- D) It makes the pipeline run faster
+**6. (Security/governance)** What does "permissions narrower than the underlying platform account" mean for a read-only tool (§7.5)?
+- **✓** A) A read-only lookup tool should never hold credentials capable of a write, even if the platform account technically could
+- B) The tool should have root access for convenience
+- C) It refers only to file-system permissions, not data access
+- D) It's a Book 2 concept — Book 1 tools don't need this yet
 
-**7. (WidgetWare scenario)** The agent's prose rephrases itself between calls but its meaning is the same. How does the contract layer stay stable regardless?
-- **✓** A) The contract only cares about the parsed, structured fields (`status`, `evidence_refs`, etc.) — not the exact wording the agent used to arrive at them
-- B) It doesn't — any rephrasing breaks the contract layer
-- C) The contract re-runs the agent until the wording matches exactly
-- D) The contract ignores the agent's output entirely
+**7. (WidgetWare scenario)** A `QualificationResult`'s `evidence_refs` entry doesn't trace to any tool-returned fact. What's wrong, and which layer should catch it?
+- **✓** A) The evidence was fabricated — Class 5's contract layer alone can't catch this, since it only checks the field is non-empty, not that its contents are real; that needs a semantic check
+- B) Nothing is wrong — evidence references don't need to trace to anything
+- C) The tool itself is broken
+- D) This is expected and gets fixed automatically in Class 7
 
-**8. (Connecting back)** How do Class 3's evidence-policy categories (fact vs. inference) show up as fields inside `EvidenceItem`?
-- **✓** A) `EvidenceItem` carries a typed field distinguishing verified fact from inference, directly reflecting the vocabulary Class 3 established for evidence handling
-- B) They don't — evidence categorization was dropped after Class 3
-- C) `EvidenceItem` replaces Class 3's vocabulary with a new, unrelated one
-- D) Fact vs. inference only matters once Class 8's research pipeline exists
+**8. (Connecting back)** How does §7.8's tool-testing checklist relate to the fail-safe pipeline Class 5 built for `parse_qualification_result`?
+- **✓** A) Both apply the same principle at a different layer — malformed input should produce a typed, informative error, never a crash or a silent guess
+- B) They're unrelated — tool testing has nothing to do with contract validation
+- C) Tool testing replaces the need for contract validation
+- D) §7.8 only applies once live credentials are available
 
 ---
 
 ## Facilitator notes
 
-- Question 4 is the crux of the whole class — "never raise, never silently pass" is the fail-safe principle participants will apply again in Class 8's research pipeline and Class 9's workflow state machine.
-- Question 7 is worth a live demo if time allows: run the agent twice on the same account, show the prose differs slightly, then show the parsed `QualificationResult` is identical in the fields that matter.
+- Question 7 is the crux of the class — participants should leave understanding that a schema-valid contract doesn't guarantee semantically true content, and that's a gap no single layer fully closes on its own.
+- Question 4 pairs well with a live demo: call `get_account_profile` with a nonexistent account ID and read the typed error result aloud.

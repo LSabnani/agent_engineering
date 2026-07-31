@@ -2,19 +2,23 @@
 
 Reviewing Class 7's homework before revealing `golden-solution/`.
 
-## In the fabricated-evidence-reference diagnostic
+## In the undetected-conflict diagnostic
 
-- **A test that checks the field is non-empty but not that it's real.** The point of the diagnostic was realizing schema validation alone (`evidence_refs` is a non-empty list) cannot catch a reference to evidence that doesn't exist or doesn't support the claim. Watch for submissions that stop at "the list isn't empty" and call it solved.
+- **"Documented" used as a substitute for a real decision.** The diagnostic explicitly allowed either fixing the gap or documenting it — watch for submissions that pick "document" as an easy exit without actually engaging with whether it's the right call for this specific gap.
 
-## In the §7.8 extension (full seven-item tool test list)
+## In the freshness-check extension
 
-- **Inventing a failure mode that doesn't actually fit the tool.** "Permission failure" forced onto a tool with no auth boundary sometimes produces a test that doesn't test anything real — for example, asserting a hardcoded `PermissionError` the code never actually raises. A good extension is honest that some categories require imagining a *future* version of the tool, not the current one.
+- **A flag that never changes behavior.** A staleness flag that gets set but that nothing downstream reads is the same failure pattern flagged after Class 2 — recurring because it's a genuinely easy trap, not because anyone's being careless.
+
+## In the "research remains read-only" constraint
+
+- **A stray draft-outreach function appearing early, "to save time later."** Some participants, excited by the research pipeline, start sketching an outreach drafter in Class 7's homework. Redirect firmly — that's this week's actual lesson, and building it early skips the state-machine discipline that makes it safe.
 
 ## Talking points to set up today's class
 
-- Ask: "Every tool so far reads from a file we control. What happens the first time the qualification agent needs a fact from outside WidgetWare entirely?" Let the room sit with that before revealing today's research pipeline.
-- Preview the injection connection explicitly: "Remember Class 3's malicious account note? Today the same attack shows up in a source that looks like a real trade publication. Does that change how dangerous it is?"
+- Ask: "We now have a Research Agent and a Qualification Agent. What decides which one runs first, and what happens between them?" — the honest answer right now is "nothing does," and that's exactly the gap.
+- Preview the send-tool grep before doing it: ask the room to predict what the grep will find. The predicted answer ("nothing") landing correctly is worth pausing on.
 
 ## Golden solution reveal
 
-Walk `class-07/`'s tools and contracts, then run `get_account_profile("acme-001")` live and ask: "This works because the data already lives in our repo. What would this function have to become if the account information genuinely didn't exist anywhere WidgetWare controls?" That question is today's entire class.
+Walk `class-07/`'s `ResearchBrief` output one more time, then ask: "If I asked you to hand this brief to the qualification agent and only proceed to a draft if a specific reviewer approved specific claims, could you point to the code that enforces that today?" There isn't any yet — that's the whole class.

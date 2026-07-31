@@ -1,99 +1,99 @@
-# Class 9 Slides — Multi-Agent Workflow and Human Approval
+# Class 9 Slides — Evaluation and the Release Gate
 
-12 slides, ~2 minutes of speaking notes each, for the 0:30–0:55 segment.
+12 slides, ~2 minutes of speaking notes each, for the 0:20–0:45 segment.
 
 ---
 
-## Slide 1 — Current WidgetWare state: qualification and research, uncoordinated
+## Slide 1 — Current WidgetWare state: complete, but only manually checked
 
-**On slide:** Two real capabilities. No connection between them.
+**On slide:** Class 8's workflow runs correctly — every time someone has watched it run.
 
-**Say:** "You can research an account. You can qualify one. Nothing today makes those the same run, and nothing decides what happens after either one finishes."
+**Say:** "It works. We've all seen it work. That's not the same claim as 'it will keep working.'"
 
 ---
 
 ## Slide 2 — Today's dependency
 
-**On slide:** `ResearchBrief` and `QualificationResult` become handoff payloads between agents, not standalone outputs.
+**On slide:** The state machine and contracts from Classes 5 through 8 don't change — today wraps them in a repeatable, automatic check.
 
-**Say:** "Every contract we've built was quietly preparing for this class. Today they finally pass between components instead of just validating in isolation."
+**Say:** "Nothing about the workflow itself changes today. We're building the thing that watches it, systematically, instead of us watching it by hand."
 
 ---
 
 ## Slide 3 — Business objective
 
-**On slide:** One coordinated workflow, ending in a human approval gate, never an autonomous send.
+**On slide:** A mechanical yes/no answer to "is this system good enough to ship right now?"
 
-**Say:** "The end state today is a person looking at a screen and clicking approve, reject, or revise. That's the whole objective, stated plainly."
-
----
-
-## Slide 4 — Core concept: why multiple agents (§9.1)
-
-**On slide:** Research Agent, Qualification Agent, Evidence Reviewer, Drafting Agent — each with one responsibility.
-
-**Say:** "A single agent doing all four jobs would have crowded instructions, contradictory context, and no way to isolate which part failed. Splitting responsibility is what makes each part independently testable — which we've been doing since Class 4."
+**Say:** "Not a vibe. Not 'it looked fine in the demo.' A specific, repeatable, automated answer."
 
 ---
 
-## Slide 5 — Workflow patterns (§9.2); typed handoffs (§9.4)
+## Slide 4 — Core concept: a golden dataset (§10.2)
 
-**On slide:** Sequential for Book 1. Pass contracts, never transcripts.
+**On slide:** A fixed, representative, version-controlled set of cases with known-correct outcomes.
 
-**Say:** "The Drafting Agent gets the Evidence Reviewer's approved claims — not the conversation that produced them, not the raw research. A narrower handoff is a safer one."
-
----
-
-## Slide 6 — Architecture: state machine before agent prompt (§9.3)
-
-**On slide:** Ten explicit states, an allowed-transitions table, checked before any agent's own words are trusted.
-
-**Say:** "A model can recommend the next step. Only this table decides whether that recommendation is legal. That line is the whole chapter, really."
+**Say:** "The dataset itself is the specification. If it's not checked into version control the same way the code is, you can't tell whether a passing gate today means the same thing it meant last week."
 
 ---
 
-## Slide 7 — Seven Steps mapping
+## Slide 5 — Terminology: metric vs. release gate (§10.3–10.4)
 
-**On slide:** Orchestrate Workflows — the first chapter mainly about coordination, not capability.
+**On slide:** A metric measures. A gate decides, based on thresholds applied to metrics.
 
-**Say:** "Every earlier chapter built one piece well. Today's chapter is entirely about what happens between pieces."
+**Say:** "You can have a hundred good metrics and no way to say 'ship' or 'don't ship.' The gate is what turns measurement into a decision."
+
+---
+
+## Slide 6 — Architecture: the golden dataset's required categories (§10.2)
+
+**On slide:** Qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt — each represented on purpose, not by accident.
+
+**Say:** "Every one of these categories exists because we've already seen it break something, somewhere in this course. A golden dataset that only covers the easy cases isn't testing anything hard."
+
+---
+
+## Slide 7 — Seven Steps mapping: Evaluate & Govern deepens
+
+**On slide:** Class 5 validated one result. Today validates the whole system's behavior across representative cases.
+
+**Say:** "Same step, wider lens. We went from 'is this one output trustworthy' to 'is this whole system, across everything it's likely to see, trustworthy.'"
 
 ---
 
 ## Slide 8 — Gemini vs. deterministic code
 
-**On slide:** Each agent reasons within its role. Code enforces which state transitions are legal.
+**On slide:** Evaluation itself is entirely deterministic — no model call is needed to know whether the system met its own golden dataset's expectations.
 
-**Say:** "None of the four agents know the full state machine. None of them need to. That knowledge belongs entirely to `state_machine.py`."
+**Say:** "The workflow being evaluated may call a model. The evaluation that checks it never needs to. That distinction matters — a flaky judge is worse than no judge."
 
 ---
 
-## Slide 9 — Security: human-in-the-loop approval (§9.6)
+## Slide 9 — Security: a gate that fails loudly (§10.5)
 
-**On slide:** Approval is a state and a policy decision — not an instruction asking the model to check first.
+**On slide:** `ReleaseGateResult` reports every unmet condition, not just the first one found.
 
-**Say:** "There's no prompt anywhere that says 'ask the user before sending.' There's no send tool to ask permission for in the first place. That's a stronger guarantee than any instruction could be."
+**Say:** "If three things are broken and the gate only tells you about one, you'll fix that one, re-run, and get surprised by the second. Report everything, every time."
 
 ---
 
 ## Slide 10 — Today's increment
 
-**On slide:** Research → Qualify → Review → Draft → `AWAITING_APPROVAL`.
+**On slide:** `eval/golden_dataset.py`, `eval/metrics.py`, `eval/release_gate.py`, `eval/observability.py`.
 
-**Say:** "Watch that last state name. Not 'sent.' Not 'complete.' `AWAITING_APPROVAL` — because that's genuinely as far as this system is allowed to go on its own."
-
----
-
-## Slide 11 — Lab architecture: partial failure (§9.7)
-
-**On slide:** A visible state and a next action for every failure — never restart everything.
-
-**Say:** "We're going to kill the workflow mid-run today, on purpose, and confirm the research it already did survives. Losing completed work on a downstream failure is exactly what this section exists to prevent."
+**Say:** "Ten representative cases, a handful of metrics computed from running them, one function that turns all of it into pass or fail with named reasons."
 
 ---
 
-## Slide 12 — Acceptance criteria
+## Slide 11 — Lab architecture: running the dataset, not one case at a time
 
-**On slide:** Outreach is based only on Evidence-Reviewer-approved claims. No send tool exists anywhere in this codebase.
+**On slide:** The full golden dataset runs through the real workflow every time, using deterministic stub agents.
 
-**Say:** "We're going to grep the entire repository, live, for anything that could send a message. Finding nothing is the point."
+**Say:** "We use stub agents today so the evaluation itself is fast and repeatable — not because live model behavior doesn't matter, but because *this* layer's job is to catch structural regressions, every single run, without waiting on an API call."
+
+---
+
+## Slide 12 — Acceptance criteria: a gate that's actually calibrated
+
+**On slide:** A gate too easy to pass is as useless as one too strict to ever pass — both need to be argued, not assumed.
+
+**Say:** "Anyone can write a gate that always passes, or one that never does. The actual work today is making one that's calibrated to a real bar — and being able to explain, out loud, why that bar is the right one."

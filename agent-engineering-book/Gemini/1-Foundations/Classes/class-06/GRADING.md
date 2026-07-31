@@ -1,15 +1,15 @@
-# Class 06 Grading Criteria
+# Class 6 Grading Criteria
 
-Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check offline.
+Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check partially.
 
-1. **The invariants encode real business rules, not arbitrary type constraints.** A strong submission can explain, in one sentence per invariant, what real-world mistake it prevents (e.g., "a rep can't say QUALIFIED and then not point at why" for the evidence_refs rule). If a submission can't explain the "why" behind an invariant, it likely copied it without understanding it.
+1. **Tool descriptions would actually work on a model that's never seen the code.** Read each tool's docstring as if you were an LLM deciding whether to call it. Does it say when to use it *and* when not to? A description that only states what the function returns, with no usage guidance, is weaker than Book 1 §7.2 asks for.
 
-2. **`parse_qualification_result` genuinely never raises.** Grep for any bare `QualificationResult(**raw)` call outside a `try`/`except`, or any place a caller could get an unhandled `ValidationError`. The entire point of this class is that malformed input becomes a `BLOCKED` result, not a crash.
+2. **`calculate_fit_score` is not reachable by the model.** Check the agent's `tools=[...]` list — `calculate_fit_score` should not be in it. If it is, the submission has undone the chapter's own point about keeping deterministic calculation outside model reasoning.
 
-3. **The failing-case tests are minimally invalid, not incidentally invalid.** A strong failing-case test for the `QUALIFIED`-needs-evidence invariant sets `status=QUALIFIED` and an empty `evidence_refs`, with every other field otherwise valid — not a test that's also missing `account_id` or has a malformed `rationale`, which would make it unclear which check actually failed.
+3. **Tool tests are genuinely independent of the agent.** A strong submission's tool tests never construct an `Agent` or make a model call — they call the tool function directly. A test that goes through the agent to exercise a tool has conflated two different kinds of bugs (reasoning vs. implementation) that this chapter deliberately keeps separate.
 
-4. **The `BLOCKED` error is actually useful, not just present.** Check that `errors` contains information a person could act on (which field, which rule, what value) — not a generic string like `"validation failed"` that's technically non-empty but useless for debugging.
+4. **Missing-record and invalid-input handling return typed errors, not exceptions or silent defaults.** Grep for any bare `raise` inside a tool function, or any place a missing record silently returns a plausible-looking default instead of an explicit error. Both undermine the fail-safe principle Class 5 established at the contract layer.
 
-5. **The agent is verifiably untouched.** A submission should be able to show (via `git diff` or a direct file comparison) that `qualification_agent.py` has zero changes from its Class 5 state. If it changed, ask why — the answer should never be "to make the contract layer work."
+5. **The honesty about untested tool-failure categories is present, not glossed over.** A strong submission's own `KNOWN_FAILURE_CASES.md` (or equivalent) says plainly that dependency failure, permission failure, and redaction aren't tested because they don't apply yet — not that they're "covered" by the existing valid/invalid/missing tests, which is a different claim.
 
-6. **Independent understanding, not a copy.** If the submission's `qualification.py` and its tests are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.
+6. **Independent understanding, not a copy.** If the submission's tools and their tests are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.

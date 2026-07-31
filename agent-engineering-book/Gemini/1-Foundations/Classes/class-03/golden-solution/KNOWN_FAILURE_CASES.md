@@ -2,23 +2,24 @@
 
 ## Carried forward from Classes 1–2
 
-- `expected_qualification_direction` and `rationale` in `tests/fixtures/expected/*.yaml` are still hand-derived predictions, unverified by any qualification agent (that starts Class 6+).
-- The three scenario accounts are still illustrative, not a representative dataset.
+- `expected_qualification_direction`/`rationale` in fixtures are still hand-derived predictions, unverified by any code.
+- Business-config drift between `config/icp.yaml` and the fixture `expected/*.yaml` files is still undetected by any test.
+- The three scenario accounts remain illustrative, not a representative dataset.
 
 ## New at this checkpoint
 
-### 1. "Resists injection" here means structural isolation, not model behavior
+### 1. The three semantic scenario tests are skipped by default in this environment
 
-`test_a_malicious_note_cannot_override_system_instructions` proves the malicious text can never occupy the same position as system instructions in the assembled prompt. It proves nothing about whether a real Gemini call, given this exact assembled prompt, would actually ignore the embedded instruction. That claim is untestable until Class 4 makes a real model call, and even then, one passing test is evidence, not a guarantee, for every possible injection phrasing.
+`tests/integration/test_qualification_agent_live.py` requires `GOOGLE_API_KEY` or a configured Vertex AI project. Without one, `pytest` reports these as **skipped**, not passed — do not mistake a clean `18 passed, 3 skipped` run for proof the agent reasons correctly. The 18 passing tests only prove the agent *constructs* correctly (right model, right instruction content, no leaked account data, no tools). Whether it actually avoids inventing an employee count or correctly explains a `NEEDS_RESEARCH` outcome is unverified until someone runs the integration suite with real credentials.
 
-### 2. `meets_minimum_employee_count: null` vs. `false` is a real, easy-to-reintroduce bug class
+### 2. `data/sample_accounts/` and `tests/fixtures/accounts/` are duplicated, not shared
 
-`tests/fixtures/expected/meridian-003.yaml` deliberately encodes "unknown" as `null`, distinct from "fails the criterion" (`false`). `context_builder.py` itself does not yet enforce this distinction anywhere — it only carries `employee_count: None` through unmodified. A future chapter's qualification logic that does `employee_count >= minimum_employee_count` without a null check first will silently evaluate `None >= 5000` and raise a `TypeError` in Python — or, worse, in a language that permits it, silently coerce to a wrong boolean. This checkpoint's tests catch the data going in correctly; they do not yet catch a future consumer handling it incorrectly.
+Book 1 §4's Hands-on Lab asks for sample account profiles under `data/sample_accounts/`, and this checkpoint already had `tests/fixtures/accounts/` from Class 2. Rather than pick one, this checkpoint keeps both, with identical content, for two different audiences. They are not read from a single source — if one is edited without the other, they will silently drift.
 
-### 3. Business config drift is not detected by any test at this checkpoint
+### 3. The qualification procedure is embedded directly in this file, by design — and that's the whole point of this checkpoint
 
-`config/icp.yaml`, `docs/widgetware-business-brief.md`, and `tests/fixtures/expected/*.yaml`'s `icp_match` sections must all agree by hand. Nothing here fails loudly if `config/icp.yaml`'s `minimum_employee_count` is edited without updating the other two — a genuine, currently-unclosed gap. Consider this a candidate for a Class 5+ contract test once schemas exist.
+`EMBEDDED_QUALIFICATION_PROCEDURE` in `qualification_agent.py` is a plain string constant. This is not a mistake to fix — it is the honest "before" state Class 4's Skill extraction is measured against. If you're comparing this checkpoint to a later one and wondering why the procedure "duplicates" what's in `skills/icp_qualification/skill.md` in Class 4, it's because Class 4 is precisely the class that moves it there.
 
-### 4. `context_builder.py` reads YAML files with no schema validation
+### 4. The agent's prose output format is not yet validated
 
-`load_config()` will happily return whatever a malformed `config/*.yaml` file contains, including a wrong type or a missing key, and fail with a raw `KeyError` deep inside `build_context()` rather than a clear, named error. Structured contract validation for configuration itself is out of scope for Book 1 and is not solved anywhere in this course.
+Nothing in this checkpoint checks that the model's response actually uses one of `QUALIFY` / `DO_NOT_QUALIFY` / `NEEDS_RESEARCH`, or in what format. That gap is closed in Class 5 (structured outputs) — this checkpoint's output is still free-form prose, exactly as intended.

@@ -1,24 +1,20 @@
-# Class 9 — Common Mistakes to Discuss (0:10–0:20)
+# Class 9 — Common Mistakes to Discuss (0:00–0:20)
 
 Reviewing Class 8's homework before revealing `golden-solution/`.
 
-## In the undetected-conflict diagnostic
+## In the required build (workflow state machine)
 
-- **"Documented" used as a substitute for a real decision.** The diagnostic explicitly allowed either fixing the gap or documenting it — watch for submissions that pick "document" as an easy exit without actually engaging with whether it's the right call for this specific gap.
+- **State machine tests that only exercise the happy path.** A submission with a passing test for RECEIVED → ... → APPROVED but no test asserting an illegal transition (e.g., RECEIVED directly to APPROVED) actually raises `IllegalTransitionError` hasn't proven the state machine enforces anything — it's proven the correct path is possible, which was never in doubt.
 
-## In the freshness-check extension
+## In the approval boundary
 
-- **A flag that never changes behavior.** A staleness flag that gets set but that nothing downstream reads is the same failure pattern flagged after Class 3 — recurring because it's a genuinely easy trap, not because anyone's being careless.
-
-## In the "research remains read-only" constraint
-
-- **A stray draft-outreach function appearing early, "to save time later."** Some participants, excited by the research pipeline, start sketching an outreach drafter in Class 8's homework. Redirect firmly — that's this week's actual lesson, and building it early skips the state-machine discipline that makes it safe.
+- **Approval logic duplicated in more than one place.** Watch for a check like "has this been approved?" implemented once in the coordinator and again, slightly differently, in a test helper or the drafting agent. Two copies of a security-relevant check are two chances for them to silently disagree.
 
 ## Talking points to set up today's class
 
-- Ask: "We now have a Research Agent and a Qualification Agent. What decides which one runs first, and what happens between them?" — the honest answer right now is "nothing does," and that's exactly the gap.
-- Preview the send-tool grep before doing it: ask the room to predict what the grep will find. The predicted answer ("nothing") landing correctly is worth pausing on.
+- Ask: "We just watched the full workflow run correctly for one account. How do you know it'll still work after the next code change, for the hundred accounts nobody's going to watch by hand?" — most will land on "you'd need to test it automatically," without yet being able to describe what that looks like at a system level. Today gives it a name and a shape.
+- Preview the golden-dataset idea before revealing it: ask what a "representative" set of test accounts would need to include, beyond just "one that qualifies and one that doesn't." Push toward the harder cases this course has already demonstrated break things — conflicting evidence, injection attempts.
 
 ## Golden solution reveal
 
-Walk `class-08/`'s `ResearchBrief` output one more time, then ask: "If I asked you to hand this brief to the qualification agent and only proceed to a draft if a specific reviewer approved specific claims, could you point to the code that enforces that today?" There isn't any yet — that's the whole class.
+Run Class 8's full workflow live for the Acme account, end to end, and let the room watch it succeed. Then ask: "I could run this by hand for every account WidgetWare has. Should I?" Walk through why that doesn't scale, and why a golden dataset plus a release gate is what actually does. That's the whole gap this class closes.

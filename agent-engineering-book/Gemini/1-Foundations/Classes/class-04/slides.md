@@ -1,99 +1,99 @@
-# Class 4 Slides — First ADK Agent
+# Class 4 Slides — Skills and Reusable Agent Capabilities
 
 12 slides, ~2 minutes of speaking notes each, for the 0:30–0:55 segment.
 
 ---
 
-## Slide 1 — Current WidgetWare state: real context, no agent yet
+## Slide 1 — Current WidgetWare state: an agent whose procedure is embedded prose
 
-**On slide:** `context_builder.py` assembles a full, structurally-isolated context. Nothing reasons over it yet.
+**On slide:** `qualification_agent.py` works, but its qualification procedure is a Python string constant only it can see.
 
-**Say:** "Everything we built last class was preparation. Today it finally reaches a model."
+**Say:** "Last class we got an agent reasoning for the first time. Today we ask: what happens the moment a second agent needs that exact same reasoning?"
 
 ---
 
 ## Slide 2 — Today's dependency
 
-**On slide:** Class 3's context package becomes this agent's instructions and per-call message.
+**On slide:** Class 3's agent boundary and model call don't change — only where the procedure lives.
 
-**Say:** "We are not writing a new prompt from scratch. We're wiring what already exists into ADK's actual `Agent` object."
+**Say:** "We are not rebuilding the agent. We're extracting one thing out of it and making it reusable."
 
 ---
 
 ## Slide 3 — Business objective
 
-**On slide:** A qualification assistant that reasons over one account, reproducibly.
+**On slide:** A reusable, versioned qualification procedure, usable by more than one agent.
 
-**Say:** "Reproducibly is the operative word. Same account, same context, should produce a comparable recommendation — not something wildly different call to call."
-
----
-
-## Slide 4 — Core concept: ADK as an application framework (§4.1)
-
-**On slide:** Agent, Session, Event, Runner — the four abstractions everything else builds on.
-
-**Say:** "ADK gives you a code-first way to define an agent, connect a model, manage sessions, and inspect what happened. We use these four names precisely for the rest of the course."
+**Say:** "WidgetWare doesn't have one agent forever — it'll have a research agent, a review agent, more. If the qualification logic lives only inside one Python string, none of them can share it."
 
 ---
 
-## Slide 5 — Sessions and events (§4.3); basic state (§4.4)
+## Slide 4 — Core concept: Skill vs. prompt vs. tool (§5.2–5.3)
 
-**On slide:** A session holds one interaction's history and state. An event records one thing that happened.
+**On slide:** A Skill tells the agent *how*; a tool lets it *do*.
 
-**Say:** "By the end of today you'll see an actual event sequence on screen, not just a final answer — that's the habit this class is really teaching."
-
----
-
-## Slide 6 — Architecture: the first agent boundary (§4.2)
-
-**On slide:** May: read the account, compare to ICP, recommend in prose. May not: search, call external services, modify CRM, draft outreach.
-
-**Say:** "This narrow boundary is deliberate — a small, well-understood first agent is easier to diagnose than an ambitious one."
+**Say:** "A prompt is disposable and specific to one call. A tool reaches outside the agent to take an action. A Skill is neither — it's a packaged, reusable piece of know-how the agent loads into its reasoning."
 
 ---
 
-## Slide 7 — Seven Steps mapping
+## Slide 5 — Terminology: anatomy of a useful Skill (§5.5)
 
-**On slide:** Primary: Build the Harness. Supporting: Design Agent Capabilities, Evaluate & Govern.
+**On slide:** Identity, inputs, procedure, quality criteria, examples.
 
-**Say:** "An agent is part of the harness before it's a capability — today is about getting one running safely, not yet making its reasoning reusable."
+**Say:** "A Skill that's just a paragraph of advice isn't a Skill yet — it needs the same discipline a good function signature has: what goes in, what comes out, and how to judge it went well."
+
+---
+
+## Slide 6 — Architecture: progressive disclosure (§5.6)
+
+**On slide:** A concise discovery description first; full detail only when the Skill is actually selected.
+
+**Say:** "If every Skill's full text loaded into every agent's context all the time, you'd drown in tokens before the agent did any real work. Discovery stays cheap; detail loads on demand."
+
+---
+
+## Slide 7 — Seven Steps mapping: Design Agent Capabilities
+
+**On slide:** Chapter 5 — the first chapter primarily about making a capability reusable.
+
+**Say:** "Build the Harness got the agent running. Design Agent Capabilities is about making what it knows how to do something you can hand to the next agent, unchanged."
 
 ---
 
 ## Slide 8 — Gemini vs. deterministic code
 
-**On slide:** The agent reasons. `app.py`'s message rendering stays deterministic.
+**On slide:** The agent reasons. `skills.py`'s file loading stays deterministic.
 
-**Say:** "Notice what's *not* probabilistic here: which account gets shown to the agent, how evidence gets labeled. Only the reasoning itself is left to the model."
+**Say:** "Loading a Skill file off disk is boring, deterministic code on purpose — the only place probability belongs is in how the agent applies the procedure once it's loaded."
 
 ---
 
-## Slide 9 — Security: staying within the boundary (Evaluation checklist, §4)
+## Slide 9 — Security: versioning and ownership (§5.7)
 
-**On slide:** Does it say when information is missing? Does it stay within its boundary?
+**On slide:** A Skill is an organizational asset, not an anonymous prompt fragment.
 
-**Say:** "A confident agent that guesses Meridian's employee count is a worse outcome than one that says 'I don't know' — even though the second one looks less impressive on screen."
+**Say:** "Once qualification logic lives in a file with a name, a version, and an owner, you can review changes to it the same way you'd review a change to a database schema. That was impossible when it was a string buried in `qualification_agent.py`."
 
 ---
 
 ## Slide 10 — Today's increment
 
-**On slide:** `qualification_agent.py`, `app.py`, three sample accounts.
+**On slide:** `skills/icp_qualification/`, `skills/evidence_classification/`, `skills.py`.
 
-**Say:** "Two files and some data to get an agent running for the first time. That's the whole chapter."
-
----
-
-## Slide 11 — Lab architecture: local playground inspection (§4.6)
-
-**On slide:** Assembled instructions, event sequence, latency — inspect all three, every run.
-
-**Say:** "The ability to explain an execution matters more than a polished demo. We'll print the raw event list at least once today, not just the final answer."
+**Say:** "One Skill extracted from last class's agent. One brand-new Skill. One small loader that both depend on."
 
 ---
 
-## Slide 12 — Acceptance criteria: behavior, not phrasing
+## Slide 11 — Lab architecture: three worked examples per Skill
 
-**On slide:** Scenario tests evaluate behavior — does it avoid inventing data, does it identify what's missing — never exact wording.
+**On slide:** One positive, one negative, one ambiguous — per Skill.
 
-**Say:** "If your test asserts the model said a specific sentence, it will break the next time the model rephrases a correct answer. Test what must be true, not how it's said."
+**Say:** "A Skill without examples is just instructions. Examples are what let the agent — and future engineers — see the boundary cases, not just the easy ones."
+
+---
+
+## Slide 12 — Acceptance criteria: no leftover logic in the agent
+
+**On slide:** After today, `qualification_agent.py` contains no qualification logic of its own.
+
+**Say:** "If you can still find the reasoning steps typed out in the Python file after this refactor, the extraction isn't done — the agent should only be wiring context, Skill, and model together."

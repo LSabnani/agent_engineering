@@ -1,6 +1,6 @@
 """The QualificationResult contract — Book 1, Chapter 6.
 
-Replaces Class 4/5's free-form prose result ("Acme looks like a strong
+Replaces Class 4's free-form prose result ("Acme looks like a strong
 opportunity") with a machine-validated interface. Software can now
 reliably determine the final status, decisive criteria, supporting
 evidence, missing information, and next step — none of which a prose

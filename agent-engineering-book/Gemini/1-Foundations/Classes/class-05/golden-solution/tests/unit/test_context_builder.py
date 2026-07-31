@@ -39,12 +39,16 @@ def test_context_for_a_clearly_qualified_account() -> None:
     icp = context.business_context["icp"]
     task_account = context.task_context["account"]
 
-    assert (task_account["industry"] in icp["preferred_industries"]) == expected["industry_is_preferred"]
-    assert (
-        task_account["employee_count"] >= icp["minimum_employee_count"]
-    ) == expected["meets_minimum_employee_count"]
+    assert (task_account["industry"] in icp["preferred_industries"]) == expected[
+        "industry_is_preferred"
+    ]
+    assert (task_account["employee_count"] >= icp["minimum_employee_count"]) == expected[
+        "meets_minimum_employee_count"
+    ]
     assert (task_account["region"] in icp["preferred_regions"]) == expected["region_is_preferred"]
-    assert (task_account["industry"] in icp["excluded_industries"]) == expected["is_explicitly_excluded"]
+    assert (task_account["industry"] in icp["excluded_industries"]) == expected[
+        "is_explicitly_excluded"
+    ]
 
 
 def test_context_for_a_clearly_unqualified_account() -> None:
@@ -55,10 +59,12 @@ def test_context_for_a_clearly_unqualified_account() -> None:
     icp = context.business_context["icp"]
     task_account = context.task_context["account"]
 
-    assert (task_account["industry"] in icp["excluded_industries"]) == expected["is_explicitly_excluded"]
-    assert (
-        task_account["employee_count"] < icp["minimum_employee_count"]
-    ) == (not expected["meets_minimum_employee_count"])
+    assert (task_account["industry"] in icp["excluded_industries"]) == expected[
+        "is_explicitly_excluded"
+    ]
+    assert (task_account["employee_count"] < icp["minimum_employee_count"]) == (
+        not expected["meets_minimum_employee_count"]
+    )
 
 
 def test_context_for_an_account_with_insufficient_evidence() -> None:
@@ -66,7 +72,12 @@ def test_context_for_an_account_with_insufficient_evidence() -> None:
     expected = load_expected("meridian-003")["icp_match"]
     context = build_context(
         account,
-        notes=[{"source": "press_mention", "text": "The company recently discussed modernization initiatives."}],
+        notes=[
+            {
+                "source": "press_mention",
+                "text": "The company recently discussed modernization initiatives.",
+            }
+        ],
     )
 
     task_account = context.task_context["account"]

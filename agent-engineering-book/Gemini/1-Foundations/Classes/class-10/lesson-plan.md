@@ -1,78 +1,83 @@
-# Class 10 — Evaluation and the Release Gate
+# Class 10 — Loop Engineering with ADK
 
-**Manuscript source:** Book 1, Chapter 10 — Evaluation and the Release Gate
-**Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Orchestrate Workflows
+**Manuscript source:** Book 1, Chapter 11 — Loop Engineering with ADK
+**Seven-Step mapping:** Primary: Engineer Loops / Supporting: Orchestrate Workflows, Evaluate & Govern
 **Golden solution produced:** `class-10/golden-solution/`
 **Starting checkpoint:** `class-09/golden-solution/`
 
+This class closes Book 1. Everything the loop touches today — the single-account workflow, its contracts, its release gate — is unchanged from Class 9. The loop wraps that proven system; it does not modify it.
+
 ## 0:00–0:20 — Homework review, common mistakes, golden solution reveal
 
-- **Review homework:** ask participants to show the approval-boundary test they added and explain, in one sentence, what state transition it proves is impossible.
-- **Common mistakes to flag:** state machine tests that only exercise the happy path (RECEIVED → ... → APPROVED) with no illegal-transition test; approval logic that lives in more than one place.
-- **Golden solution reveal:** run Class 9's full workflow live for one account end to end, then ask: "This worked. How do you know it'll keep working after the next code change, for accounts you didn't just watch by hand?" (Answer: you don't, yet. That's today's gap.)
+- **Review homework:** ask participants to walk through their extra golden-dataset case and show it actually changing the release gate's outcome when deliberately broken.
+- **Common mistakes to flag:** release gates that stop reporting after the first failure; golden-dataset cases that are technically present but don't cover a real failure mode.
+- **Golden solution reveal:** run Class 9's release gate live against the Class 9 checkpoint and watch it pass, then ask: "This proves one run, for one account at a time, on request, is trustworthy. What happens the moment WidgetWare hands you a hundred accounts and goes home for the night?"
 
 ## Slide outline (0:20–0:45)
 
-1. Current WidgetWare state: a complete bounded workflow that's only ever been checked by watching it run
-2. Today's dependency: the state machine and contracts from Classes 6–9 don't change — today wraps them in a repeatable, automatic check
-3. Business objective: a mechanical yes/no answer to "is this system good enough to ship right now?"
-4. Core concept: a golden dataset (§10.2) — a fixed, representative, version-controlled set of cases with known-correct outcomes
-5. Terminology: metric vs. release gate (§10.3–10.4) — a metric measures; a gate decides, based on thresholds applied to metrics
-6. Architecture: `GOLDEN_DATASET`'s required categories (§10.2) — qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt, and more, each represented on purpose
-7. Seven Steps mapping: Evaluate & Govern deepens — Class 6 validated one result; today validates the whole system's behavior across representative cases
-8. Gemini vs. deterministic code: evaluation itself is entirely deterministic — no model call is needed to know whether the system met its own golden dataset's expectations
-9. Security: a gate that fails loudly (§10.5) — `ReleaseGateResult` reports every unmet condition, not just the first one found
-10. Today's increment: `eval/golden_dataset.py`, `eval/metrics.py`, `eval/release_gate.py`, `eval/observability.py`
-11. Lab architecture: running the full golden dataset through the real workflow and computing pass/fail per category
-12. Acceptance criteria: a release gate that's too easy to pass is as useless as one that's too strict to ever pass — both need to be argued, not assumed
+1. Current WidgetWare state: a single-account workflow that's proven good enough to ship, run once, on request
+2. Today's dependency: nothing about `run_workflow` changes today — the loop wraps it, unchanged, exactly as Class 9 left it
+3. Business objective: run the same proven workflow unattended, across a queue, safely and within stated budgets
+4. Core concept: a loop is not `max_iterations` alone (§11.4) — it needs work selection, durable state, verification, and budgets
+5. Terminology: the inner ADK reasoning loop vs. the outer engineered loop this chapter adds (§11.2–11.3)
+6. Architecture: the five-way per-account decision (§11.8) — CONTINUE, RETRY, STOP, DEFER, ESCALATE
+7. Seven Steps mapping: Engineer Loops — the final primary step of Book 1
+8. Gemini vs. deterministic code: the workflow's reasoning is unchanged; everything new today — budget checks, decisions, queue selection — is deterministic
+9. Security: human approval authority does not change inside a loop (§11.10) — an account processed at 3am unattended gets exactly the same scrutiny as one processed live
+10. Today's increment: `loop/budget.py`, `loop/decision.py`, `loop/account_queue.py`, `loop/run_report.py`, `loop/batch_runner.py`, plus two new workflow states
+11. Lab architecture: verification before advancing (§11.7) — trust only the state the workflow actually reached, never an agent's own unverified claim
+12. Acceptance criteria: the loop stops for a reason it can name, every time
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a metric and a release gate (§10.3–10.4)?
-- Terminology: Why does a golden dataset need to be version-controlled, not regenerated fresh each run?
-- Architecture: Why does `GOLDEN_DATASET` deliberately include an injection-attempt case and a conflicting-evidence case, not just qualified/disqualified pairs?
-- Architecture: Why does `check_release_gate()` collect and report every failing reason instead of stopping at the first one?
-- Failure analysis: A release gate passes, but a real account later breaks the system in a way the golden dataset never covered — is the gate wrong?
-- Security/governance: What does "fails loudly" mean for a release gate, concretely, and why does that matter more than "fails accurately"?
-- WidgetWare scenario: `approval_compliance_rate()` only recognizes four workflow states at this checkpoint — what happens to that metric once Class 11 adds two more states?
-- Connecting back: How does the release gate's category-by-category structure reuse the same "many small checkable things beat one large trust-it verdict" idea from Class 6's business invariants?
+- Terminology: What are the five outcomes of the loop's per-account decision (§11.8)?
+- Terminology: What's the difference between the inner agent loop ADK already runs and the outer loop this chapter adds (§11.2–11.3)?
+- Architecture: Why is `max_iterations` alone not an engineered loop (§11.4)?
+- Architecture: Why does the state machine need `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW` added, and why is `BLOCKED` no longer terminal once they exist?
+- Failure analysis: A restarted batch run re-researches an account it already finished — what's missing?
+- Security/governance: Does an account processed inside an unattended batch loop get less approval scrutiny than one processed on request? What does §11.10 say?
+- WidgetWare scenario: The loop hits its maximum-attempts limit for one account — CONTINUE, RETRY, STOP, DEFER, or ESCALATE?
+- Connecting back: How does the loop's verification-before-advancing step (§11.7) reuse Class 5's contracts and Class 8's state machine?
 
 ## Build together (0:55–1:35)
 
-- `eval/golden_dataset.py` — `GOLDEN_DATASET`, 10 `GoldenCase` entries spanning `REQUIRED_CATEGORIES`
-- `eval/metrics.py` — deterministic metrics computed from a batch of workflow runs, including `approval_compliance_rate()`
-- `eval/release_gate.py` — `check_release_gate(...)` returning `ReleaseGateResult(passed, reasons)`, reporting all failures
-- `eval/observability.py` — structured run logging sufficient to reconstruct why a case passed or failed after the fact
+- extend `workflow/state_machine.py` with `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW`, updating `BLOCKED` to route to either instead of being terminal
+- `loop/budget.py` — the budget dataclass and stop-condition check
+- `loop/decision.py` — the five-way decision function
+- `loop/account_queue.py` — work discovery and selection policy
+- `loop/run_report.py` — a report every run produces, with `stop_reason`
+- `loop/batch_runner.py`'s `run_batch()`, accepting `qualify`/`review`/`draft` as injected callables, exactly like Class 8's `run_workflow`
+- wire a `LoopAgent` to the Class 8 workflow
 
 ## Test and diagnose (1:35–1:50)
 
-1. Run the full golden dataset through the real workflow (using deterministic stub agents, not live credentials) and confirm each category's expected outcome.
-2. Deliberately break one business rule (e.g., allow `QUALIFIED` with no evidence) and confirm the release gate catches it and names the specific failing category.
-3. Confirm the gate reports *every* unmet condition when multiple things are broken at once, not just the first.
-4. Inspect `approval_compliance_rate()`'s known limitation: it only recognizes the four states that exist through Class 9 — flag this as this checkpoint's own documented gap, not a bug to silently patch today.
-5. Diagnose using the Framework's seven categories — this class's failures are almost always **evaluation design** (a category the golden dataset doesn't cover) rather than a workflow bug.
-6. Apply the smallest fix — usually adding a missing golden-dataset case, not rewriting the gate logic.
-7. Re-run the full golden dataset and confirm the gate result is stable across repeated runs.
+1. Run the loop's scenario tests: a fresh account gets selected, a settled one doesn't.
+2. Trigger a failure: restart the process mid-batch and confirm the loop resumes from saved session state instead of reprocessing.
+3. Inspect the run report's `stop_reason` and per-status totals.
+4. Diagnose: a restart that reprocesses a settled account is almost always a **workflow state** or missing-**permissions**-to-persist issue (an `InMemorySessionService` used where a durable one was needed).
+5. Apply the smallest fix — usually swapping in the persistent `SessionService` or fixing what gets checkpointed.
+6. Confirm the tool-call budget stop actually fires — this is a real bug class, not a hypothetical: verify the counter that tracks usage against the budget is actually incremented somewhere in the loop.
+7. Re-run the full scenario suite.
 
 ## Homework
 
 | Level | Task |
 | ----- | ---- |
-| **Required** | `GOLDEN_DATASET` covers all required categories, `check_release_gate()` correctly passes a healthy system and fails an unhealthy one with named reasons |
-| **Diagnostic** | The provided release gate currently stops evaluating after the first golden-dataset case fails, instead of running all ten and reporting every failure. Find the early-return and fix it so a single run always reports the complete picture |
-| **Extension** | Add an eleventh golden-dataset case of your own devising that covers a realistic WidgetWare scenario none of the existing ten categories represent, and show it changes the gate's outcome when deliberately broken |
+| **Required** | The batch loop processes a four-account seed queue (at least one account outside WidgetWare's ICP) and produces a run report naming its `stop_reason` |
+| **Diagnostic** | The provided budget test suite currently verifies a single account's retries count against its own attempt limit correctly, but does not verify that one badly-behaved account's retries don't quietly consume the run's `max_consecutive_failures` budget in a way that stops the whole batch prematurely for everyone else. Write a test with one account that fails twice, followed by three healthy accounts, and confirm all three still get processed |
+| **Extension** | Add a fifth account to the seed queue specifically designed to trigger `DEFER` — wire a `dependency_available=False` path into `run_batch` for at least one realistic condition, and confirm the deferred account is not discarded and would be eligible again on a subsequent run |
 
 - **Starting checkpoint:** `class-09/golden-solution/`
-- **Files participants may modify:** `src/widgetware_sdr/eval/`, `tests/`
-- **Expected behavior:** the release gate is a single, repeatable, automatic answer to "does this system currently meet its own bar" — never a manual judgment call
-- **Tests that must pass:** golden-dataset category tests, release-gate pass/fail tests, the "reports every failure" test
-- **Submission:** one full `ReleaseGateResult` output showing a deliberately broken system correctly failing with all reasons named
-- **Constraints:** no loop yet — this checkpoint evaluates a single run of the workflow per golden-dataset case, not a batch or retry loop (that's Class 11)
+- **Files participants may modify:** `src/widgetware_sdr/workflow/state_machine.py`, `src/widgetware_sdr/loop/`, `tests/`
+- **Expected behavior:** the same proven single-account workflow runs unattended across a queue, within stated budgets, stopping for a nameable reason
+- **Tests that must pass:** the loop scenario tests (fresh-account selection, settled-account skip, restart-resume, budget stop, attempt-limit stop)
+- **Submission:** one full batch-loop run report (`stop_reason` and status totals)
+- **Constraints:** nothing about the single-account workflow (`run_workflow`) changes in this chapter — the loop wraps it, it does not modify it; still no send tool anywhere in the codebase
 
 ## Golden solution: `class-10/`
 
-Adds the evaluation and release-gate layer on top of `class-09/` without changing the workflow itself. README states plainly: "This checkpoint proves the Class 9 workflow is good enough to ship... No loop yet — that's Class 11, deliberately after this one."
+Adds the extended state machine and the full batch loop on top of `class-09/` without changing the single-account workflow. README closes Book 1 with its own conclusion framing: the system now works "for one account at a time, run on request," **and** across a bounded, unattended batch — but still cannot decompose its own goals, collaborate with agents it doesn't own, or prove continuously (not just once) that it still behaves. That gap is Book 2.
 
-## Bridge to Class 11
+## Bridge to Book 2
 
-Class 11 wraps the workflow in a bounded, unattended loop — processing a queue of accounts under a budget, with retry, escalation, and stop conditions — and extends the state machine with two new states that `approval_compliance_rate()` doesn't yet recognize, which this checkpoint's own `KNOWN_FAILURE_CASES.md` flags as the very next thing to fix.
+Book 1 is complete. Book 2 begins its own eleven-class course, with its own Class 1 — the same WidgetWare system, now asked to serve many users, remember across time, draw on enterprise knowledge, plan over ambiguous goals, and collaborate with agents it doesn't own. See `../../../2-Advanced-Architectures/` for the manuscript; Book 2's course companion is built separately.

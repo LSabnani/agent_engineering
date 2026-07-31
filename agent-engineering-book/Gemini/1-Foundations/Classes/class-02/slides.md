@@ -1,99 +1,99 @@
-# Class 2 Slides — Antigravity Workspace and Repository Harness
+# Class 2 Slides — Gemini Context and Instruction Architecture
 
 12 slides, ~2 minutes of speaking notes each, for the 0:30–0:55 segment.
 
 ---
 
-## Slide 1 — Current WidgetWare state: a charter, no code
+## Slide 1 — Current WidgetWare state: a runnable, empty, well-governed workspace
 
-**On slide:** Five files from Class 1. Zero lines of application code.
+**On slide:** `./scripts/check.sh` passes. Zero business logic exists.
 
-**Say:** "Last class we decided what this system is allowed to do. Today we build the workspace that will keep every future line of code inspectable — before Gemini or ADK enter the picture at all."
+**Say:** "We have a workspace we can trust. Today we build the thing every future agent will actually reason over — and we still won't call a model. That's on purpose."
 
 ---
 
 ## Slide 2 — Today's dependency
 
-**On slide:** Everything from here forward assumes a reviewable, testable workspace exists.
+**On slide:** No agent gets built in Class 3 without a real context architecture first.
 
-**Say:** "Every future class assumes you can run one command and know whether your code is healthy. If that's not true by the end of today, every later class gets harder for no good reason."
+**Say:** "If you skip today and go straight to 'give the agent a big prompt,' every later chapter — evidence, tools, workflows — inherits that mess. This is the highest-leverage class in Book 1 for exactly that reason."
 
 ---
 
 ## Slide 3 — Business objective
 
-**On slide:** An inspectable harness, before any model gets more capability.
+**On slide:** Separate stable policy from task data from retrieved evidence.
 
-**Say:** "Notice this chapter still doesn't touch Gemini. That's deliberate — the harness has to exist first, or every later capability inherits whatever sloppiness we allow today."
-
----
-
-## Slide 4 — Core concept: the harness is part of the system (§2.1)
-
-**On slide:** IDE, repo structure, instructions, dependency management, secrets handling, code-quality checks, tests, permissions, review practice.
-
-**Say:** "None of this is scaffolding you throw away later. The harness is as much a part of 'the system' as the agent code will be — a strong harness makes both you and Antigravity perform better, because it makes expectations explicit."
+**Say:** "Not 'write a good prompt.' Build an architecture with layers, so each layer can be tested, versioned, and reasoned about independently."
 
 ---
 
-## Slide 5 — Antigravity as engineering partner; README vs. SPEC (§2.2, §2.4)
+## Slide 4 — Core concept: model choice is an architectural decision (§3.1)
 
-**On slide:** The eight-step disciplined cycle: state objective → provide spec → ask for plan → review → permit bounded implementation → inspect diff → run tests → accept/revise/revert.
+**On slide:** One question: "Which model provides sufficient quality for this task under the required latency and cost constraints?"
 
-**Say:** "`README.md` is for people. `SPEC.md` is for the implementation — required behavior, prohibited behavior, completion criteria. Antigravity should be handed the SPEC, not asked to guess your intent from a README."
+**Say:** "Not 'which model is best' — that question never has a stable answer. Today we centralize model selection in one function so this question can actually be revisited later, in Class 9, with real evaluation data."
 
 ---
 
-## Slide 6 — Architecture: repository structure (§2.3)
+## Slide 5 — Layers of context (§3.2)
 
-**On slide:** The full tree — `docs/`, `config/`, `src/widgetware_sdr/`, `tests/{unit,contracts,scenarios}`, `scripts/`.
+**On slide:** System instructions, business context, task context, retrieved evidence, state — five layers, five different lifecycles.
 
-**Say:** "This structure separates business knowledge, policy, implementation, and evaluation. Most of these folders are empty today. That's fine — we're building the shape the system will grow into, not just what we need this afternoon."
+**Say:** "Each layer changes at a different rate. System instructions almost never change. Task context changes every single call. Conflating them is the single most common root cause of 'the agent did something inconsistent' bug reports."
+
+---
+
+## Slide 6 — Architecture: instruction hierarchy (§3.4)
+
+**On slide:** Who is the agent? What may it use? How does it reason about uncertainty? What must it never do?
+
+**Say:** "User content — an account note, a retrieved page — can never answer these questions. It can only ever be evidence. That's not a policy we hope the model follows; today we make it structurally true in the code that assembles context."
 
 ---
 
 ## Slide 7 — Seven Steps mapping
 
-**On slide:** Primary: Build the Harness. Supporting: Design Agent Capabilities, Evaluate & Govern.
+**On slide:** Primary: Build Context. Supporting: Frame the Use Case, Evaluate & Govern.
 
-**Say:** "Same framework as last class, different step. Build the Harness always comes this early — you cannot safely give a model more capability than your workspace can inspect."
+**Say:** "Build Context comes before Design Agent Capabilities for a reason — you cannot design a good tool or Skill without already knowing what information environment it operates inside."
 
 ---
 
 ## Slide 8 — Gemini vs. deterministic code
 
-**On slide:** Antigravity may decide *how* to implement a bounded task. Repository conventions fix *what's allowed* in place.
+**On slide:** The model reasons over context. Code decides what enters it.
 
-**Say:** "A coding agent is still a kind of agent — the same probabilistic-reasoning-inside-deterministic-boundaries pattern from Class 1 applies to Antigravity itself, not just to WidgetWare's own agents."
+**Say:** "By the end of today, look at `context_builder.py` — there is not one call to a model anywhere in it. Everything here is deterministic, testable Python. That's what 'engineering the context' actually means."
 
 ---
 
-## Slide 9 — Security: trust and permissions (§2.7)
+## Slide 9 — Security: prompt-injection-shaped failures (§3.6)
 
-**On slide:** Least privilege for a *development* agent: review shell commands, restrict production credentials, use `.env.example`, isolate experiments, inspect dependency additions.
+**On slide:** "A malicious note that attempts to override policy" — one of today's four required tests.
 
-**Say:** "'The development agent is a powerful collaborator, not an unquestioned authority' — that line is worth writing on the board. Today's Kahoot will test whether that sentence actually changes what you do, not just whether you agree with it."
+**Say:** "We're going to write a test with a note that says 'ignore all previous instructions.' We can't yet test whether a real model obeys it — no model call exists yet. What we *can* test, right now, deterministically, is whether that text ever has the structural opportunity to reach the same trust tier as system instructions. Today's guarantee is architectural, not behavioral — Class 3 is where we'll see how a real model actually responds."
 
 ---
 
 ## Slide 10 — Today's increment
 
-**On slide:** `pyproject.toml`, `.env.example`, health check + test, one-command check script.
+**On slide:** `config/*.yaml`, `instructions.py`, `context_builder.py`.
 
-**Say:** "By the end of today, `./scripts/check.sh` will format-check, lint, and test this entire repository in one command. That command is what every future class's 'test and diagnose' segment starts with."
-
----
-
-## Slide 11 — Lab architecture: specification-driven tasks (§2.6)
-
-**On slide:** A good Antigravity task: one bounded objective, files in scope, acceptance criteria, explicit exclusions, commands that should pass, expected deliverable.
-
-**Say:** "We're going to deliberately give Antigravity a bad task first — 'set up the project' — and watch what happens. Then we'll give it the properly scoped version from the book. The difference is the whole lesson."
+**Say:** "Three YAML files carrying WidgetWare's actual business rules, one fixed instructions constant, and one assembly function. That's the whole context architecture."
 
 ---
 
-## Slide 12 — Acceptance criteria for today
+## Slide 11 — Lab architecture: the four context tests
 
-**On slide:** Every baseline check runs with one documented command. Repository contains a clear rollback point.
+**On slide:** Qualified account, unqualified account, insufficient-evidence account, malicious note.
 
-**Say:** "If you can't undo today's work with a clean `git` command, you don't actually have a rollback point — you have a hope."
+**Say:** "We'll build the malicious-note test live, and deliberately let it fail first, so you see what 'context wasn't properly isolated' actually looks like before we fix it."
+
+---
+
+## Slide 12 — Acceptance criteria
+
+**On slide:** Injected instructions fail to override system constraints. Context is compact enough to inspect manually.
+
+**Say:** "Print the assembled prompt today, at least once, and actually read it top to bottom. If you can't hold the whole thing in your head, it's already too big — and that problem only gets worse starting Book 2."

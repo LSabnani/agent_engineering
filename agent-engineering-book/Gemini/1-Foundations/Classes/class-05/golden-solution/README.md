@@ -2,7 +2,7 @@
 
 A bounded agent system that researches, qualifies, and drafts outreach to prospective manufacturing and industrial-automation accounts on WidgetWare's behalf — and stops for human approval before anything leaves the building.
 
-This checkpoint (Class 5 / `golden-solutions/class-05/`) extracts the qualification procedure out of the agent's embedded instruction (Class 4) and into a reusable Skill. The agent's boundary and model call are unchanged from Class 4 — only where its reasoning procedure lives has changed.
+This checkpoint (Class 5 / `golden-solutions/class-05/`) replaces the agent's free-form prose output with a validated `QualificationResult` contract. The agent itself, its Skill, and its model call are unchanged from Class 4 — this chapter is a standalone validation layer, not a rewiring of the agent.
 
 ## Quick start
 
@@ -10,17 +10,15 @@ This checkpoint (Class 5 / `golden-solutions/class-05/`) extracts the qualificat
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-cp .env.example .env  # fill in GOOGLE_API_KEY (or GOOGLE_CLOUD_PROJECT) to run the agent for real
+cp .env.example .env
 ./scripts/check.sh    # runs format check, lint, and tests — live-model tests skip automatically without credentials
 ```
 
 ## What's new this class
 
-- `skills/icp_qualification/` — the qualification procedure, extracted from Class 4's embedded string: `skill.md`, three worked examples, and `tests/cases.yaml` (semantic evaluation cases, distinct from the deterministic unit tests)
-- `skills/evidence_classification/` — a lightweight new Skill labeling information as verified fact / derived fact / inference / unknown / conflict
-- `src/widgetware_sdr/skills.py` — loads a Skill's `skill.md` into a string
-- `agents/qualification_agent.py` updated: `build_agent_instruction()` now calls `load_skill("icp_qualification")` instead of embedding the procedure as a string constant — the agent file itself now contains no qualification logic
-- `tests/unit/` — updated to confirm the Skill is actually loaded (a specific phrase from `skill.md` appears in the instruction) rather than reimplemented inline
+- `src/widgetware_sdr/contracts/evidence.py` — the `EvidenceItem` contract
+- `src/widgetware_sdr/contracts/qualification.py` — the `QualificationResult` contract with four enforced business invariants, plus `parse_qualification_result()`'s fail-safe validate pipeline
+- `tests/contracts/` — schema-validation and business-invariant tests, including failing-case tests for each invariant
 
 ## Repository structure
 
@@ -31,66 +29,59 @@ widgetware-sdr/
 ├── config/
 ├── data/sample_accounts/
 ├── skills/
-│   ├── icp_qualification/
-│   │   ├── skill.md
-│   │   ├── examples/
-│   │   └── tests/cases.yaml
-│   └── evidence_classification/
-│       └── skill.md
 ├── src/widgetware_sdr/
+│   ├── contracts/
+│   │   ├── evidence.py
+│   │   └── qualification.py
 │   ├── skills.py
 │   ├── app.py
-│   └── agents/qualification_agent.py
+│   └── agents/qualification_agent.py   # unchanged from Class 4 — still no tools
 ├── tests/
 │   ├── unit/
+│   ├── contracts/
 │   ├── integration/     # requires live credentials; skips otherwise
-│   ├── contracts/        # populated starting Class 6
 │   ├── scenarios/
 │   └── fixtures/
 └── scripts/check.sh
 ```
 
-## Running the agent for real
-
-Requires `GOOGLE_API_KEY` (or a configured Vertex AI project) in your environment:
+## Trying the contract pipeline
 
 ```python
-from widgetware_sdr.app import run_qualification_sync
-import yaml
+from widgetware_sdr.contracts.qualification import parse_qualification_result
 
-with open("data/sample_accounts/acme-001.yaml") as f:
-    account = yaml.safe_load(f)
-
-events = run_qualification_sync(account)
-for event in events:
-    print(event)
+raw = {"account_id": "acme-001", "status": "QUALIFIED", "rationale": "Fits.", "evidence_refs": []}
+result = parse_qualification_result(raw, account_id="acme-001")
+print(
+    result.status
+)  # BLOCKED — QUALIFIED without evidence_refs is an invariant violation, not a valid result
+print(result.errors)  # the validation error, preserved for debugging
 ```
 
 ## Known failure cases
 
-See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md) — in particular #1: a clean test run in this environment proves construction, not reasoning quality.
+See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md) — in particular #1: the contract exists and validates, but nothing in this checkpoint yet calls it against a real agent response.
 
 ## Completion checklist
 
 Before treating this checkpoint as done:
 
-- [ ] `qualification_agent.py` contains no qualification procedure of its own — grep it for ICP-comparison logic; there should be none.
-- [ ] `build_agent_instruction()` loads `skill.md` via `skills.py`, not a hardcoded string.
-- [ ] The agent's static instruction still contains no specific account data anywhere.
-- [ ] The agent still has no tools attached — confirmed by `test_agent_has_no_tools`.
-- [ ] Both Skills have real, ordered procedures — not generic advice restating the goal.
+- [ ] Every one of `QualificationResult`'s four business invariants (`QUALIFIED` needs evidence, `NOT_QUALIFIED` needs an exclusion, `NEEDS_RESEARCH` needs missing information, `BLOCKED` needs an error) has its own failing-case test, not just a happy-path test.
+- [ ] `parse_qualification_result` never raises on malformed input — it always returns a `BLOCKED` result with the error preserved.
+- [ ] The agent (`qualification_agent.py`) is byte-for-byte unchanged from Class 4 — this chapter adds a validation layer, it doesn't touch the agent.
+- [ ] The agent still has no tools attached.
 
 ## Starting Class 6
 
-1. Start from this checkpoint. Class 6 does not touch `skills/`, `app.py`, or the agent's instruction assembly — it replaces the agent's *output* from free-form prose (`QUALIFY`/`DO_NOT_QUALIFY`/`NEEDS_RESEARCH` in a sentence) with a validated `QualificationResult` contract.
-2. `skill.md`'s procedure still describes the reasoning; Class 6 only changes how the result is captured afterward.
+1. Start from this checkpoint. Class 6 gives the agent its first real tools — three narrow, read-only functions for account, product, and ICP data — and updates its instruction to use them instead of assuming facts.
+2. The `QualificationResult` and `EvidenceItem` contracts don't change structurally in Class 6, but `EvidenceItem` starts getting real exercise once tool-retrieved facts need evidence identifiers.
 3. See `../../class-06/` for what Class 6 adds.
 
 ## Status
 
-- [x] Class 1 — Project charter
-- [x] Class 2 — Antigravity workspace and repository harness
-- [x] Class 3 — Gemini context and instruction architecture
-- [x] Class 4 — First ADK agent (embedded procedure)
-- [x] Class 5 — Skills and reusable agent capabilities
-- [ ] Classes 6–11 — see `../../00_Course_Framework.md`
+- [x] Class 1 — Project charter, and the Antigravity workspace and repository harness
+- [x] Class 2 — Gemini context and instruction architecture
+- [x] Class 3 — First ADK agent (embedded procedure)
+- [x] Class 4 — Skills and reusable agent capabilities
+- [x] Class 5 — Structured outputs and agent contracts
+- [ ] Classes 6–10 — see `../../00_Course_Framework.md`

@@ -39,7 +39,10 @@ def get_account_profile(account_id: str) -> dict[str, Any]:
 
     path = DATA_DIR / f"{account_id}.yaml"
     if not path.exists():
-        return {"error": f"no account found for account_id={account_id!r}", "error_category": "not_found"}
+        return {
+            "error": f"no account found for account_id={account_id!r}",
+            "error_category": "not_found",
+        }
 
     with path.open("r", encoding="utf-8") as f:
         return yaml.safe_load(f)
@@ -66,7 +69,10 @@ def get_widgetware_product(product_id: str) -> dict[str, Any]:
     for product in products:
         if product["product_id"] == product_id:
             return product
-    return {"error": f"no product found for product_id={product_id!r}", "error_category": "not_found"}
+    return {
+        "error": f"no product found for product_id={product_id!r}",
+        "error_category": "not_found",
+    }
 
 
 def get_icp_policy() -> dict[str, Any]:

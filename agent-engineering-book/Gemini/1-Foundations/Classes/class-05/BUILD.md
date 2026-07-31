@@ -1,27 +1,25 @@
-# Building Class 05 with Antigravity
+# Building Class 5 with Antigravity
 
-Goal: refactor the Account Qualification Assistant so its entire qualification procedure lives in a reusable Skill, not embedded in Python. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-05/`, then diff.
+Goal: a validated `QualificationResult` contract that turns the agent's free-form prose into a machine-checkable result, without touching the agent itself. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-05/`, then diff.
 
 ## Prerequisites
 
-- **`../SETUP.md` complete**, including a way to actually call Gemini: `GOOGLE_API_KEY`, or `GOOGLE_CLOUD_PROJECT` + Vertex AI access. You can build and test most of this class without one (agent construction is fully offline), but you can't observe real reasoning without it.
-- Your Class 04 checkpoint, passing `./scripts/check.sh`.
+- **`../SETUP.md` complete.** This class is fully offline — no model credentials needed, since nothing here calls Gemini directly.
+- Your Class 4 checkpoint, passing `./scripts/check.sh`.
 
 ## Steps
 
-1. Write the Skill first, by hand, before touching the agent's Python. `skills/icp_qualification/skill.md` should contain: identity (name, version, owner, purpose), inputs, an ordered procedure (check exclusions first, compare thresholds, identify pain signals, identify missing evidence, distinguish fact from inference, select a provisional outcome, explain it), quality criteria, and a pointer to three worked examples. This procedure should be lifted directly out of Class 4's embedded string — same reasoning, new home. Write the three examples (`examples/qualified.md`, `unqualified.md`, `needs_research.md`) using the three fixture accounts already in the repo.
+1. Write `src/widgetware_sdr/contracts/evidence.py` yourself: an `EvidenceItem` Pydantic v2 model (`extra="forbid"`) capturing at minimum a source, a claim, and a category distinguishing verified fact from inference — reusing Class 2's evidence vocabulary.
 
-2. Write `src/widgetware_sdr/skills.py` yourself: a small, deterministic `load_skill(name: str) -> str` that reads `skills/<name>/skill.md` off disk and returns its text. No model call, no caching complexity — this is boring on purpose.
+2. Ask Antigravity for the qualification contract, but be explicit about the invariants — this is the part a generic prompt will miss:
 
-3. Ask Antigravity to refactor the existing agent, not rewrite it from scratch:
+   > "Write `src/widgetware_sdr/contracts/qualification.py`. Define `QualificationResult` as a Pydantic v2 model (`extra='forbid'`) with fields for `account_id`, `status` (an enum: QUALIFIED, NOT_QUALIFIED, NEEDS_RESEARCH, BLOCKED), `rationale`, `evidence_refs`, `exclusion_reasons`, `missing_information`, and `errors`. Add a `@model_validator(mode='after')` enforcing: QUALIFIED requires non-empty `evidence_refs`; NOT_QUALIFIED requires non-empty `exclusion_reasons`; NEEDS_RESEARCH requires non-empty `missing_information`; BLOCKED requires non-empty `errors`."
 
-   > "Refactor `src/widgetware_sdr/agents/qualification_agent.py` so its instruction is assembled from `SYSTEM_INSTRUCTIONS`, the rendered ICP and escalation-rule config, and the full text of `skills/icp_qualification/skill.md`, loaded via `load_skill()` — not retyped as a Python string. Remove the embedded procedure constant entirely. The instruction must still never include any specific account's data."
+3. Write `parse_qualification_result(raw: dict, account_id: str) -> QualificationResult` yourself, by hand — this fail-safe wrapper is the part worth understanding line by line, not delegating: try to construct `QualificationResult(**raw)`; on any `ValidationError` (schema or invariant), catch it and return a `BLOCKED` result whose `errors` field preserves the original exception message and whose other fields are safely empty/default.
 
-4. Add the second Skill, `skills/evidence_classification/skill.md` — lightweight, five categories (verified fact / derived fact / inference / unknown / conflict), a handful of worked examples.
+4. Write the contract tests: one happy-path test per status value (four total), one failing-case test per invariant (four total, each deliberately violating one invariant), and at least one test feeding `parse_qualification_result` a completely malformed dict (wrong types, missing required keys) confirming it returns `BLOCKED` and never raises.
 
-5. Update the offline tests: agent name and model unchanged, instruction contains the real ICP figures and the Skill's procedure text (not the old embedded string), instruction contains **no** specific account data, agent has no tools, and — specifically for this checkpoint — no qualification logic remains as a string literal anywhere in `qualification_agent.py`.
-
-6. If you have credentials, re-run the three semantic scenario tests (qualified, unqualified, insufficient-evidence) against the refactored agent and confirm the reasoning is materially unchanged from Class 4's — only its source moved. If you don't have credentials, confirm the tests still exist and are correctly skip-guarded.
+5. Confirm `qualification_agent.py` is untouched — diff it against your Class 4 checkpoint and verify zero changes.
 
 ## Verify
 
@@ -32,12 +30,12 @@ pip install -e ".[dev]"
 ./scripts/check.sh
 ```
 
-Expect offline tests to pass and integration tests to skip (without credentials) or pass (with them).
+Expect all contract tests and prior offline tests to pass; integration tests skip (without credentials) or pass (with them) exactly as in Class 4, since the agent itself hasn't changed.
 
 ## Compare against the reference
 
-`golden-solution/tests/unit/test_qualification_agent_construction.py` is the reference for what "constructs correctly" means here. Pay attention to the test confirming the instruction contains the Skill's loaded text, not a retyped copy — a submission that keeps a parallel embedded string "just in case" hasn't actually completed the extraction.
+`golden-solution/tests/contracts/` is the reference for what a complete invariant test suite looks like — pay attention to how each failing-case test constructs a minimally-invalid object (right status, missing the one required field) rather than an object that's wrong in several ways at once, which would make it unclear which invariant actually caught it.
 
 ## Grade it
 
-Passing construction tests doesn't prove the Skill's procedure is actually good, or that it's genuinely reusable outside this one agent. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.
+Passing tests doesn't prove the invariants match the actual business rules, or that the fail-safe pipeline handles every realistic malformed-input shape. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.

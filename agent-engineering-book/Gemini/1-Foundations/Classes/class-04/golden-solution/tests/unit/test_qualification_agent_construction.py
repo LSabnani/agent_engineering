@@ -7,7 +7,10 @@ reasons well. Semantic evaluation lives in tests/integration/, and
 requires live credentials.
 """
 
-from widgetware_sdr.agents.qualification_agent import build_agent_instruction, create_qualification_agent
+from widgetware_sdr.agents.qualification_agent import (
+    build_agent_instruction,
+    create_qualification_agent,
+)
 from widgetware_sdr.instructions import DEFAULT_MODEL_ID
 
 
@@ -31,12 +34,10 @@ def test_instruction_includes_the_real_icp_thresholds_not_hardcoded_copies() -> 
     assert "financial_services" in instruction
 
 
-def test_instruction_includes_the_embedded_qualification_procedure() -> None:
-    """This checkpoint deliberately embeds the procedure directly in the
-    agent's instruction — Chapter 5 is where it gets extracted into a
-    Skill, not here.
-    """
+def test_instruction_includes_the_skill_procedure() -> None:
     instruction = build_agent_instruction()
+    # A specific phrase from skills/icp_qualification/skill.md's procedure —
+    # proves the Skill is actually loaded, not reimplemented inline.
     assert "Check explicit exclusion criteria first" in instruction
     assert "QUALIFY" in instruction
     assert "DO_NOT_QUALIFY" in instruction
@@ -56,16 +57,7 @@ def test_instruction_contains_no_specific_account_data() -> None:
 
 def test_agent_has_no_tools() -> None:
     """Book 1 §4.2: this agent may not call external services. Tools
-    arrive in Chapter 7, several classes from now.
+    arrive in Class 5 (Book 1 Chapter 7), not here.
     """
     agent = create_qualification_agent()
     assert not getattr(agent, "tools", [])
-
-
-def test_no_skills_directory_exists_yet() -> None:
-    """A structural check for this checkpoint's own honesty: Chapter 5
-    is what introduces skills/ — it should not exist here."""
-    from pathlib import Path
-
-    repo_root = Path(__file__).resolve().parent.parent.parent
-    assert not (repo_root / "skills").exists()

@@ -1,15 +1,15 @@
-# Class 07 Grading Criteria
+# Class 5 Grading Criteria
 
-Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check partially.
+Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check for the specific cases already anticipated.
 
-1. **Tool descriptions would actually work on a model that's never seen the code.** Read each tool's docstring as if you were an LLM deciding whether to call it. Does it say when to use it *and* when not to? A description that only states what the function returns, with no usage guidance, is weaker than Book 1 §7.2 asks for.
+1. **Conflict detection's actual scope is documented honestly.** A submission's own notes (README, `KNOWN_FAILURE_CASES.md`, or code comments) should say plainly what pattern the detector actually catches, not imply it "handles conflicting sources" in general. If a submission's conflict detector is broader than this course's reference, that's a legitimate improvement — but it should still be documented precisely, not left for a reader to reverse-engineer.
 
-2. **`calculate_fit_score` is not reachable by the model.** Check the agent's `tools=[...]` list — `calculate_fit_score` should not be in it. If it is, the submission has undone the chapter's own point about keeping deterministic calculation outside model reasoning.
+2. **The injection-attempt test proves isolation, not just survival.** A test that only confirms `build_research_brief` doesn't crash on injection-laden input is weaker than one that confirms the attack text ends up as ordinary, cited claim data — exactly where any other evidence text would land, no special handling, no special exception.
 
-3. **Tool tests are genuinely independent of the agent.** A strong submission's tool tests never construct an `Agent` or make a model call — they call the tool function directly. A test that goes through the agent to exercise a tool has conflated two different kinds of bugs (reasoning vs. implementation) that this chapter deliberately keeps separate.
+3. **The choice of function tool vs. MCP is argued, not assumed.** A strong submission states which of §8.5's four conditions actually applied to this specific research source, and reaches a defensible conclusion — even if that conclusion is "MCP would be better here, but a function tool is simpler for a course lab."
 
-4. **Missing-record and invalid-input handling return typed errors, not exceptions or silent defaults.** Grep for any bare `raise` inside a tool function, or any place a missing record silently returns a plausible-looking default instead of an explicit error. Both undermine the fail-safe principle Class 6 established at the contract layer.
+4. **`ResearchBrief`'s claims are genuinely tied to evidence, not decoratively.** Pick one claim in a generated brief and trace its `evidence_refs` back to a real evidence item's `claim` text. If the two don't actually match — the claim says something the cited evidence doesn't support — the citation is present but hollow.
 
-5. **The honesty about untested tool-failure categories is present, not glossed over.** A strong submission's own `KNOWN_FAILURE_CASES.md` (or equivalent) says plainly that dependency failure, permission failure, and redaction aren't tested because they don't apply yet — not that they're "covered" by the existing valid/invalid/missing tests, which is a different claim.
+5. **The Research Agent's instruction would plausibly work on a model that's never seen this codebase.** Read it as an outsider. Does it clearly say what to do when evidence conflicts, and what never to do with retrieved text — without relying on context only the course provides?
 
-6. **Independent understanding, not a copy.** If the submission's tools and their tests are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.
+6. **Independent understanding, not a copy.** If the submission's mock data, pipeline, and Research Agent are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.

@@ -1,37 +1,31 @@
-# Building Class 02 with Antigravity
+# Building Class 2 with Antigravity
 
-Goal: a runnable, inspectable Python workspace for WidgetWare SDR Lab — repository structure, `pyproject.toml`, a health check, and one documented command that runs every baseline check. `golden-solution/` in this folder is the reference solution. Build your own copy in `my-work/gemini-book-1/class-02/` (see `../HOW-TO-WORK-A-CLASS.md`), then diff.
+Goal: a deliberate context architecture — WidgetWare's business rules as data, fixed system instructions, and a context-assembly pipeline that keeps account-supplied content structurally isolated from system policy. Still no model call anywhere in this codebase. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-02/`, then diff.
 
 ## Prerequisites
 
-- **`../SETUP.md` complete** (Antigravity, Git, Python 3.11+).
-- Your own Class 01 charter, copied into this working directory as a starting point (or start from `../class-01/golden-solution/` if you didn't do the self-paced Class 01).
+- **`../SETUP.md` complete.**
+- Your Class 1 workspace, working and passing `./scripts/check.sh` (or `../class-01/golden-solution/` if you didn't do the self-paced Class 1).
 
 ## Steps
 
-1. Copy your Class 01 charter files (`README.md`, `SPEC.md`, `docs/`, `tests/scenarios/`) into your working directory. Initialize git if you haven't already.
+1. Start from your Class 1 checkpoint. Confirm `./scripts/check.sh` passes before adding anything — Class 2 adds a new dependency (`PyYAML`) and new tests, and it will be much harder to tell new failures from old ones if you start broken.
 
-2. Open Antigravity in that directory and ask it directly for the workspace — don't hand-build it yourself, this class is about learning what Antigravity can do for you, following Book 1 §2.2's disciplined cycle (state objective, provide spec, ask for a plan, review, permit bounded implementation, inspect the diff, run tests, accept/revise/revert):
+2. Ask Antigravity to draft the three business-configuration files, giving it the actual facts rather than letting it invent them:
 
-   > "Set up a Python package workspace for WidgetWare SDR Lab, following the repository structure in `SPEC.md`. I need: `pyproject.toml` with `pytest` and `ruff` as dev dependencies, a `src/widgetware_sdr` package with an `__init__.py` and a deterministic `health_check()` function that returns a status payload (no network call, no model call), a matching test in `tests/unit/`, `config/`, `docs/`, and `tests/{unit,contracts,scenarios}/` directories, a `.env.example` documenting `GOOGLE_CLOUD_PROJECT` and `WIDGETWARE_MODEL_ID` with no real values, a `.gitignore` covering `.venv/`, `__pycache__/`, `.env`, and a `scripts/check.sh` that runs `ruff format --check`, `ruff check`, and `pytest` in that order, failing on the first error."
+   > "Create `config/products.yaml`, `config/icp.yaml`, and `config/policies.yaml` for WidgetWare. WidgetWare sells software that helps manufacturing and industrial-automation companies modernize plant operations and adopt AI-enabled automation. The ICP: minimum 5,000 employees, no upper bound, preferred industries manufacturing and industrial_automation, excluded industries financial_services/healthcare/retail, preferred regions united_states/europe/india, buying signals new_ai_leadership/digital_transformation_program/genai_hiring. Policies should list the five evidence categories (verified_fact, derived_fact, inference, unknown, conflict), prohibited actions, and an escalation rule: insufficient evidence must produce NEEDS_RESEARCH rather than a guess."
 
-3. Before accepting the plan, confirm you understand what each generated file actually does — ask Antigravity to explain the difference between what `.gitignore` controls (what gets *committed*) and what `.env.example` versus a real `.env` controls (what gets *read*, locally, and never shared). This is Book 1 §2.7's point: least privilege applies to secrets and credentials even before anything sensitive actually exists yet.
+3. Write `src/widgetware_sdr/instructions.py` yourself, by hand, before asking Antigravity for help — this file is short, and the discipline of writing fixed system instructions without letting any account data leak into them is the entire point of the chapter. It should centralize model selection (read from an environment variable, with a default) and define a `SYSTEM_INSTRUCTIONS` constant covering role, scope, evidence requirements, how to treat untrusted content, and prohibited actions.
 
-4. Deliberately give Antigravity one more task, scoped badly, and watch what happens:
+4. Now the context builder. Ask Antigravity for a first draft, then read every line before accepting:
 
-   > "Set up the project."
+   > "Write `src/widgetware_sdr/context_builder.py`. It should build a `ContextPackage` from an account dict and optional notes, combining: fixed system instructions (imported, never derived from account data), business context (loaded from the three YAML files), task context (the account and workflow stage), and evidence (each note wrapped as an `EvidenceItem` with `origin` and `trust` fields, always `untrusted`). The assembled prompt must render system instructions first, business and task context next, and all evidence last, inside clearly delimited `BEGIN EVIDENCE`/`END EVIDENCE` markers — in that fixed order, every time."
 
-   Compare what it does with no scope against what it did with the properly bounded task in step 2. This comparison — not either output alone — is Book 1 §2.6's actual lesson.
+5. Write the four required context tests yourself: a clearly qualified account, a clearly unqualified account, an account with insufficient evidence, and a malicious note. Build the malicious-note test last, and deliberately run it before you're confident the delimiting is correct — watch it fail, then fix `context_builder.py` until it passes. Seeing the failure mode matters more than skipping straight to green.
 
-5. Ask Antigravity to inspect the project and produce a gap report against `SPEC.md`:
+   The malicious-note test should assert two separate things, not one: that the injected text is present somewhere in the assembled prompt (you don't silently drop real input), and that it appears strictly *after* the `BEGIN EVIDENCE` marker — never before or inside the instructions or business-context sections. Presence alone is a weaker test than position.
 
-   > "Compare the current repository state against SPEC.md. What's missing or inconsistent?"
-
-   It will surface at least one real gap. Fix it before moving on — don't let a known gap carry into Class 03.
-
-6. Run the check script. Fix anything that fails.
-
-7. Make your first commit.
+6. Optional but recommended: pull your test accounts into `tests/fixtures/accounts/*.yaml` and `tests/fixtures/expected/*.yaml` instead of hardcoding them inline, and load them in your tests. This is what Class 2's own golden solution does, and it's the difference between a test file that's also documentation and one that isn't.
 
 ## Verify
 
@@ -42,12 +36,22 @@ pip install -e ".[dev]"
 ./scripts/check.sh
 ```
 
-Expect `ruff format --check`, `ruff check`, and `pytest` (3 tests) to all pass. If Antigravity wrote a different set of checks than the reference, that's fine — compare intent (does it verify the same things?) rather than diffing test names.
+Expect 8 tests to pass (3 health-check, 5 context). Print the assembled context for at least one scenario and actually read it:
+
+```
+python3 -c "
+from widgetware_sdr.context_builder import build_context
+ctx = build_context({'account_id': 'acme-001', 'company_name': 'Acme Manufacturing', 'industry': 'manufacturing', 'employee_count': 22000, 'region': 'united_states'})
+print(ctx.assembled_prompt)
+"
+```
+
+If you can't hold the whole thing in your head while reading it top to bottom, it's already too big.
 
 ## Compare against the reference
 
-`golden-solution/tests/unit/test_health.py` is the reference test suite. If yours checks materially less — for example, doesn't confirm the health check's version field is a real string — add that check. See `golden-solution/KNOWN_FAILURE_CASES.md` for gaps the reference itself still has; you don't need to close those, but you should recognize them if you hit them.
+`golden-solution/tests/unit/test_context_builder.py` is the reference. Pay particular attention to how its malicious-note test asserts on section *ordering* (`instructions_index < evidence_begin_index < malicious_index`), not just text presence — if yours only checks presence, strengthen it.
 
 ## Grade it
 
-Passing tests is the gate check, not the whole picture. Run the quality check too: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md` walk through having Antigravity judge your submission against the gold reference on the things pytest can't verify.
+Passing tests proves the context assembles and stays structurally isolated. It does not prove the isolation is actually robust, or that your system instructions are well-written. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.

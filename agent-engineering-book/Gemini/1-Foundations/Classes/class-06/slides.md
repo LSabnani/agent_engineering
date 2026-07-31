@@ -1,99 +1,99 @@
-# Class 6 Slides — Structured Outputs and Agent Contracts
+# Class 6 Slides — Tool Engineering
 
 12 slides, ~2 minutes of speaking notes each, for the 0:20–0:45 segment.
 
 ---
 
-## Slide 1 — Current WidgetWare state: reasons well, returns prose
+## Slide 1 — Current WidgetWare state: validated, but blind
 
-**On slide:** Class 5's agent produces a correct, well-reasoned answer — as free-form text.
+**On slide:** Class 5's agent produces a schema-valid `QualificationResult` — built entirely from whatever facts the caller handed it.
 
-**Say:** "The reasoning has been solid for two classes now. Today's problem isn't reasoning quality — it's what happens the moment something downstream needs to act on the result."
+**Say:** "Print a valid result right now and ask: every fact in here, where did it actually come from? The honest answer is 'wherever the caller happened to put it.' The agent has no way to go look anything up itself."
 
 ---
 
 ## Slide 2 — Today's dependency
 
-**On slide:** Class 5's Skill-driven agent and its model call don't change.
+**On slide:** Class 5's contracts don't change structurally — tool-retrieved facts just start giving `evidence_refs` something real to point at.
 
-**Say:** "We're not touching the agent today. We're building a layer that sits after it."
+**Say:** "We're not touching `QualificationResult`'s shape today. We're finally giving the agent a way to earn the evidence it claims to have."
 
 ---
 
 ## Slide 3 — Business objective
 
-**On slide:** A validated, machine-checkable qualification result, safe to route on.
+**On slide:** An agent that retrieves its own facts instead of trusting whatever it's handed.
 
-**Say:** "'Looks qualified' is not the same as 'is safely routable.' Today's output has to be the second thing."
-
----
-
-## Slide 4 — Core concept: why prose isn't enough (§6.1–6.2)
-
-**On slide:** A downstream system can't safely branch on a sentence that might rephrase itself every call.
-
-**Say:** "String-matching against model prose is exactly the kind of fragile integration that breaks in production the first time the model phrases something slightly differently — with no warning."
+**Say:** "This is the difference between an agent that reports what it was told and one that can actually go check."
 
 ---
 
-## Slide 5 — Terminology: schema vs. contract vs. validation (§6.3)
+## Slide 4 — Core concept: a tool lets the agent do something outside the model (§7.1)
 
-**On slide:** A schema describes shape. A contract adds business invariants. Validation enforces both.
+**On slide:** A Skill tells the agent how. A tool lets it reach outside itself and act.
 
-**Say:** "Pydantic gets you the schema almost for free. The business invariants — the actual rules of *this* domain — are what we have to write ourselves."
-
----
-
-## Slide 6 — Architecture: the four business invariants (§6.4)
-
-**On slide:** `QUALIFIED` needs evidence. `NOT_QUALIFIED` needs exclusions. `NEEDS_RESEARCH` needs missing info. `BLOCKED` needs an error.
-
-**Say:** "Each of these is a rule a human reviewer would apply instinctively — 'you can't say qualified with nothing to back it up.' We're just making the computer enforce it too."
+**Say:** "We named this distinction back in Class 4 and deliberately didn't build a tool yet. Today's the day that other half of the distinction becomes real."
 
 ---
 
-## Slide 7 — Seven Steps mapping: Evaluate & Govern
+## Slide 5 — Terminology: tool descriptions are part of control (§7.2)
 
-**On slide:** Chapter 6 — the first chapter squarely about making an agent's output trustworthy.
+**On slide:** The model selects tools by name and description alone — not by reading the implementation.
 
-**Say:** "Every step so far has been about getting the agent to do the right thing. This one is about proving it did — mechanically, not by reading its prose and trusting it."
+**Say:** "A vague tool description leads to misuse regardless of how correct the underlying code is. Write the docstring like you're briefing someone who will never see the function body."
+
+---
+
+## Slide 6 — Architecture: three narrow, read-only tools (§7.3)
+
+**On slide:** `get_account_profile`, `get_widgetware_product`, `get_icp_policy` — each does exactly one lookup, nothing else.
+
+**Say:** "Narrow on purpose. A tool that does five things is five ways for the model to misuse it."
+
+---
+
+## Slide 7 — Seven Steps mapping: Design Agent Capabilities continues
+
+**On slide:** Chapter 5 gave the agent a Skill. Chapter 7 gives it a tool — the same step, from the opposite direction.
+
+**Say:** "A Skill shapes what the model knows how to do. A tool shapes what it can reach outside itself. Both are capability engineering."
 
 ---
 
 ## Slide 8 — Gemini vs. deterministic code
 
-**On slide:** The agent still reasons in prose. Parsing, schema validation, and invariant checks are pure deterministic code.
+**On slide:** The model decides *when* to call a tool. `calculate_fit_score()` is pure arithmetic and is never exposed as a callable tool at all.
 
-**Say:** "Nothing about today's work touches the model. That's the point — trust in the output comes from code you can read and test, not from a stronger prompt."
+**Say:** "Not everything that touches account data needs to go through the model. A fixed formula belongs in application code, called directly — that's a design decision, not a limitation."
 
 ---
 
-## Slide 9 — Security: fail-safe design (§6.5)
+## Slide 9 — Security: least privilege for tools (§7.5)
 
-**On slide:** Malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through.
+**On slide:** A read-only lookup should never hold write-capable credentials, even if the platform account technically could.
 
-**Say:** "A parser that raises an unhandled exception on bad input takes down the pipeline. A parser that silently accepts bad input is worse — it lies. `BLOCKED`, with the error attached, is the only honest third option."
+**Say:** "Ask yourselves: what's the actual damage ceiling if one of these three tools were compromised today? For a well-scoped read-only tool, the honest answer should be small."
 
 ---
 
 ## Slide 10 — Today's increment
 
-**On slide:** `contracts/evidence.py`, `contracts/qualification.py`, `parse_qualification_result()`.
+**On slide:** `tools/account_data.py`, `tools/fit_score.py`, agent updated with `tools=[...]`.
 
-**Say:** "Two small contract files and one function that never throws. That's the whole surface area."
-
----
-
-## Slide 11 — Lab architecture: one failing-case test per invariant
-
-**On slide:** Four ways to be wrong, one way to be right — each with its own test.
-
-**Say:** "A contract you've only tested on the happy path isn't proven yet. The failing-case tests are where the actual value of writing the invariants down shows up."
+**Say:** "Three read functions, one arithmetic helper, and one new instruction line telling the model to use them instead of assuming."
 
 ---
 
-## Slide 12 — Acceptance criteria: the agent is untouched
+## Slide 11 — Lab architecture: tool testing without the agent (§7.8)
 
-**On slide:** `qualification_agent.py` is byte-for-byte unchanged from Class 5.
+**On slide:** Valid input, invalid input, missing record, deterministic output shape — tested completely independent of any model call.
 
-**Say:** "If you find yourself editing the agent file today, stop — that's a sign the contract layer isn't actually separable from the agent, which defeats today's whole design goal."
+**Say:** "We test these tools with zero API calls today, on purpose — so a tool bug and a reasoning bug never get confused with each other."
+
+---
+
+## Slide 12 — Acceptance criteria: real, traceable evidence
+
+**On slide:** Every decisive claim in a qualification result carries an evidence reference traceable to an actual tool call.
+
+**Say:** "If you can point at an `evidence_refs` entry and can't show which tool call produced it, the extraction isn't finished yet — that traceability is the whole payoff of today's work."

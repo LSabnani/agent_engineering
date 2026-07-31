@@ -2,19 +2,19 @@
 
 Reviewing Class 2's homework before revealing `golden-solution/`.
 
-## In `scripts/check.sh` / the one-command check
+## In the fifth context-quality test (Class 2's diagnostic)
 
-- **A check script that only runs tests, not lint or format.** Participants sometimes narrow "all baseline checks" to "the tests pass," quietly dropping the lint/format half. Ask them to run `./scripts/check.sh` live and confirm all three steps actually execute, not just the last one.
-- **A health check that isn't actually deterministic.** Watch for a health-check function that reads an environment variable with no default, so it passes on the author's machine and fails on a clean clone — exactly the "can a stranger clone this and get a clean pass" criterion from Class 2's homework.
+- **A staleness test that only checks a date field exists, not that behavior actually changes.** The point of §3.6's staleness failure is that stale data should be treated differently from fresh data — a test that only confirms a `retrieved_at` field is present, without asserting anything downstream reacts to it, hasn't actually tested the failure mode.
 
-## In the Antigravity gap-report exercise
+## In the model-selection extension
 
-- **A "gap" that's really just a missing README instruction, not a missing capability.** The point of the exercise is realizing documentation gaps *are* real gaps — participants sometimes dismiss these as too minor to fix. Push back gently: an undocumented setup step is exactly the kind of thing that costs the next person an hour.
+- **"Configurable" that's still a single hardcoded default with no override path.** `get_model_id()` reading an environment variable with a fallback is the right shape; a version that still requires editing `instructions.py` directly to change models has only moved the hardcoding, not removed it.
 
-## In repository instructions (Extension homework)
+## Talking points to set up today's class
 
-- **Instructions that are aspirational rather than checkable** — "write good tests" instead of "every behavior change ships with at least one new or updated test in the same commit." This is the same failure pattern as Class 1's non-testable acceptance criteria, recurring in a new place.
+- Ask: "Given everything in `context_builder.py`, what's actually missing to make this reason?" — the expected answer is "an ADK `Agent` object and something that calls it," which is exactly today's first thirty minutes.
+- Preview that the procedure text will be *embedded* today, and ask the room to predict whether that's a permanent design choice — most will correctly guess it isn't, setting up Class 4.
 
-## Talking point to close the segment
+## Golden solution reveal
 
-Today's chapter is going to ask you to build something that looks unglamorous — YAML files and one assembly function — and insist that it's actually the most important class in the book so far. The common thread in this review is: every mistake above is something that would have silently gotten worse the moment we added a context layer on top of it. That's exactly why we're fixing workspace hygiene before touching Gemini at all.
+Walk `class-02/`'s `context_builder.py` one more time, then run this exact sequence live: print `context.assembled_prompt` for the qualified account, and ask "what's stopping us from handing this text to a model right now?" (Answer: nothing structurally — we just haven't built the `Agent` object yet. That's the whole gap this class closes.)

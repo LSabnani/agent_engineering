@@ -9,7 +9,11 @@ schema. See KNOWN_FAILURE_CASES.md #1 for why that's a real, not just
 theoretical, gap.
 """
 
-from widgetware_sdr.tools.account_data import get_account_profile, get_icp_policy, get_widgetware_product
+from widgetware_sdr.tools.account_data import (
+    get_account_profile,
+    get_icp_policy,
+    get_widgetware_product,
+)
 
 
 def test_get_account_profile_valid_input() -> None:

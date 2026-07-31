@@ -1,76 +1,76 @@
-# Class 6 — Structured Outputs and Agent Contracts
+# Class 6 — Tool Engineering
 
-**Manuscript source:** Book 1, Chapter 6 — Structured Outputs and Agent Contracts
-**Seven-Step mapping:** Primary: Evaluate & Govern / Supporting: Design Agent Capabilities, Build the Harness
+**Manuscript source:** Book 1, Chapter 7 — Tool Engineering
+**Seven-Step mapping:** Primary: Design Agent Capabilities / Supporting: Build the Harness, Evaluate & Govern
 **Golden solution produced:** `class-06/golden-solution/`
 **Starting checkpoint:** `class-05/golden-solution/`
 
 ## 0:00–0:20 — Homework review, common mistakes, golden solution reveal
 
-- **Review homework:** ask participants to show their independent Skill consumer script, and confirm it loads `icp_qualification` without touching `qualification_agent.py`.
-- **Common mistakes to flag:** Skill procedures that read well but never actually got tested against the boundary case; Evidence Classification examples with no genuinely ambiguous case.
-- **Golden solution reveal:** run Class 5's agent live, print its raw prose response, then ask: "If I asked your production system to route on this response's outcome right now, in code — how would you do it?" (Answer: string matching against prose that might rephrase itself any call. That's the problem today solves.)
+- **Review homework:** ask participants to show their extra business invariant and explain, in one sentence, what real-world mistake it prevents.
+- **Common mistakes to flag:** invariants tested only on the happy path with no failing-case counterpart; `BLOCKED` errors that are technically non-empty but not actually useful for debugging.
+- **Golden solution reveal:** walk `class-05/`'s agent, print a valid `QualificationResult`, then ask: "Every fact in here — the employee count, the industry — where did the agent actually get it from?" (Answer: it's still trusting whatever's in the per-call message, exactly as it has since Class 3. It has no way to go look anything up itself. That's today's gap.)
 
 ## Slide outline (0:20–0:45)
 
-1. Current WidgetWare state: an agent that reasons well but returns free-form prose
-2. Today's dependency: Class 5's Skill-driven agent doesn't change — only what happens to its output
-3. Business objective: a validated, machine-checkable qualification result, safe to route on
-4. Core concept: why prose isn't enough (§6.1–6.2) — a downstream system can't safely branch on "it looks qualified"
-5. Terminology: schema vs. contract vs. validation (§6.3) — a schema describes shape; a contract adds business invariants; validation enforces both
-6. Architecture: `QualificationResult`'s four business invariants (§6.4) — QUALIFIED needs evidence, NOT_QUALIFIED needs exclusions, NEEDS_RESEARCH needs missing info, BLOCKED needs an error
-7. Seven Steps mapping: Evaluate & Govern — the first chapter squarely about making an agent's output trustworthy
-8. Gemini vs. deterministic code: the agent still reasons in prose; parsing, schema validation, and invariant checks are pure deterministic code
-9. Security: fail-safe design (§6.5) — malformed output becomes a `BLOCKED` result with the error preserved, never a silent pass-through
-10. Today's increment: `contracts/evidence.py`, `contracts/qualification.py`, `parse_qualification_result()`
-11. Lab architecture: one failing-case test per invariant — four ways to be wrong, one way to be right
-12. Acceptance criteria: the agent itself is byte-for-byte unchanged — this is a validation layer, not a rewiring
+1. Current WidgetWare state: a validated contract, but an agent that still can't reach outside what it's handed
+2. Today's dependency: Class 5's `QualificationResult` and `EvidenceItem` contracts don't change structurally — tool-retrieved facts just start giving `evidence_refs` something real to point at
+3. Business objective: an agent that retrieves its own facts instead of trusting whatever the caller hands it
+4. Core concept: a tool lets the agent *do something outside the model* (§7.1) — the second of the three capability primitives after Skills
+5. Terminology: tool descriptions are part of control (§7.2) — the model selects tools by name and description alone
+6. Architecture: three narrow, read-only tools (§7.3) — `get_account_profile`, `get_widgetware_product`, `get_icp_policy`
+7. Seven Steps mapping: Design Agent Capabilities continues — a tool is a capability engineered from the opposite direction of a Skill
+8. Gemini vs. deterministic code: the model decides *when* to call a tool; `calculate_fit_score()` is pure arithmetic and never exposed as a callable tool at all
+9. Security: least privilege for tools (§7.5) — a read-only lookup should never hold write-capable credentials, even if the underlying platform account technically could
+10. Today's increment: `tools/account_data.py`, `tools/fit_score.py`, agent updated with `tools=[...]` and an instruction to use them instead of assuming facts
+11. Lab architecture: tool testing without the agent (§7.8) — valid input, invalid input, missing record, deterministic output shape, tested completely independent of any model call
+12. Acceptance criteria: every tool-retrieved fact used in a qualification result carries a real evidence identifier the tool actually returned
 
 ## Kahoot (8 questions)
 
-- Terminology: What is the difference between a schema and a business invariant (§6.3–6.4)?
-- Terminology: What does "fail-safe" mean for a parsing pipeline (§6.5), and how is it different from "fail-fast"?
-- Architecture: Why does `QUALIFIED` require `evidence_refs` to be non-empty as a business rule, not just a type check?
-- Architecture: What does `parse_qualification_result()` return when given malformed input, and why is that the right answer?
-- Failure analysis: A qualification result claims `NOT_QUALIFIED` but has an empty `exclusion_reasons` list — what should happen?
-- Security/governance: Why is preserving the original error on a `BLOCKED` result more useful than just discarding bad input silently?
-- WidgetWare scenario: The agent's prose rephrases itself between calls but its meaning is the same — how does the contract layer stay stable regardless?
-- Connecting back: How do Class 3's evidence-policy categories (fact vs. inference) show up as fields inside `EvidenceItem`?
+- Terminology: What is the difference between a Skill and a tool (§7.1 recap of §5.3)?
+- Terminology: Why does a tool's description matter as much as its implementation (§7.2)?
+- Architecture: Why is `calculate_fit_score()` deterministic code and never exposed to the model as a callable tool?
+- Architecture: What should `get_account_profile` return for a missing record — an exception, `None`, or something else (§7.4)?
+- Failure analysis: The agent calls `get_widgetware_product` with a malformed `product_id` — what should happen, and where does that get tested?
+- Security/governance: What does "permissions narrower than the underlying platform account" mean for a read-only tool (§7.5)?
+- WidgetWare scenario: A `QualificationResult`'s `evidence_refs` entry doesn't trace to any tool-returned fact — what's wrong, and which layer should have caught it?
+- Connecting back: How does §7.8's tool-testing checklist relate to the fail-safe pipeline Class 5 built for `parse_qualification_result`?
 
 ## Build together (0:55–1:35)
 
-- `contracts/evidence.py` — `EvidenceItem` (Pydantic v2, `extra="forbid"`)
-- `contracts/qualification.py` — `QualificationResult` with `@model_validator(mode="after")` enforcing all four invariants
-- `parse_qualification_result(raw, account_id)` — the fail-safe pipeline: parse, validate, on any failure return `BLOCKED` with the error preserved, never raise
+- `tools/account_data.py` — `get_account_profile`, `get_widgetware_product`, `get_icp_policy`, each read-only with typed `error`/`error_category` returns on failure
+- `tools/fit_score.py` — `calculate_fit_score()`, deterministic, application-code-only, never in the agent's `tools=[...]` list
+- update `qualification_agent.py`: attach the three tools, add an explicit "use these tools, don't assume facts" instruction
 
 ## Test and diagnose (1:35–1:50)
 
-1. Run the four happy-path tests: one per status value, each with valid supporting fields.
-2. Run the four failing-case tests: one per invariant, each deliberately violating it.
-3. Feed `parse_qualification_result` a completely malformed dict (wrong types, missing fields) — confirm it returns `BLOCKED`, never raises.
-4. Diagnose: is a failure in the schema (wrong type) or the business invariant (right type, wrong business logic)?
-5. Apply the smallest fix — usually one `model_validator` condition, not a schema redesign.
-6. Re-run the full contract test suite.
+1. Run each tool's independent test suite (valid input, invalid input, missing record) with the agent entirely out of the picture.
+2. Run one live scenario (with credentials) and inspect the tool-call sequence: did the agent call `get_account_profile` before reasoning about employee count, or did it guess?
+3. Trigger a deliberate failure: call a tool with a malformed argument and confirm it returns a typed error, never raises.
+4. Diagnose using the Framework's seven categories — this class's failures are almost always **tool implementation**, rarely context (that was Class 2's job) or contract (Class 5's).
+5. Apply the smallest fix — usually a tool's output normalization, not a rewrite of the agent's instruction.
+6. Re-run all tool and contract tests together.
 
 ## Homework
 
 | Level | Task |
 | ----- | ---- |
-| **Required** | `QualificationResult` and `EvidenceItem` contracts built and passing all eight contract tests (four happy-path, four failing-case) |
-| **Diagnostic** | The provided `parse_qualification_result` test suite has a gap: no test confirms `BLOCKED` results preserve the *original* raw input for debugging, not just the error message. Add that test, then confirm the implementation actually satisfies it |
-| **Extension** | Add a fifth business invariant of your own devising (e.g., `rationale` must reference at least one `evidence_refs` entry by ID) and demonstrate it catches a case the existing four miss |
+| **Required** | Build the three tools and `calculate_fit_score()`, attach the three read tools to the agent, and confirm the agent's qualification results now carry real, traceable evidence references |
+| **Diagnostic** | A provided test case has a `QualificationResult` with `status=QUALIFIED` and an `evidence_refs` entry that doesn't actually correspond to any tool-returned fact — it was invented. Write a test that would catch a fabricated evidence reference, and explain in one sentence why the contract layer alone (Class 5) can't fully solve this |
+| **Extension** | Pick one tool and write the full seven-item test list from §7.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real |
 
 - **Starting checkpoint:** `class-05/golden-solution/`
-- **Files participants may modify:** `src/widgetware_sdr/contracts/`, `tests/contracts/`
-- **Expected behavior:** malformed or invariant-violating input never crashes the pipeline — it always yields a `BLOCKED` result with the error preserved
-- **Tests that must pass:** all contract tests, both happy-path and failing-case
-- **Submission:** test output showing all eight (or more) contract tests passing
-- **Constraints:** the agent itself (`qualification_agent.py`) must remain byte-for-byte unchanged from Class 5 — no tools yet (Chapter 7)
+- **Files participants may modify:** `src/widgetware_sdr/tools/`, `src/widgetware_sdr/agents/qualification_agent.py`, `tests/`
+- **Expected behavior:** every decisive claim in a qualification result carries an evidence reference traceable to an actual tool call, not an assumed fact
+- **Tests that must pass:** all tool tests, all prior contract tests
+- **Submission:** one full `QualificationResult` JSON output for the Acme account, with `evidence_refs` populated and traceable
+- **Constraints:** tools remain read-only — no send action, no CRM write, still Book 1's standing boundary from Class 1; `calculate_fit_score()` must never be exposed to the model as a callable tool
 
 ## Golden solution: `class-06/`
 
-Adds the contracts layer on top of `class-05/` without touching the agent. README explicitly notes: "The agent itself, its Skill, and its model call are unchanged from Class 5 — this chapter is a standalone validation layer, not a rewiring of the agent."
+Adds the three tools and `calculate_fit_score()` on top of `class-05/` without changing the contracts' structure. README notes: "This checkpoint gives the agent its first real tools: three narrow, read-only functions for account, product, and ICP data, plus a deterministic fit-score helper kept outside model reasoning."
 
 ## Bridge to Class 7
 
-Class 7 gives the agent its first real tools — three narrow, read-only functions for account, product, and ICP data. The `QualificationResult` and `EvidenceItem` contracts don't change structurally, but `EvidenceItem` starts getting real exercise once tool-retrieved facts need evidence identifiers.
+Class 7 takes the agent outside WidgetWare's own trusted data for the first time — evidence-backed external research through MCP, where retrieved content must be treated as untrusted until validated.

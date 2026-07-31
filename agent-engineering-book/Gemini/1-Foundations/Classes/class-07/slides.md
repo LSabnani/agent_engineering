@@ -1,99 +1,99 @@
-# Class 7 Slides — Tool Engineering
+# Class 7 Slides — MCP and Evidence-Backed Research
 
-12 slides, ~2 minutes of speaking notes each, for the 0:20–0:45 segment.
+12 slides, ~2 minutes of speaking notes each, for the 0:30–0:55 segment.
 
 ---
 
-## Slide 1 — Current WidgetWare state: validated, but blind
+## Slide 1 — Current WidgetWare state: trusted internal tools, no external research yet
 
-**On slide:** Class 6's agent produces a schema-valid `QualificationResult` — built entirely from whatever facts the caller handed it.
+**On slide:** Three read-only tools, all pointed at WidgetWare's own data.
 
-**Say:** "Print a valid result right now and ask: every fact in here, where did it actually come from? The honest answer is 'wherever the caller happened to put it.' The agent has no way to go look anything up itself."
+**Say:** "Every fact the agent has touched so far came from us. Today it looks outside for the first time — and outside data doesn't get to be trusted just because it sounds authoritative."
 
 ---
 
 ## Slide 2 — Today's dependency
 
-**On slide:** Class 6's contracts don't change structurally — tool-retrieved facts just start giving `evidence_refs` something real to point at.
+**On slide:** `EvidenceItem` (Class 6) gets its first real external content to hold.
 
-**Say:** "We're not touching `QualificationResult`'s shape today. We're finally giving the agent a way to earn the evidence it claims to have."
+**Say:** "We built the shape of an evidence item two classes ago. Today it finally holds something we didn't already know."
 
 ---
 
 ## Slide 3 — Business objective
 
-**On slide:** An agent that retrieves its own facts instead of trusting whatever it's handed.
+**On slide:** A reproducible, cited account-research brief.
 
-**Say:** "This is the difference between an agent that reports what it was told and one that can actually go check."
-
----
-
-## Slide 4 — Core concept: a tool lets the agent do something outside the model (§7.1)
-
-**On slide:** A Skill tells the agent how. A tool lets it reach outside itself and act.
-
-**Say:** "We named this distinction back in Class 5 and deliberately didn't build a tool yet. Today's the day that other half of the distinction becomes real."
+**Say:** "Reproducible and cited — same two words that mattered in Class 3, now applied to a whole pipeline instead of one agent's reasoning."
 
 ---
 
-## Slide 5 — Terminology: tool descriptions are part of control (§7.2)
+## Slide 4 — Core concept: research is not one model call (§8.1)
 
-**On slide:** The model selects tools by name and description alone — not by reading the implementation.
+**On slide:** Questions → discovery → retrieval → extraction → assessment → contradiction detection → synthesis → citation.
 
-**Say:** "A vague tool description leads to misuse regardless of how correct the underlying code is. Write the docstring like you're briefing someone who will never see the function body."
-
----
-
-## Slide 6 — Architecture: three narrow, read-only tools (§7.3)
-
-**On slide:** `get_account_profile`, `get_widgetware_product`, `get_icp_policy` — each does exactly one lookup, nothing else.
-
-**Say:** "Narrow on purpose. A tool that does five things is five ways for the model to misuse it."
+**Say:** "A single model call that says 'go research this company' hides seven distinct failure points behind one opaque step. Today we build a pipeline, not a call."
 
 ---
 
-## Slide 7 — Seven Steps mapping: Design Agent Capabilities continues
+## Slide 5 — Function tools versus MCP (§8.5)
 
-**On slide:** Chapter 5 gave the agent a Skill. Chapter 7 gives it a tool — the same step, from the opposite direction.
+**On slide:** Function tool when the integration is application-specific and narrow; MCP when a standardized server already exists and multiple clients need it.
 
-**Say:** "A Skill shapes what the model knows how to do. A tool shapes what it can reach outside itself. Both are capability engineering."
+**Say:** "We're using a function tool today, deliberately — a local mock source. That's the honest choice for this course; the decision framework is what actually matters, not which one we happened to pick."
+
+---
+
+## Slide 6 — Architecture: the evidence ledger (§8.7)
+
+**On slide:** `ResearchBrief`: evidence_items[], claims[], conflicts[], unknowns[], summary, recommended_next_step.
+
+**Say:** "Notice `conflicts[]` sits right next to `claims[]`, not hidden in a log somewhere. Disagreement between sources is a first-class citizen of this structure, not an edge case."
+
+---
+
+## Slide 7 — Seven Steps mapping
+
+**On slide:** Still Design Agent Capabilities.
+
+**Say:** "Research is a capability, engineered with the same rigor as a tool — narrow responsibility, typed output, tested independently."
 
 ---
 
 ## Slide 8 — Gemini vs. deterministic code
 
-**On slide:** The model decides *when* to call a tool. `calculate_fit_score()` is pure arithmetic and is never exposed as a callable tool at all.
+**On slide:** The model may assist at several research stages; deterministic validation rejects any uncited material claim regardless.
 
-**Say:** "Not everything that touches account data needs to go through the model. A fixed formula belongs in application code, called directly — that's a design decision, not a limitation."
+**Say:** "Even if the model is genuinely excellent at synthesis, the citation requirement is enforced by code, every time, no exceptions for a confident-sounding answer."
 
 ---
 
-## Slide 9 — Security: least privilege for tools (§7.5)
+## Slide 9 — Security: retrieved content is untrusted data (§8.6)
 
-**On slide:** A read-only lookup should never hold write-capable credentials, even if the platform account technically could.
+**On slide:** Isolate, label, extract only task-relevant evidence, never execute instructions found in content.
 
-**Say:** "Ask yourselves: what's the actual damage ceiling if one of these three tools were compromised today? For a well-scoped read-only tool, the honest answer should be small."
+**Say:** "This is the same discipline from Class 2's account notes, now applied to something that looks more credible because it claims to come from 'TradePress Manufacturing Weekly.' A source that sounds professional is not automatically trustworthy."
 
 ---
 
 ## Slide 10 — Today's increment
 
-**On slide:** `tools/account_data.py`, `tools/fit_score.py`, agent updated with `tools=[...]`.
+**On slide:** `search_public_records`, `research.py`'s deterministic pipeline, `research_agent.py`.
 
-**Say:** "Three read functions, one arithmetic helper, and one new instruction line telling the model to use them instead of assuming."
-
----
-
-## Slide 11 — Lab architecture: tool testing without the agent (§7.8)
-
-**On slide:** Valid input, invalid input, missing record, deterministic output shape — tested completely independent of any model call.
-
-**Say:** "We test these tools with zero API calls today, on purpose — so a tool bug and a reasoning bug never get confused with each other."
+**Say:** "One tool, one pipeline, one agent. Everything in the pipeline is testable without a model. Only the agent's synthesis needs one."
 
 ---
 
-## Slide 12 — Acceptance criteria: real, traceable evidence
+## Slide 11 — Lab architecture: freshness and contradictions (§8.3, §8.4)
 
-**On slide:** Every decisive claim in a qualification result carries an evidence reference traceable to an actual tool call.
+**On slide:** A stale source isn't automatically wrong, but it needs to be flagged. A conflict isn't resolved by convenience.
 
-**Say:** "If you can point at an `evidence_refs` entry and can't show which tool call produced it, the extraction isn't finished yet — that traceability is the whole payoff of today's work."
+**Say:** "We have a genuinely stale source in our mock data — a 2023 employee count next to a 2026 one. Today's pipeline surfaces that as a conflict, not a coincidence to shrug off."
+
+---
+
+## Slide 12 — Acceptance criteria
+
+**On slide:** Insufficient evidence stops the workflow — it does not produce a confident guess.
+
+**Say:** "We'll run the pipeline against an account with zero mock evidence today and watch it say so honestly, rather than inventing something plausible."

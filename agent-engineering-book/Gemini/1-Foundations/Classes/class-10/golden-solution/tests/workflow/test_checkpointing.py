@@ -26,11 +26,15 @@ def _stub_review(brief, qualification):
 
 
 def _stub_draft(review):
-    return OutreachDraft(account_id=review.account_id, message="Draft.", used_claims=review.approved_claims)
+    return OutreachDraft(
+        account_id=review.account_id, message="Draft.", used_claims=review.approved_claims
+    )
 
 
 def test_checkpoint_is_written_after_each_stage(tmp_path) -> None:
-    run_workflow(ACME, qualify=_stub_qualify, review=_stub_review, draft=_stub_draft, checkpoint_dir=tmp_path)
+    run_workflow(
+        ACME, qualify=_stub_qualify, review=_stub_review, draft=_stub_draft, checkpoint_dir=tmp_path
+    )
 
     checkpoint = load_checkpoint(tmp_path, "acme-001")
     assert checkpoint["state"] == WorkflowState.AWAITING_APPROVAL.value

@@ -30,6 +30,6 @@ Sales Development Representatives (SDRs) at WidgetWare, whose job is to identify
 - Industries outside manufacturing and industrial automation, unless a documented exception is approved.
 - Any company for which WidgetWare does not have (or cannot legitimately obtain) approved public evidence.
 
-## Evidence policy (introduced fully in Class 3)
+## Evidence policy (introduced fully in Class 2)
 
 Every material claim this system makes must be one of: a verified fact (directly supported by an approved source), a derived fact (deterministically calculated from verified facts), an inference (a reasoned conclusion that remains uncertain and must be labeled as such), or explicitly unknown. Contradictions between sources must be surfaced, never silently resolved in whichever direction looks more convenient.

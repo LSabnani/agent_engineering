@@ -2,24 +2,19 @@
 
 Reviewing Class 1's homework before revealing `golden-solution/`.
 
-## In the acceptance-criteria rewrite (Diagnostic homework)
+## In `scripts/check.sh` / the one-command check
 
-- **Desired-behavior language, not a checkable signal.** "The system should be helpful" or "the system explains itself well" survives into the rewrite unchanged. Ask: what would a person actually *check* — a specific field present, a specific string absent, a specific test passing?
-- **Criteria that restate the result instead of testing it.** "The qualification is correct" is not testable on its own; "the qualification names the specific ICP criteria matched" is.
+- **A check script that only runs tests, not lint or format.** Participants sometimes narrow "all baseline checks" to "the tests pass," quietly dropping the lint/format half. Ask them to run `./scripts/check.sh` live and confirm all three steps actually execute, not just the last one.
+- **A health check that isn't actually deterministic.** Watch for a health-check function that reads an environment variable with no default, so it passes on the author's machine and fails on a clean clone — exactly the "can a stranger clone this and get a clean pass" criterion from Class 1's homework.
 
-## In the business brief / ICP details
+## In the Antigravity gap-report exercise
 
-- **Drift from the canonical WidgetWare facts.** Watch for employee-count thresholds, industries, or regions that don't match `docs/widgetware-business-brief.md` exactly — small transcription drift here compounds badly once Class 3 turns these numbers into `config/icp.yaml`.
+- **A "gap" that's really just a missing README instruction, not a missing capability.** The point of the exercise is realizing documentation gaps *are* real gaps — participants sometimes dismiss these as too minor to fix. Push back gently: an undocumented setup step is exactly the kind of thing that costs the next person an hour.
 
-## In `SPEC.md`
+## In repository instructions (Extension homework)
 
-- **Marketing copy instead of constraints.** A common first draft reads like a product pitch ("WidgetWare's intelligent system will..."). Redirect to falsifiable statements: required behavior, prohibited behavior, error behavior — sentences a test could pass or fail against.
-- **Missing prohibited-behavior list, or a vague one.** "The system should be safe" is not a prohibited-behavior list. "The system must never send an outbound message autonomously" is.
-
-## In the disqualifying/ambiguous scenario descriptions
-
-- **Scenarios that are actually easy, dressed up as hard.** An "ambiguous" account that's obviously disqualified once you read closely doesn't exercise `NEEDS_RESEARCH` — push participants to make the ambiguous case genuinely ambiguous (missing exactly one decisive fact, not missing everything).
+- **Instructions that are aspirational rather than checkable** — "write good tests" instead of "every behavior change ships with at least one new or updated test in the same commit." This is the same failure pattern as Class 1's non-testable acceptance criteria, recurring in a new place.
 
 ## Talking point to close the segment
 
-Every mistake above has the same shape: something that reads fine in prose but cannot actually be checked mechanically. That's the exact gap Class 1's acceptance criteria were supposed to close — today's review is really still Class 1's lesson, applied a second time.
+Today's chapter is going to ask you to build something that looks unglamorous — YAML files and one assembly function — and insist that it's actually the most important class in the book so far. The common thread in this review is: every mistake above is something that would have silently gotten worse the moment we added a context layer on top of it. That's exactly why we're fixing workspace hygiene before touching Gemini at all.

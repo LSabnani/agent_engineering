@@ -6,30 +6,30 @@
 
 ## Required (30–45 minutes)
 
-1. Build `src/widgetware_sdr/contracts/evidence.py` (`EvidenceItem`) and `src/widgetware_sdr/contracts/qualification.py` (`QualificationResult`), both Pydantic v2 models with `extra="forbid"`.
-2. Implement all four business invariants as a `@model_validator(mode="after")`: `QUALIFIED` needs `evidence_refs`, `NOT_QUALIFIED` needs `exclusion_reasons`, `NEEDS_RESEARCH` needs `missing_information`, `BLOCKED` needs `errors`.
-3. Implement `parse_qualification_result(raw, account_id)` — it must never raise; on any failure it returns a `BLOCKED` result with the original error preserved.
-4. Write eight contract tests minimum: one happy-path and one failing-case per invariant.
+1. Build the three tools (`get_account_profile`, `get_widgetware_product`, `get_icp_policy`) and `calculate_fit_score()`.
+2. Attach the three read tools to the agent, and update its instruction to use them instead of assuming facts.
+3. Confirm the agent's qualification results now carry real, traceable evidence references — pointing at facts the tools actually returned, not assumed values.
+4. Get `./scripts/check.sh` passing, offline tests included.
 
 ## Diagnostic (targeted fix)
 
-The provided test suite has a gap: no test confirms `BLOCKED` results preserve the *original* raw input for debugging, not just the error message. Add that test, then check whether your implementation actually satisfies it — if it doesn't, fix `parse_qualification_result` so it does.
+The provided test suite includes a case where a `QualificationResult` is constructed with `status=QUALIFIED` and an `evidence_refs` entry — but that entry doesn't actually correspond to any fact a tool returned; it was invented. Nothing in Class 5's contract validation catches that, because the contract only checks that the *field is non-empty*, not that its contents are *real*. Write a test that would catch a fabricated evidence reference, and explain in one sentence why the contract layer alone (Class 5) can't fully solve this — what layer would need to?
 
 ## Extension (optional)
 
-Add a fifth business invariant of your own devising — for example, `rationale` must reference at least one entry in `evidence_refs` by ID. Write a failing-case test that demonstrates it catches a case the existing four invariants miss.
+Pick one tool and write the full seven-item test list from §7.8, including the three this checkpoint's own tests skip (dependency failure, permission failure, redaction of prohibited fields) — you'll need to invent a plausible way each could apply even though this checkpoint's tools don't currently have that failure mode for real. Document your reasoning, not just the test code.
 
 ## Submission
 
-- `./scripts/check.sh` output showing all contract tests passing.
-- One paragraph: which of the four invariants was hardest to test correctly, and why.
+- `./scripts/check.sh` output, all green.
+- One full `QualificationResult` JSON output for the Acme Manufacturing account, with `evidence_refs` populated and traceable to tool calls.
+- Your one-sentence answer to the Diagnostic's question about contract vs. semantic validation.
 
 ## Constraints
 
-- `qualification_agent.py` must remain byte-for-byte unchanged from Class 5 — this class is a validation layer, not a rewiring of the agent.
-- No tools yet. Class 7 adds tools; `EvidenceItem` doesn't get real exercise from tool-retrieved facts until then.
-- `parse_qualification_result` must never raise an unhandled exception, regardless of input — verify this with at least one deliberately malformed input in your tests.
+- Tools remain read-only. No send action, no CRM write — still Book 1's standing boundary from Class 1.
+- `calculate_fit_score()` must not be exposed to the model as a callable tool — it's application code the workflow calls directly, not something the model invokes.
 
 ## What "done" looks like
 
-You can hand `parse_qualification_result` literally any dict — well-formed, malformed, or adversarial — and it always returns a valid `QualificationResult` (possibly `BLOCKED`), never a crash and never a silently accepted invalid result.
+You can point at any `evidence_refs` entry in a qualification result and trace it back to a specific tool call the agent actually made — never an assumed or invented fact.

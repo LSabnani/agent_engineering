@@ -3,7 +3,9 @@ name = "widgetware-sdr"
 version = "0.1.0"
 description = "WidgetWare SDR Lab — a bounded agent system for account research, qualification, and evidence-backed outreach drafting."
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "PyYAML>=6.0",
+]
 
 [project.optional-dependencies]
 dev = [

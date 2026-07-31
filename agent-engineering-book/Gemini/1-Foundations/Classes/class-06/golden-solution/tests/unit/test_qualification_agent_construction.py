@@ -7,7 +7,10 @@ reasons well. Semantic evaluation lives in tests/integration/, and
 requires live credentials.
 """
 
-from widgetware_sdr.agents.qualification_agent import build_agent_instruction, create_qualification_agent
+from widgetware_sdr.agents.qualification_agent import (
+    build_agent_instruction,
+    create_qualification_agent,
+)
 from widgetware_sdr.instructions import DEFAULT_MODEL_ID
 
 
@@ -52,9 +55,17 @@ def test_instruction_contains_no_specific_account_data() -> None:
     assert "22000" not in instruction
 
 
-def test_agent_has_no_tools() -> None:
-    """Book 1 §4.2: this agent may not call external services. Tools
-    arrive in Class 5 (Book 1 Chapter 7), not here.
+def test_agent_has_exactly_the_three_read_tools() -> None:
+    """Book 1 §7: three narrow, read-only tools, no side-effecting ones.
+    Still no send-capable tool anywhere — that boundary hasn't moved.
     """
     agent = create_qualification_agent()
-    assert not getattr(agent, "tools", [])
+    tool_names = {getattr(t, "__name__", str(t)) for t in agent.tools}
+    assert tool_names == {"get_account_profile", "get_widgetware_product", "get_icp_policy"}
+
+
+def test_instruction_tells_the_model_to_use_tools_not_assume_facts() -> None:
+    instruction = build_agent_instruction()
+    assert "get_account_profile" in instruction
+    assert "get_widgetware_product" in instruction
+    assert "get_icp_policy" in instruction

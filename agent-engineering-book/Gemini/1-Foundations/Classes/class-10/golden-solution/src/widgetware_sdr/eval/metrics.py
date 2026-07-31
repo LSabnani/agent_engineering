@@ -47,7 +47,8 @@ def evidence_coverage_rate(runs: Iterable[WorkflowRun]) -> float:
     qualified = [
         r
         for r in runs
-        if r.qualification_result is not None and r.qualification_result.status is QualificationStatus.QUALIFIED
+        if r.qualification_result is not None
+        and r.qualification_result.status is QualificationStatus.QUALIFIED
     ]
     if not qualified:
         return 1.0
@@ -100,6 +101,8 @@ def approval_compliance_rate(runs: Iterable[WorkflowRun]) -> float:
             WorkflowState.APPROVED,
             WorkflowState.REJECTED,
             WorkflowState.BLOCKED,
+            WorkflowState.RETRY_PENDING,
+            WorkflowState.NEEDS_HUMAN_REVIEW,
         )
     )
     return round(compliant / len(runs), 4)

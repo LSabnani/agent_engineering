@@ -77,7 +77,9 @@ def detect_employee_count_conflict(evidence_items: list[EvidenceItem]) -> Confli
     return None
 
 
-def build_research_brief(account: dict[str, Any], research_questions: list[str] | None = None) -> ResearchBrief:
+def build_research_brief(
+    account: dict[str, Any], research_questions: list[str] | None = None
+) -> ResearchBrief:
     """Build a complete ResearchBrief for one account, deterministically.
 
     Any evidence item involved in a detected conflict is excluded from
@@ -103,8 +105,12 @@ def build_research_brief(account: dict[str, Any], research_questions: list[str] 
 
     unknowns = [] if evidence_items else ["no public evidence found for this account"]
 
-    summary = f"{len(evidence_items)} evidence item(s) gathered; {len(conflicts)} conflict(s) detected."
-    recommended_next_step = "NEEDS_RESEARCH" if (not evidence_items or conflicts) else "proceed to qualification"
+    summary = (
+        f"{len(evidence_items)} evidence item(s) gathered; {len(conflicts)} conflict(s) detected."
+    )
+    recommended_next_step = (
+        "NEEDS_RESEARCH" if (not evidence_items or conflicts) else "proceed to qualification"
+    )
 
     return ResearchBrief(
         account_id=account_id,

@@ -90,7 +90,12 @@ def test_extra_fields_are_rejected_not_silently_dropped() -> None:
 
 def test_parse_qualification_result_fails_safely_to_blocked() -> None:
     """§6.5: a materially invalid result fails safely — never a guess."""
-    raw = {"account_id": "acme-001", "status": "QUALIFIED", "rationale": "Fits.", "evidence_refs": []}
+    raw = {
+        "account_id": "acme-001",
+        "status": "QUALIFIED",
+        "rationale": "Fits.",
+        "evidence_refs": [],
+    }
     result = parse_qualification_result(raw, account_id="acme-001")
     assert result.status is QualificationStatus.BLOCKED
     assert result.errors

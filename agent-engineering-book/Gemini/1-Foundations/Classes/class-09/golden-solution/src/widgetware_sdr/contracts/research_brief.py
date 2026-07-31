@@ -57,7 +57,10 @@ class ResearchBrief(BaseModel):
         """
         evidence_ids = {item.evidence_id for item in self.evidence_items}
         for claim in self.claims:
-            if claim.classification in ("verified_fact", "derived_fact") and not claim.evidence_refs:
+            if (
+                claim.classification in ("verified_fact", "derived_fact")
+                and not claim.evidence_refs
+            ):
                 raise ValueError(f"material claim {claim.text!r} has no evidence reference")
             for ref in claim.evidence_refs:
                 if ref not in evidence_ids:

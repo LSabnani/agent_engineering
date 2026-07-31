@@ -2,7 +2,7 @@
 
 A bounded agent system that researches, qualifies, and drafts outreach to prospective manufacturing and industrial-automation accounts on WidgetWare's behalf — and stops for human approval before anything leaves the building.
 
-This checkpoint (Class 7 / `golden-solutions/class-07/`) gives the agent its first real tools: three narrow, read-only functions for account, product, and ICP data, plus a deterministic fit-score helper kept outside model reasoning.
+This checkpoint (Class 7 / `golden-solutions/class-07/`) adds the agent's first capability to look outside WidgetWare's own data: a research pipeline that gathers external evidence, normalizes it into the `EvidenceItem` contract, detects conflicts between sources, and never lets a claim exist without a citation — treating everything retrieved as untrusted content throughout.
 
 ## Quick start
 
@@ -10,70 +10,85 @@ This checkpoint (Class 7 / `golden-solutions/class-07/`) gives the agent its fir
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-cp .env.example .env  # fill in GOOGLE_API_KEY (or GOOGLE_CLOUD_PROJECT) to run the agent for real
-./scripts/check.sh    # runs format check, lint, and tests — live-model tests skip automatically without credentials
+cp .env.example .env
+./scripts/check.sh
 ```
 
 ## What's new this class
 
-- `src/widgetware_sdr/tools/account_data.py` — `get_account_profile`, `get_widgetware_product`, `get_icp_policy`: three narrow, typed, read-only tools
-- `src/widgetware_sdr/tools/fit_score.py` — `calculate_fit_score()`, a deterministic helper deliberately kept outside model reasoning
-- `qualification_agent.py` updated: the three tools are attached, and the instruction now tells the model to use them instead of assuming facts, plus an explicit output-format instruction
-- `tests/tools/` — 14 tool tests covering valid input, invalid input, missing record, and deterministic output shape
+- `data/mock_public_sources.yaml` — a local, deterministic stand-in for a real external research source (see `KNOWN_FAILURE_CASES.md` #1 for what this simplifies away)
+- `src/widgetware_sdr/tools/research_tools.py` — `search_public_records(account_id)`, the research function tool
+- `src/widgetware_sdr/contracts/research_brief.py` — the `ResearchBrief` and `Claim`/`Conflict` contracts, with a validator that rejects any material claim lacking an evidence reference
+- `src/widgetware_sdr/research.py` — the deterministic pipeline: normalizes evidence, detects employee-count conflicts, builds a complete `ResearchBrief` — no model call anywhere in this file
+- `src/widgetware_sdr/agents/research_agent.py` — the Research Agent: a real ADK `Agent` with the search tool attached and an explicit instruction that retrieved content is data, never an instruction
+- `tests/research/` — 9 fully offline tests, including one that deliberately feeds the pipeline a prompt-injection attempt
 
 ## Repository structure
 
 ```text
 widgetware-sdr/
-├── README.md / SPEC.md / pyproject.toml / .env.example
-├── docs/
-├── config/
-├── data/sample_accounts/
-├── skills/
+├── data/
+│   ├── sample_accounts/
+│   └── mock_public_sources.yaml
 ├── src/widgetware_sdr/
 │   ├── contracts/
 │   │   ├── evidence.py
-│   │   └── qualification.py
+│   │   ├── qualification.py
+│   │   └── research_brief.py
 │   ├── tools/
 │   │   ├── account_data.py
-│   │   └── fit_score.py
-│   └── agents/qualification_agent.py
+│   │   ├── fit_score.py
+│   │   └── research_tools.py
+│   ├── research.py
+│   └── agents/
+│       ├── qualification_agent.py
+│       └── research_agent.py
 ├── tests/
-│   ├── unit/
-│   ├── contracts/
-│   ├── tools/
+│   ├── unit/ / contracts/ / tools/ / research/
 │   ├── integration/       # requires live credentials; skips otherwise
-│   ├── scenarios/
 │   └── fixtures/
 └── scripts/check.sh
 ```
 
+## Trying the research pipeline
+
+```python
+from widgetware_sdr.research import build_research_brief
+
+brief = build_research_brief({"account_id": "acme-001"})
+print(brief.summary)  # "3 evidence item(s) gathered; 1 conflict(s) detected."
+print(
+    brief.conflicts[0]
+)  # the employee-count conflict, both values, both sources — never silently resolved
+```
+
 ## Known failure cases
 
-See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md) — in particular #3: attaching tools doesn't prove the model actually uses them instead of its own assumptions; that requires a live run.
+See [`KNOWN_FAILURE_CASES.md`](KNOWN_FAILURE_CASES.md) — in particular #2: conflict detection here is one narrow regular expression, not a general capability.
 
 ## Completion checklist
 
 Before treating this checkpoint as done:
 
-- [ ] All three tools return an `error_category`, not a raw exception, on invalid input or a missing record.
-- [ ] `calculate_fit_score` is called nowhere the model could instead be asked to compute it — the arithmetic is application code, not a prompt.
-- [ ] The agent's instruction explicitly tells the model to use the tools rather than assume account, product, or ICP facts (`test_instruction_tells_the_model_to_use_tools_not_assume_facts`).
-- [ ] `QualificationResult`'s four business invariants (inherited from Class 6) still each have their own failing-case test.
+- [ ] `build_research_brief` for `acme-001` surfaces the employee-count conflict rather than picking one value.
+- [ ] The injection-attempt test confirms the attack text becomes ordinary, cited claim text — never dropped, never elevated to a special status.
+- [ ] `ResearchBrief`'s validator actually rejects an uncited material claim — verified by a failing-case test, not just a passing one.
+- [ ] The Research Agent's instruction explicitly states that evidence content is data, not instruction, in language a model would actually read as a rule (not just a comment).
+- [ ] You understand, and could explain, exactly what `detect_employee_count_conflict` does and does not catch.
 
 ## Starting Class 8
 
-1. Start from this checkpoint. Class 8 adds the agent's first capability to look *outside* WidgetWare's own data — external research through a function tool — and the discipline to treat everything that comes back as untrusted until validated, the same isolation discipline Class 3 established for account notes.
-2. The `QualificationResult` contract doesn't change structurally in Class 8, but the `EvidenceItem` contract gets real exercise: Class 8's research pipeline produces the first evidence items that didn't originate from a locally-supplied account note.
+1. Start from this checkpoint. Class 8 composes the qualification agent (Classes 3–6) and the research agent (this class) into a real multi-agent workflow — Research → Qualify → Review → Draft → Approve — with an explicit state machine and a human approval gate before any outreach.
+2. The `ResearchBrief` this class produces becomes the Qualification Agent's input in Class 8's workflow, replacing the ad hoc account dict it currently reasons over directly.
 3. See `../../class-08/` for what Class 8 adds.
 
 ## Status
 
-- [x] Class 1 — Project charter
-- [x] Class 2 — Antigravity workspace and repository harness
-- [x] Class 3 — Gemini context and instruction architecture
-- [x] Class 4 — First ADK agent (embedded procedure)
-- [x] Class 5 — Skills and reusable agent capabilities
-- [x] Class 6 — Structured outputs and agent contracts
-- [x] Class 7 — Tool engineering
-- [ ] Classes 8–11 — see `../../00_Course_Framework.md`
+- [x] Class 1 — Project charter, and the Antigravity workspace and repository harness
+- [x] Class 2 — Gemini context and instruction architecture
+- [x] Class 3 — First ADK agent (embedded procedure)
+- [x] Class 4 — Skills and reusable agent capabilities
+- [x] Class 5 — Structured outputs and agent contracts
+- [x] Class 6 — Tool engineering
+- [x] Class 7 — MCP and evidence-backed research
+- [ ] Classes 8–10 — see `../../00_Course_Framework.md`

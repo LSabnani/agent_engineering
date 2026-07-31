@@ -1,20 +1,20 @@
-# Class 5 — Common Mistakes to Discuss (0:00–0:30)
+# Class 5 — Common Mistakes to Discuss (0:00–0:20)
 
 Reviewing Class 4's homework before revealing `golden-solution/`.
 
-## In the diagnostic (boundary-condition test)
+## In the required build (Skill extraction)
 
-- **A boundary test that checks the number but not the label.** Class 4's extension asked for an account at exactly 5,000 employees — the ICP minimum itself. A submission that gets the qualification outcome right but never actually asserts *why* (an explicit "at least" vs. "more than" comparison) hasn't proven the boundary is handled on purpose rather than by accident.
+- **A Skill that still leaves a "just in case" copy of the procedure in Python.** The point of the refactor was full extraction — a submission that keeps the old embedded string commented out, or duplicated as a fallback, hasn't actually completed Class 4's work, and it will bite today when the contract layer has two possibly-divergent sources of truth to validate against.
 
-## In the required build (embedded procedure)
+## In the diagnostic (Evidence Classification ambiguous case)
 
-- **Procedure text that reads well but hides an ambiguity at the threshold.** The most common version of this: "significant headcount" without ever stating the number, leaving the model to guess where the line is — which defeats the point of writing the procedure down at all.
+- **A category choice with no stated reasoning.** "I chose inference" without explaining *why* the modernization-initiatives note is inference rather than unknown doesn't demonstrate the judgment the diagnostic was testing for.
 
 ## Talking points to set up today's class
 
-- Ask: "If a second agent needed this exact same qualification reasoning, what would you have to do right now?" — the expected answer is "copy-paste the string," which is exactly the problem today solves.
-- Preview progressive disclosure before revealing it: ask what happens to context consumption if every Skill's full procedure loaded for every agent call, all the time, whether or not that Skill was actually relevant.
+- Ask: "If I asked your production system to route on the agent's response right now, in code, how would you do it?" — most answers involve some form of string matching, which is exactly the fragility today's class removes.
+- Preview the fail-safe principle before revealing it: ask what a parsing function *should* do when handed malformed input — crash, silently accept it, or something else. Most will land on "something else" without being able to name it yet; today gives it a name.
 
 ## Golden solution reveal
 
-Run `class-04/`'s agent live once, and print its assembled instruction. Highlight where the qualification procedure sits — inline, as a Python string. Then ask: "What breaks if WidgetWare adds a second agent that needs this same logic?" (Answer: nothing breaks immediately, but the two copies will drift the first time either one changes. That's the whole gap this class closes.)
+Run Class 4's agent live, print its raw prose response for the Acme account, then ask: "This looks right. How do you prove it, mechanically, to something that isn't a human reading it?" Walk to `parse_qualification_result` and show it converting that same reasoning into a validated `QualificationResult` — or, on a deliberately broken input, into a `BLOCKED` result with the error preserved. That's the whole gap this class closes.

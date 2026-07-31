@@ -39,7 +39,11 @@ def test_unknown_employee_count_contributes_neither_pass_nor_fail() -> None:
 
 
 def test_exactly_at_the_minimum_employee_count_counts_as_meeting_it() -> None:
-    account = {"industry": "manufacturing", "employee_count": ICP["minimum_employee_count"], "region": "india"}
+    account = {
+        "industry": "manufacturing",
+        "employee_count": ICP["minimum_employee_count"],
+        "region": "india",
+    }
     score_at_threshold = calculate_fit_score(account, ICP)
 
     just_below = dict(account, employee_count=ICP["minimum_employee_count"] - 1)

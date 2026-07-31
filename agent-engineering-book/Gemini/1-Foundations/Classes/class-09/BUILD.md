@@ -1,29 +1,25 @@
-# Building Class 07 with Antigravity
+# Building Class 9 with Antigravity
 
-Goal: compose the Research and Qualification agents plus two new ones (Evidence Reviewer, Drafting Agent) into one coordinated workflow, with an explicit state machine and a human approval gate no code path can bypass. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-09/`, then diff.
+Goal: a golden dataset, deterministic metrics, and a release gate that together give a mechanical, repeatable answer to "is this system good enough to ship right now?" `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-09/`, then diff.
 
 ## Prerequisites
 
-- **`../SETUP.md` complete.**
-- Your Class 06 checkpoint, passing `./scripts/check.sh`.
+- **`../SETUP.md` complete.** This class is fully offline — evaluation itself never calls a model; the workflow it evaluates uses deterministic stub agents in tests.
+- Your Class 8 checkpoint, passing `./scripts/check.sh`.
 
 ## Steps
 
-1. Write `workflow/state_machine.py` yourself, by hand, before anything else — draw the ten states and their legal transitions on paper first. This is the one file in the whole course most worth writing without an AI's help on the first pass, because getting the transition table right *is* the exercise.
+1. Write `eval/golden_dataset.py` yourself, by hand, before asking Antigravity for anything — deciding what belongs in a golden dataset is the actual thinking this chapter asks for, not something to delegate. Define `GoldenCase` (account, expected outcome category, and enough detail to run it through the real workflow) and `GOLDEN_DATASET`: at minimum one case each for qualified, disqualified, ambiguous/needs-research, conflicting-evidence, and injection-attempt — reusing the fixture accounts already in the repo where they fit.
 
-2. Confirm, explicitly, that no state in your enum could mean "sent" — write the test for this before writing anything else.
+2. Write `eval/metrics.py`: functions that take a batch of completed `WorkflowRun`s and compute deterministic numbers — a qualification-accuracy rate against expected outcomes, and `approval_compliance_rate()` (the fraction of runs that correctly stopped at `AWAITING_APPROVAL` rather than skipping it). Be explicit in a docstring or comment about which workflow states `approval_compliance_rate()` currently recognizes — at this checkpoint, only the four that exist through Class 8.
 
-3. Write `workflow/approval.py`: `ApprovalPackage` (the fields Book 1 §9.6 requires) and `record_approval_decision()`, which returns a state, never performs an action.
+3. Ask Antigravity for the release gate, but be explicit about the "fails loudly" requirement — this is the part a generic prompt will get wrong by default:
 
-4. Ask Antigravity for the two new agents, but review the instructions closely — this is where the chapter's real safety property lives:
+   > "Write `eval/release_gate.py`'s `check_release_gate(golden_dataset, run_workflow_fn, thresholds) -> ReleaseGateResult`. It must run every case in the golden dataset through the workflow, compare actual to expected outcomes, and compute metrics. `ReleaseGateResult` has `passed: bool` and `reasons: list[str]`. Critically: if multiple things are wrong, `reasons` must contain all of them — never stop at the first failure and never silently swallow a failing case."
 
-   > "Write `agents/evidence_reviewer.py`, an ADK agent with no tools. Its instruction must require it to verify claims are cited and current, surface any conflicts rather than resolving them, and explicitly forbid independently browsing for additional facts. Write `agents/drafting_agent.py`, also with no tools, whose instruction restricts it to only the claims it's given — it must never introduce a fact not present in its input."
+4. Write `eval/observability.py`: structured logging for each golden-dataset run (case ID, expected vs. actual outcome, pass/fail) sufficient to reconstruct why a case failed after the fact without re-running it.
 
-5. Write `workflow/coordinator.py`'s `run_workflow()` yourself. Design it to accept `qualify`, `review`, and `draft` as parameters (plain callables) rather than calling specific agent objects directly — this is what makes the coordinator testable without a live model call, and it's a real, defensible software-engineering pattern (dependency injection), not a shortcut. Checkpoint after every stage.
-
-6. Write the five required scenario tests using simple stub functions for `qualify`/`review`/`draft` that return pre-built contract objects: success, insufficient evidence, source conflict, malformed output (a stub that raises), rejected approval.
-
-7. Write a checkpoint test that actually reads a checkpoint file back and confirms the state and history are correct.
+5. Write the tests: one per required category confirming the golden case produces its expected outcome, a deliberate-breakage test (mutate one business rule, confirm the gate fails with the right named reason), and a multi-breakage test (break two unrelated things, confirm both reasons appear in one run).
 
 ## Verify
 
@@ -34,12 +30,12 @@ pip install -e ".[dev]"
 ./scripts/check.sh
 ```
 
-All workflow, state-machine, and contract tests should pass offline.
+Expect all golden-dataset, metrics, and release-gate tests to pass offline.
 
 ## Compare against the reference
 
-`golden-solution/tests/workflow/test_state_machine.py`'s `test_sent_is_not_a_state_that_exists` and `test_terminal_states_have_no_outgoing_transitions` are the reference for what "structurally cannot send" actually means here — not a comment, not a docstring, a test that would fail if someone added a `SENT` state later without noticing what they'd done.
+`golden-solution/tests/eval/test_release_gate.py` is the reference for what "reports every failure" actually means — in particular, its multi-breakage test. If your release gate's test suite only ever breaks one thing at a time, you haven't proven the "fails loudly, completely" requirement, only the "fails" part.
 
 ## Grade it
 
-Passing tests proves the state machine and checkpointing are correct, using stub agent functions. It doesn't prove the real Evidence Reviewer and Drafting Agent behave correctly with a live model. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.
+Passing tests proves the gate mechanically works. It doesn't prove the golden dataset's ten cases are actually representative of what WidgetWare will see in practice, or that the gate's thresholds are calibrated to a real bar rather than whatever happened to be easy to satisfy. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.

@@ -2,7 +2,11 @@
 Lab items 1-3, 5-8. No model call anywhere in this file.
 """
 
-from widgetware_sdr.research import build_research_brief, detect_employee_count_conflict, normalize_evidence
+from widgetware_sdr.research import (
+    build_research_brief,
+    detect_employee_count_conflict,
+    normalize_evidence,
+)
 from widgetware_sdr.tools.research_tools import search_public_records
 
 ACME = {"account_id": "acme-001", "company_name": "Acme Manufacturing"}

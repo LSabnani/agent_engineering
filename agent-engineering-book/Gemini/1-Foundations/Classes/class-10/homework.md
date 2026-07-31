@@ -6,30 +6,30 @@
 
 ## Required (30–45 minutes)
 
-1. Build `eval/golden_dataset.py` with `GOLDEN_DATASET` covering all required categories (qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt, and the rest).
-2. Build `eval/metrics.py` with deterministic metrics computed from a batch of workflow runs.
-3. Build `eval/release_gate.py`'s `check_release_gate(...)` — it must correctly pass a healthy system and fail an unhealthy one, with every unmet condition named.
-4. Get `./scripts/check.sh` passing, including a test that deliberately breaks a business rule and confirms the gate catches it.
+1. Extend `workflow/state_machine.py` with `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW`, and make `BLOCKED` route to one of them instead of being terminal.
+2. Build `loop/budget.py`, `loop/decision.py`, `loop/account_queue.py`, `loop/run_report.py`, and `loop/batch_runner.py`.
+3. Run the batch loop against a four-account seed queue (at least one account outside WidgetWare's ICP) and produce a run report naming its `stop_reason`.
+4. Get `./scripts/check.sh` passing, offline tests included.
 
 ## Diagnostic (targeted fix)
 
-The provided release gate currently stops evaluating after the first golden-dataset case fails, instead of running all ten and reporting every failure. Find the early-return (or equivalent short-circuit) responsible, fix it so a single run always reports the complete picture, and write a test that would have caught the original bug — one that deliberately breaks two unrelated things at once and confirms both show up in the result.
+The provided budget test suite currently verifies that a single account's retries count correctly against that *account's own* attempt limit, but does not verify that one badly-behaved account's retries don't quietly consume the *run's* `max_consecutive_failures` budget in a way that stops the whole batch prematurely for everyone else. Write a test with one account that fails twice (using up `max_attempts_per_account`) followed by three healthy accounts, and confirm all three healthy accounts still get processed.
 
 ## Extension (optional)
 
-Add an eleventh golden-dataset case of your own devising that covers a realistic WidgetWare scenario none of the existing ten categories represent. Show, with a before/after test, that it changes the gate's outcome when the corresponding behavior is deliberately broken — an extension case that can't actually fail anything isn't testing anything.
+Add a fifth account to the seed queue specifically designed to trigger `DEFER` — you'll need to actually wire a `dependency_available=False` path into `run_batch` for at least one realistic condition (for example: the account's research source returns zero evidence items, treated as a temporarily unavailable dependency rather than automatically `BLOCKED`). Confirm the deferred account is not discarded and would be eligible again on a subsequent run.
 
 ## Submission
 
-- `./scripts/check.sh` output showing all offline tests passing.
-- One full `ReleaseGateResult` output showing a deliberately broken system correctly failing with all reasons named.
-- One paragraph: which required category was hardest to write a convincing golden-dataset case for, and why.
+- `./scripts/check.sh` output, all green.
+- One full batch-loop run report (`stop_reason` and `status_totals`).
+- One paragraph: which of the five decision outcomes (CONTINUE, RETRY, STOP, DEFER, ESCALATE) was hardest to write a convincing test for, and why.
 
 ## Constraints
 
-- No loop yet — this checkpoint evaluates a single run of the workflow per golden-dataset case, not a batch or retry loop. Class 11 adds the loop.
-- The golden dataset must be checked into the repository as code/data, not generated dynamically at test time.
+- Nothing about the single-account workflow (`run_workflow`) changes in this chapter — the loop wraps it, it does not modify it.
+- Still no send tool anywhere in the codebase — confirm this with the same grep used in Class 8's homework.
 
 ## What "done" looks like
 
-You can hand someone else's deliberately broken checkpoint to `check_release_gate()` and get back a result that names every real problem, with nothing left for them to discover the hard way on a second run.
+You can run the batch loop against a queue with a mix of qualifying, disqualifying, and unresearchable accounts, and get back a report that honestly explains what happened to each one — including the ones that needed a human. That's Book 1, complete.

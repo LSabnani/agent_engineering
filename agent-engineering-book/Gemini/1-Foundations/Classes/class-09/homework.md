@@ -6,29 +6,30 @@
 
 ## Required (30–45 minutes)
 
-1. Build `workflow/state_machine.py`, `workflow/approval.py`, `workflow/coordinator.py`, `contracts/evidence_review.py`, `contracts/outreach_draft.py`, and the two new agents.
-2. Get all five required scenario tests passing: success, insufficient evidence, source conflict, malformed output, rejected approval.
-3. Run the full workflow for at least two accounts and confirm each one resumes correctly from a checkpoint after a simulated interruption (stop the process, restart, read the checkpoint file back).
+1. Build `eval/golden_dataset.py` with `GOLDEN_DATASET` covering all required categories (qualified, disqualified, ambiguous, conflicting-evidence, injection-attempt, and the rest).
+2. Build `eval/metrics.py` with deterministic metrics computed from a batch of workflow runs.
+3. Build `eval/release_gate.py`'s `check_release_gate(...)` — it must correctly pass a healthy system and fail an unhealthy one, with every unmet condition named.
+4. Get `./scripts/check.sh` passing, including a test that deliberately breaks a business rule and confirms the gate catches it.
 
 ## Diagnostic (targeted fix)
 
-The provided rejected-approval test currently confirms `record_approval_decision(REJECT)` returns `REJECTED`, but nothing checks that this is actually a *legal* transition from wherever the run currently sits. Strengthen the test to call `validate_transition(run.state, WorkflowState.REJECTED)` and assert it's true — and explain, in one sentence, what a passing "returns REJECTED" test with a *failing* `validate_transition` check would actually mean.
+The provided release gate currently stops evaluating after the first golden-dataset case fails, instead of running all ten and reporting every failure. Find the early-return (or equivalent short-circuit) responsible, fix it so a single run always reports the complete picture, and write a test that would have caught the original bug — one that deliberately breaks two unrelated things at once and confirms both show up in the result.
 
 ## Extension (optional)
 
-Add a sixth partial-failure scenario from §9.7's list not covered in class (research source unavailable, user rejects the draft, workflow resumed after interruption) with its own test, following the same "visible state, prior work preserved" pattern as the five required ones.
+Add an eleventh golden-dataset case of your own devising that covers a realistic WidgetWare scenario none of the existing ten categories represent. Show, with a before/after test, that it changes the gate's outcome when the corresponding behavior is deliberately broken — an extension case that can't actually fail anything isn't testing anything.
 
 ## Submission
 
-- `./scripts/check.sh` output, all green.
-- Terminal output of a resumed-from-checkpoint run.
-- A `grep -ri "send\|smtp\|email.*send" src/` output, to show, live, that no send-capable code exists anywhere in the codebase.
+- `./scripts/check.sh` output showing all offline tests passing.
+- One full `ReleaseGateResult` output showing a deliberately broken system correctly failing with all reasons named.
+- One paragraph: which required category was hardest to write a convincing golden-dataset case for, and why.
 
 ## Constraints
 
-- The workflow must terminate at `AWAITING_APPROVAL` or a named failure state — never anything resembling "sent."
-- The Drafting Agent must never receive the raw `ResearchBrief` — only the `EvidenceReview`'s approved claims.
+- No loop yet — this checkpoint evaluates a single run of the workflow per golden-dataset case, not a batch or retry loop. Class 10 adds the loop.
+- The golden dataset must be checked into the repository as code/data, not generated dynamically at test time.
 
 ## What "done" looks like
 
-You can kill the workflow mid-run, on purpose, and prove — not just claim — that the research already completed survives the interruption.
+You can hand someone else's deliberately broken checkpoint to `check_release_gate()` and get back a result that names every real problem, with nothing left for them to discover the hard way on a second run.

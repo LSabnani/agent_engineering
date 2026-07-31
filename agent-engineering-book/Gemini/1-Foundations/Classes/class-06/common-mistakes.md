@@ -2,19 +2,19 @@
 
 Reviewing Class 5's homework before revealing `golden-solution/`.
 
-## In the required build (Skill extraction)
+## In the required build (contract invariants)
 
-- **A Skill that still leaves a "just in case" copy of the procedure in Python.** The point of the refactor was full extraction — a submission that keeps the old embedded string commented out, or duplicated as a fallback, hasn't actually completed Class 5's work, and it will bite today when the contract layer has two possibly-divergent sources of truth to validate against.
+- **Invariants tested only on the happy path.** A submission with a passing test for each valid status but no test proving the *invalid* case is actually rejected hasn't proven the invariant exists — it's proven the valid case is valid, which was never in doubt.
 
-## In the diagnostic (Evidence Classification ambiguous case)
+## In the extension (fifth business invariant)
 
-- **A category choice with no stated reasoning.** "I chose inference" without explaining *why* the modernization-initiatives note is inference rather than unknown doesn't demonstrate the judgment the diagnostic was testing for.
+- **A `BLOCKED` error that's technically non-empty but not actually useful.** A generic string like `"validation failed"` satisfies the type check but gives a reviewer nothing to act on — a strong error names the field, the rule, and the offending value.
 
 ## Talking points to set up today's class
 
-- Ask: "If I asked your production system to route on the agent's response right now, in code, how would you do it?" — most answers involve some form of string matching, which is exactly the fragility today's class removes.
-- Preview the fail-safe principle before revealing it: ask what a parsing function *should* do when handed malformed input — crash, silently accept it, or something else. Most will land on "something else" without being able to name it yet; today gives it a name.
+- Ask: "Every fact in a `QualificationResult` right now — the employee count, the industry — where did the agent actually get it from?" The expected answer, once people think it through, is "wherever the caller happened to put it in the per-call message" — the agent has never gone and looked anything up itself.
+- Preview least privilege before revealing it: ask what the damage ceiling should be if one of today's tools were compromised. Most will correctly guess "small, because it's read-only" — that's the design goal made explicit.
 
 ## Golden solution reveal
 
-Run Class 5's agent live, print its raw prose response for the Acme account, then ask: "This looks right. How do you prove it, mechanically, to something that isn't a human reading it?" Walk to `parse_qualification_result` and show it converting that same reasoning into a validated `QualificationResult` — or, on a deliberately broken input, into a `BLOCKED` result with the error preserved. That's the whole gap this class closes.
+Run Class 5's agent live, print a valid `QualificationResult`, and ask the room to trace one `evidence_refs` entry back to its source. There isn't one — it's just whatever was in the per-call message. Then ask: "What would it take for the agent to go verify this itself?" That's the whole gap this class closes.

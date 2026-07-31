@@ -24,7 +24,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests/unit", "tests/contracts", "tests/integration"]
+testpaths = ["tests/unit", "tests/contracts", "tests/tools", "tests/integration"]
 asyncio_mode = "auto"
 
 [tool.ruff]

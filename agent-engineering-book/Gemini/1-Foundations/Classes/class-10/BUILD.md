@@ -1,25 +1,29 @@
 # Building Class 10 with Antigravity
 
-Goal: a golden dataset, deterministic metrics, and a release gate that together give a mechanical, repeatable answer to "is this system good enough to ship right now?" `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-10/`, then diff.
+Goal: wrap the Class 9 workflow, unchanged, in a bounded ADK loop that processes a queue of accounts unattended. `golden-solution/` in this folder is the reference. Build your own copy in `my-work/gemini-book-1/class-10/`, then diff.
 
 ## Prerequisites
 
-- **`../SETUP.md` complete.** This class is fully offline — evaluation itself never calls a model; the workflow it evaluates uses deterministic stub agents in tests.
-- Your Class 09 checkpoint, passing `./scripts/check.sh`.
+- **`../SETUP.md` complete.**
+- Your Class 9 checkpoint, passing `./scripts/check.sh`, including a passing release gate.
 
 ## Steps
 
-1. Write `eval/golden_dataset.py` yourself, by hand, before asking Antigravity for anything — deciding what belongs in a golden dataset is the actual thinking this chapter asks for, not something to delegate. Define `GoldenCase` (account, expected outcome category, and enough detail to run it through the real workflow) and `GOLDEN_DATASET`: at minimum one case each for qualified, disqualified, ambiguous/needs-research, conflicting-evidence, and injection-attempt — reusing the fixture accounts already in the repo where they fit.
+1. Extend `workflow/state_machine.py` with `RETRY_PENDING` and `NEEDS_HUMAN_REVIEW`. Decide where they attach to the existing transition table yourself before looking at the reference — Book 1 §11.6 tells you what the two states mean, not which existing state should route to them. `BLOCKED` should no longer be terminal once you're done.
 
-2. Write `eval/metrics.py`: functions that take a batch of completed `WorkflowRun`s and compute deterministic numbers — a qualification-accuracy rate against expected outcomes, and `approval_compliance_rate()` (the fraction of runs that correctly stopped at `AWAITING_APPROVAL` rather than skipping it). Be explicit in a docstring or comment about which workflow states `approval_compliance_rate()` currently recognizes — at this checkpoint, only the four that exist through Class 9.
+2. Write `loop/budget.py`, `loop/decision.py` (the five-way decision — CONTINUE, RETRY, STOP, DEFER, ESCALATE), `loop/account_queue.py`, and `loop/run_report.py`.
 
-3. Ask Antigravity for the release gate, but be explicit about the "fails loudly" requirement — this is the part a generic prompt will get wrong by default:
+3. Write `loop/batch_runner.py`'s `run_batch()` to accept `qualify`/`review`/`draft` as injected callables, exactly like Class 8's `run_workflow` — this keeps the whole loop testable offline. Checkpoint after every account, and verify the state the workflow actually reached (§11.7) before deciding what to do next.
 
-   > "Write `eval/release_gate.py`'s `check_release_gate(golden_dataset, run_workflow_fn, thresholds) -> ReleaseGateResult`. It must run every case in the golden dataset through the workflow, compare actual to expected outcomes, and compute metrics. `ReleaseGateResult` has `passed: bool` and `reasons: list[str]`. Critically: if multiple things are wrong, `reasons` must contain all of them — never stop at the first failure and never silently swallow a failing case."
+4. Ask Antigravity for the ADK-native `LoopAgent` wiring, but expect a surprise:
 
-4. Write `eval/observability.py`: structured logging for each golden-dataset run (case ID, expected vs. actual outcome, pass/fail) sufficient to reconstruct why a case failed after the fact without re-running it.
+   > "Write `create_batch_loop_agent()`, wrapping the WidgetWare workflow in a `google.adk.agents.LoopAgent` with a configurable `max_iterations`."
 
-5. Write the tests: one per required category confirming the golden case produces its expected outcome, a deliberate-breakage test (mutate one business rule, confirm the gate fails with the right named reason), and a multi-breakage test (break two unrelated things, confirm both reasons appear in one run).
+   If your installed `google-adk` version prints a deprecation warning about `LoopAgent`, don't ignore it or hide it — read what it says, and document it honestly in your own `KNOWN_FAILURE_CASES.md`. The book teaches the concept correctly; the SDK underneath it may have moved since the book was written, and noticing that is itself the discipline this course is trying to build.
+
+5. Build a four-account seed queue, at least one outside WidgetWare's ICP, and run the full batch loop against it. Write tests for: a fresh account gets selected, a settled one doesn't, a recoverable failure retries up to the limit and no further, the loop stops at every declared budget, and every run names a stop reason.
+
+6. Double-check that whatever counter your budget check reads against is actually incremented somewhere in the loop — a budget stop condition that's never triggered because nothing ever increments the counter it checks is a real, easy-to-miss bug class, not a hypothetical.
 
 ## Verify
 
@@ -30,12 +34,12 @@ pip install -e ".[dev]"
 ./scripts/check.sh
 ```
 
-Expect all golden-dataset, metrics, and release-gate tests to pass offline.
+All loop tests should pass offline.
 
 ## Compare against the reference
 
-`golden-solution/tests/eval/test_release_gate.py` is the reference for what "reports every failure" actually means — in particular, its multi-breakage test. If your release gate's test suite only ever breaks one thing at a time, you haven't proven the "fails loudly, completely" requirement, only the "fails" part.
+`golden-solution/tests/loop/test_batch_runner.py` is the reference for the full loop scenario suite. Pay attention to how its `review` stub — not the coordinator — is what actually stops a disqualified account from reaching `AWAITING_APPROVAL`; if your own test suite doesn't model that, you may be relying on the coordinator to do something it was never designed to do.
 
 ## Grade it
 
-Passing tests proves the gate mechanically works. It doesn't prove the golden dataset's ten cases are actually representative of what WidgetWare will see in practice, or that the gate's thresholds are calibrated to a real bar rather than whatever happened to be easy to satisfy. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.
+Passing tests proves the loop mechanics are correct. It doesn't prove your loop's budgets are set to sensible real-world values, or that the new states attach to the state machine for a real reason rather than just to make a test pass. Run the quality check: `GRADING.md` in this folder plus `../GRADING-RUBRIC-TEMPLATE.md`.

@@ -1,15 +1,15 @@
-# Class 06 Grading Criteria
+# Class 6 Grading Criteria
 
-Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check for the specific cases already anticipated.
+Used with `../GRADING-RUBRIC-TEMPLATE.md`. These are the criteria specific to this class — the things `pytest` cannot check, or can only check with stubs.
 
-1. **Conflict detection's actual scope is documented honestly.** A submission's own notes (README, `KNOWN_FAILURE_CASES.md`, or code comments) should say plainly what pattern the detector actually catches, not imply it "handles conflicting sources" in general. If a submission's conflict detector is broader than this course's reference, that's a legitimate improvement — but it should still be documented precisely, not left for a reader to reverse-engineer.
+1. **The state machine was designed before the agents, not after.** Ask the submitter to walk through the transition table without looking at `coordinator.py`. If they can explain every legal and illegal transition from the table alone, §9.3's actual point landed. If they can only explain it by tracing through `run_workflow()`'s code, the state machine is documentation of what the code happens to do, not a design that constrains it.
 
-2. **The injection-attempt test proves isolation, not just survival.** A test that only confirms `build_research_brief` doesn't crash on injection-laden input is weaker than one that confirms the attack text ends up as ordinary, cited claim data — exactly where any other evidence text would land, no special handling, no special exception.
+2. **The Drafting Agent's isolation is structural, not just instructed.** Check what `run_workflow()` actually passes to `draft()` — it should be the `EvidenceReview`'s approved claims, or an equivalent narrow projection, not the full `ResearchBrief` or `QualificationResult`. An instruction telling the model to "only use approved claims" is weaker than an input that structurally excludes everything else.
 
-3. **The choice of function tool vs. MCP is argued, not assumed.** A strong submission states which of §8.5's four conditions actually applied to this specific research source, and reaches a defensible conclusion — even if that conclusion is "MCP would be better here, but a function tool is simpler for a course lab."
+3. **Partial-failure tests actually assert on preserved state, not just the final status.** A test that only checks `run.state == BLOCKED` after a mid-workflow failure hasn't verified §9.7's actual claim — that prior successful work isn't lost. It should also assert the earlier stage's result (e.g., `run.research_brief`) is still populated.
 
-4. **`ResearchBrief`'s claims are genuinely tied to evidence, not decoratively.** Pick one claim in a generated brief and trace its `evidence_refs` back to a real evidence item's `claim` text. If the two don't actually match — the claim says something the cited evidence doesn't support — the citation is present but hollow.
+4. **The stub-vs-real distinction is stated honestly.** A strong submission's own documentation says plainly that the five scenario tests use stub `qualify`/`review`/`draft` functions, not the real agents — and doesn't imply the workflow has been proven correct with live model reasoning when it hasn't.
 
-5. **The Research Agent's instruction would plausibly work on a model that's never seen this codebase.** Read it as an outsider. Does it clearly say what to do when evidence conflicts, and what never to do with retrieved text — without relying on context only the course provides?
+5. **`ApprovalPackage` is actually populated from the workflow's real state, not hand-typed placeholder strings.** If a submission's approval-package construction hardcodes `qualification_summary="looks good"` instead of deriving it from an actual `QualificationResult`, the contract exists but isn't wired to anything real yet.
 
-6. **Independent understanding, not a copy.** If the submission's mock data, pipeline, and Research Agent are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.
+6. **Independent understanding, not a copy.** If the submission's state machine, workflow, and agents are near-identical to the gold reference in wording and structure with no evidence of independent construction, note that explicitly per the anti-gaming guidance in the generic template.

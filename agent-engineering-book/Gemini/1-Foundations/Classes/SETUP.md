@@ -1,6 +1,6 @@
 # Course Setup (Self-Paced Track)
 
-Do this once, before Class 01. Class 01 is a concept exercise you work through *with* Antigravity — it shouldn't have to double as an installation guide, and Class 02 is about workspace/project structure, not tool installation. Separating the two avoids a chicken-and-egg problem where Class 01 needs a tool that Class 02 is what teaches you to set up.
+Do this once, before Class 1. Class 1 now builds both the WidgetWare charter *and* the runnable repository harness in one sitting — that means Antigravity, Git, and Python need to already be installed and working before Class 1 starts, not learned as part of it. This file is that one-time installation step, done ahead of time precisely so Class 1's own exercise isn't also an installation tutorial.
 
 This file is for the **self-paced track** — working through the classes on your own, at your own pace, with an LLM judge grading your submissions. If you're attending the live, instructor-led classroom program instead, you don't need this file; start with `00_Course_Framework.md`.
 
@@ -9,7 +9,7 @@ This file is for the **self-paced track** — working through the classes on you
 1. **Antigravity** — install and authenticate per Google's current instructions for your platform.
 2. **Git** — any recent version.
 3. **Python 3.11+** — confirm with `python3 --version`.
-4. **A way to actually call Gemini** — needed starting Class 4, when the first real model call happens. Not required for Classes 1–3. See "Getting and paying for API access" below.
+4. **A way to actually call Gemini** — needed starting Class 3, when the first real model call happens. Not required for Classes 1–2. See "Getting and paying for API access" below.
 
 ## Get the companion repository
 
@@ -33,11 +33,11 @@ Both should print a version, not an error. Confirm Antigravity separately per it
 
 ## Getting and paying for API access
 
-You don't need this for Classes 1–3 — they're fully offline. Set it up before Class 4, since that's the first class with a real model call.
+You don't need this for Classes 1–2 — they're fully offline. Set it up before Class 3, since that's the first class with a real model call.
 
 ### Recommended: Google AI Studio (free tier, no card required)
 
-This is the right default for this course. The free tier's rate limits comfortably cover the live-model tests you'll run across Classes 4–11 — each session makes at most a handful of live calls.
+This is the right default for this course. The free tier's rate limits comfortably cover the live-model tests you'll run across Classes 3–10 — each session makes at most a handful of live calls.
 
 1. Go to `aistudio.google.com` and sign in with a Google account.
 2. Click **Get API key** → **Create API key**.
@@ -61,12 +61,12 @@ Both paths are pay-as-you-go per token past any free allotment — check current
 
 ## Two settings this course relies on
 
-- **Review every plan before permitting implementation** (Book 1 §2.2's eight-step disciplined cycle). Don't let Antigravity run an unbounded, unreviewed task against your working directory — Class 02 builds a real permissions model around this; skipping the review habit early defeats the point of that chapter once you reach it.
-- **Keep `.env` out of version control from the very first commit.** `.env.example` documents the shape; `.env` never gets committed. Class 02 sets this up explicitly, but the habit should start now, before there's anything real to leak.
+- **Review every plan before permitting implementation** (Book 1 §2.2's eight-step disciplined cycle). Don't let Antigravity run an unbounded, unreviewed task against your working directory — Class 1 builds a real permissions model around this, starting with your very first task.
+- **Keep `.env` out of version control from the very first commit.** `.env.example` documents the shape; `.env` never gets committed. Class 1 sets this up explicitly, before there's anything real to leak.
 
 ## Then
 
-Start with `class-01/README.md`. Its `BUILD.md` is an exercise conducted through a live Antigravity conversation, not a code build — you need Antigravity available, not a project workspace yet. The project workspace itself is what Class 02 builds.
+Start with `class-01/README.md`. Its `BUILD.md` is a real exercise: drafting the charter with Antigravity, then asking it to build the repository workspace around it — the same class now covers both. You need Antigravity available before you start.
 
 ## The two tracks, and how they relate
 

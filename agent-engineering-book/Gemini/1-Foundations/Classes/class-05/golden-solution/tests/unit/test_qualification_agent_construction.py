@@ -7,7 +7,10 @@ reasons well. Semantic evaluation lives in tests/integration/, and
 requires live credentials.
 """
 
-from widgetware_sdr.agents.qualification_agent import build_agent_instruction, create_qualification_agent
+from widgetware_sdr.agents.qualification_agent import (
+    build_agent_instruction,
+    create_qualification_agent,
+)
 from widgetware_sdr.instructions import DEFAULT_MODEL_ID
 
 

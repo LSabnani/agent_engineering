@@ -6,29 +6,31 @@
 
 ## Required (30–45 minutes)
 
-1. Build `src/widgetware_sdr/agents/qualification_agent.py` (embedded procedure) and `src/widgetware_sdr/app.py`.
-2. Build `data/sample_accounts/` and scenario tests for qualified, unqualified, and uncertain accounts.
-3. Confirm the agent reasons within its boundary — no tool calls, no external services, no invented facts.
+1. Build `skills/icp_qualification/` (skill.md, three examples, cases.yaml) and `skills/evidence_classification/skill.md`.
+2. Build `src/widgetware_sdr/skills.py` and refactor `qualification_agent.py` to load its procedure via `load_skill()`.
+3. Confirm the agent's instruction is assembled entirely from fixed instructions + config + Skill content — no embedded procedure left in Python.
+4. Get all offline unit tests passing (`./scripts/check.sh`); if you have live credentials, also run `pytest tests/integration -v` and read the three responses.
 
 ## Diagnostic (targeted fix)
 
-The provided embedded procedure text handles "meets the minimum" and "clearly below the minimum" correctly, but mishandles the boundary case — an account with *exactly* 5,000 employees. Find the ambiguity in the instruction text and rewrite it so the boundary case is unambiguous.
+The provided Evidence Classification Skill's examples are correct, but one deliberately ambiguous fact in `tests/fixtures/accounts/meridian-003.yaml`'s notes ("recently discussed modernization initiatives") is genuinely borderline between "inference" and "unknown." Write down which category you think it should be, why, and add that reasoning as a fourth example to `skills/evidence_classification/skill.md`.
 
 ## Extension (optional)
 
-Add a fourth sample account profile chosen to stress a different boundary condition (for example, an account in a preferred industry but an unlisted region). Add a matching scenario test.
+Write a second, independent Skill consumer — a small standalone script (not `qualification_agent.py`) that calls `load_skill("icp_qualification")` and prints its procedure. This proves the Skill is genuinely reusable outside the one agent that currently uses it, which is the whole point of today's refactor.
 
 ## Submission
 
 - `./scripts/check.sh` output showing all offline tests passing.
-- If you have live credentials: the printed event sequence for one scenario, and one sentence on whether the response avoided inventing missing data.
+- If you ran the live integration tests: the printed event sequence for one scenario, and one sentence on whether the response avoided inventing missing data.
+- If you didn't have credentials available: say so explicitly rather than silently skipping this part.
 
 ## Constraints
 
-- No structured/typed output yet — the agent's result stays prose, on purpose. Class 6 replaces it with a contract.
-- No Skill yet — the procedure lives directly in `qualification_agent.py`'s instruction string. Class 5 extracts it.
-- No tools yet — Class 7.
+- No structured/typed output yet — the agent's result stays prose at this stage, on purpose. Class 5 replaces it with a contract.
+- No tools yet. The agent still only reasons over what it's directly given. Class 6 adds tools.
+- The agent's static instruction must never contain a specific account's data — verify with `test_instruction_contains_no_specific_account_data`.
 
 ## What "done" looks like
 
-You can point at the printed event sequence for a real run and explain, from the events alone, exactly why the agent reached the recommendation it did.
+You can point at `skills/icp_qualification/skill.md` and say "this, not the Python file, is where the qualification logic actually lives" — and prove it by editing only the Skill to fix a reasoning gap, never the agent code.

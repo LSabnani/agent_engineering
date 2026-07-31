@@ -35,7 +35,9 @@ def test_material_claim_with_no_evidence_refs_is_rejected() -> None:
         ResearchBrief(
             account_id="acme-001",
             evidence_items=[_evidence_item()],
-            claims=[Claim(text="An uncited claim.", evidence_refs=[], classification="verified_fact")],
+            claims=[
+                Claim(text="An uncited claim.", evidence_refs=[], classification="verified_fact")
+            ],
             summary="Bad brief.",
             recommended_next_step="proceed to qualification",
         )
@@ -60,7 +62,13 @@ def test_an_inference_classified_claim_may_have_no_direct_evidence_ref() -> None
     brief = ResearchBrief(
         account_id="acme-001",
         evidence_items=[_evidence_item()],
-        claims=[Claim(text="This company is likely well-funded.", evidence_refs=[], classification="inference")],
+        claims=[
+            Claim(
+                text="This company is likely well-funded.",
+                evidence_refs=[],
+                classification="inference",
+            )
+        ],
         summary="One inference, unlinked but labeled.",
         recommended_next_step="NEEDS_RESEARCH",
     )

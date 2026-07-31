@@ -60,7 +60,9 @@ class ContextPackage:
 
     @property
     def assembled_prompt(self) -> str:
-        return _assemble(self.system_instructions, self.business_context, self.task_context, self.evidence)
+        return _assemble(
+            self.system_instructions, self.business_context, self.task_context, self.evidence
+        )
 
 
 def _assemble(

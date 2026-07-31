@@ -1,20 +1,20 @@
-# Class 4 — Common Mistakes to Discuss (0:10–0:20)
+# Class 4 — Common Mistakes to Discuss (0:00–0:30)
 
 Reviewing Class 3's homework before revealing `golden-solution/`.
 
-## In the fifth context-quality test (Class 3's diagnostic)
+## In the diagnostic (boundary-condition test)
 
-- **A staleness test that only checks a date field exists, not that behavior actually changes.** The point of §3.6's staleness failure is that stale data should be treated differently from fresh data — a test that only confirms a `retrieved_at` field is present, without asserting anything downstream reacts to it, hasn't actually tested the failure mode.
+- **A boundary test that checks the number but not the label.** Class 3's extension asked for an account at exactly 5,000 employees — the ICP minimum itself. A submission that gets the qualification outcome right but never actually asserts *why* (an explicit "at least" vs. "more than" comparison) hasn't proven the boundary is handled on purpose rather than by accident.
 
-## In the model-selection extension
+## In the required build (embedded procedure)
 
-- **"Configurable" that's still a single hardcoded default with no override path.** `get_model_id()` reading an environment variable with a fallback is the right shape; a version that still requires editing `instructions.py` directly to change models has only moved the hardcoding, not removed it.
+- **Procedure text that reads well but hides an ambiguity at the threshold.** The most common version of this: "significant headcount" without ever stating the number, leaving the model to guess where the line is — which defeats the point of writing the procedure down at all.
 
 ## Talking points to set up today's class
 
-- Ask: "Given everything in `context_builder.py`, what's actually missing to make this reason?" — the expected answer is "an ADK `Agent` object and something that calls it," which is exactly today's first thirty minutes.
-- Preview that the procedure text will be *embedded* today, and ask the room to predict whether that's a permanent design choice — most will correctly guess it isn't, setting up Class 5.
+- Ask: "If a second agent needed this exact same qualification reasoning, what would you have to do right now?" — the expected answer is "copy-paste the string," which is exactly the problem today solves.
+- Preview progressive disclosure before revealing it: ask what happens to context consumption if every Skill's full procedure loaded for every agent call, all the time, whether or not that Skill was actually relevant.
 
 ## Golden solution reveal
 
-Walk `class-03/`'s `context_builder.py` one more time, then run this exact sequence live: print `context.assembled_prompt` for the qualified account, and ask "what's stopping us from handing this text to a model right now?" (Answer: nothing structurally — we just haven't built the `Agent` object yet. That's the whole gap this class closes.)
+Run `class-03/`'s agent live once, and print its assembled instruction. Highlight where the qualification procedure sits — inline, as a Python string. Then ask: "What breaks if WidgetWare adds a second agent that needs this same logic?" (Answer: nothing breaks immediately, but the two copies will drift the first time either one changes. That's the whole gap this class closes.)

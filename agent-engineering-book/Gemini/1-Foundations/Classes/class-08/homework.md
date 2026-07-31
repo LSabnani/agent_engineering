@@ -6,29 +6,29 @@
 
 ## Required (30–45 minutes)
 
-1. Build `research_tools.py`, `contracts/research_brief.py`, `research.py`, and `agents/research_agent.py`.
-2. `build_research_brief` should produce a schema-valid `ResearchBrief` for all three sample accounts, with every material claim cited.
-3. Get `./scripts/check.sh` passing, including the injection-attempt and conflicting-sources tests.
+1. Build `workflow/state_machine.py`, `workflow/approval.py`, `workflow/coordinator.py`, `contracts/evidence_review.py`, `contracts/outreach_draft.py`, and the two new agents.
+2. Get all five required scenario tests passing: success, insufficient evidence, source conflict, malformed output, rejected approval.
+3. Run the full workflow for at least two accounts and confirm each one resumes correctly from a checkpoint after a simulated interruption (stop the process, restart, read the checkpoint file back).
 
 ## Diagnostic (targeted fix)
 
-Add a fourth mock account to `data/mock_public_sources.yaml` with two sources that disagree on a field `detect_employee_count_conflict` does **not** currently check — for example, two sources stating different industries. Confirm, by actually running your pipeline, that this conflict currently goes completely undetected and silently produces two contradictory claims sitting side by side in `claims[]`. Then decide: is that a bug worth fixing today, or a known limitation worth documenting? Either is an acceptable answer, but you must justify it in writing.
+The provided rejected-approval test currently confirms `record_approval_decision(REJECT)` returns `REJECTED`, but nothing checks that this is actually a *legal* transition from wherever the run currently sits. Strengthen the test to call `validate_transition(run.state, WorkflowState.REJECTED)` and assert it's true — and explain, in one sentence, what a passing "returns REJECTED" test with a *failing* `validate_transition` check would actually mean.
 
 ## Extension (optional)
 
-Add a source-freshness check: a configurable threshold (e.g., 365 days) beyond which an evidence item is flagged as stale in the `ResearchBrief`, distinct from being wrong. Use the deliberately old 2023 regional-directory record for `acme-001` as your test case.
+Add a sixth partial-failure scenario from §9.7's list not covered in class (research source unavailable, user rejects the draft, workflow resumed after interruption) with its own test, following the same "visible state, prior work preserved" pattern as the five required ones.
 
 ## Submission
 
 - `./scripts/check.sh` output, all green.
-- One full `ResearchBrief` JSON for `acme-001`, showing the conflict.
-- Your written decision from the Diagnostic level: fix or document, and why.
+- Terminal output of a resumed-from-checkpoint run.
+- A `grep -ri "send\|smtp\|email.*send" src/` output, to show, live, that no send-capable code exists anywhere in the codebase.
 
 ## Constraints
 
-- Research remains read-only and non-actionable. No outreach drafting yet (that's Class 9), no send action (that never exists in Book 1).
-- `search_public_records` may not be extended to accept an arbitrary company name or URL — it stays scoped to known account IDs, per this checkpoint's own honest limitation.
+- The workflow must terminate at `AWAITING_APPROVAL` or a named failure state — never anything resembling "sent."
+- The Drafting Agent must never receive the raw `ResearchBrief` — only the `EvidenceReview`'s approved claims.
 
 ## What "done" looks like
 
-You can point at a specific `Conflict` object in a `ResearchBrief` and explain, from the code alone (not from memory), exactly which regular expression produced it and exactly what it would miss.
+You can kill the workflow mid-run, on purpose, and prove — not just claim — that the research already completed survives the interruption.

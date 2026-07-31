@@ -2,24 +2,28 @@
 
 ## Carried forward from Classes 1–4
 
-- The three semantic scenario tests in `tests/integration/` still require live credentials and still only prove construction offline. With tools now attached, a live run also exercises real tool-calling — untested here without credentials.
+- The semantic scenario tests in `tests/integration/` still require live credentials and still only prove construction offline.
 - `data/sample_accounts/` and `tests/fixtures/accounts/` remain duplicated, not shared from one source.
-- Business-config drift between `config/icp.yaml` and the fixture `expected/*.yaml` files is still undetected by any test.
+- `calculate_fit_score`'s weights are still an invented, uncalibrated placeholder.
 
 ## New at this checkpoint
 
-### 1. Tool tests don't cover dependency failure, permission failure, or redaction
+### 1. The research source is a local mock, not a real external source
 
-Book 1 §7.8 lists seven things to test tools for. This checkpoint's three tools are local, read-only, and have no sensitive fields — so "dependency failure" (no external dependency exists), "permission failure" (no auth boundary exists yet), and "redaction of prohibited fields" (nothing sensitive is in this schema) are genuinely not applicable *yet*. This is not the same as "tested and passing" — it's untested because the failure mode doesn't exist in this codebase. The moment Class 6 adds a real external research source, dependency failure becomes real and needs its own test; the moment any account field becomes sensitive, redaction becomes real too.
+`search_public_records` reads `data/mock_public_sources.yaml` — a small, hand-authored, deterministic file, not a real web search, news API, or MCP server. This is a genuine simplification, not just a testing convenience: it means Book 1 §8.3's "assess source quality and freshness" guidance is only exercised against sources this course invented and dated for the purpose, never a genuinely unpredictable real-world source. A real integration (a live MCP server, an actual search API) would need its own error handling, rate limiting, and result-quality variance this mock never exhibits.
 
-### 2. `parse_qualification_result`'s repair step is not actually a repair
+### 2. Conflict detection is a single regular expression, not a general capability
 
-Book 1 §6.5 lists "optionally request a bounded repair for format errors" as one pipeline stage. This checkpoint's `parse_qualification_result` skips straight from "invalid" to `BLOCKED` — it never attempts to ask the model to fix a malformed response before giving up. That's a legitimate simplification for this checkpoint (fail-safe is the priority; repair is an optimization), but a submission that claims to have implemented §6.5's repair step in full would be overclaiming.
+`detect_employee_count_conflict` only catches the specific phrase pattern "approximately N employees" appearing more than once with different values. It would not catch a conflict phrased differently ("roughly 22K staff" vs. "approximately 19,500 employees"), a conflict in a different field entirely (industry classification, headquarters location), or a conflict spread across more than two sources with partial agreement. Book 1 §8.4 does not specify a general algorithm either — but a reader could easily overestimate what this checkpoint's conflict detection actually covers if they don't read the regex directly.
 
-### 3. The agent's tool-calling behavior is unverified without a live run
+### 3. The Research Agent's isolation instruction is untested against a real model
 
-`test_agent_has_exactly_the_three_read_tools` proves the tools are *attached*. It proves nothing about whether the model actually calls `get_account_profile` instead of assuming account facts from its own training, or whether it calls `get_icp_policy` instead of hardcoding a remembered threshold. That's exactly the kind of thing the "=== TOOLS ===" instruction section is meant to prevent, and exactly the kind of thing that can only be confirmed by inspecting a real event sequence — see `app.py`'s `run_qualification`, and run it with live credentials if you have them.
+Exactly the same caveat as Class 3 and Class 4: `test_instruction_establishes_retrieved_content_as_untrusted` proves the instruction *says* the right thing. It proves nothing about whether Gemini actually resists the embedded "IGNORE ALL PREVIOUS INSTRUCTIONS" text in `meridian-003`'s mock evidence when asked to synthesize a brief. That test requires live credentials and lives in `tests/integration/` — not yet written for the Research Agent specifically at this checkpoint; see the Extension homework.
 
-### 4. `calculate_fit_score`'s weights are arbitrary and undocumented as such
+### 4. `research.py`'s claim construction is naive: one claim per evidence item, verbatim
 
-0.4 / 0.3 / 0.2 / 0.1 for industry / size / region / signal is a plausible-looking but entirely invented weighting — nothing in Book 1 specifies real weights, and this checkpoint doesn't claim otherwise, but it's worth being explicit: don't mistake this number for a calibrated score. It has never been validated against a real outcome.
+Real research synthesis would combine, compare, and selectively cite evidence, not turn every non-conflicting record into a claim with identical wording. This checkpoint's deterministic pipeline is intentionally simple so it can be fully tested offline — the Research Agent (`research_agent.py`) is where actual synthesis is meant to happen, and that part is exactly what requires a live model to evaluate.
+
+### 5. Freshness is recorded but never enforced
+
+`EvidenceItem.retrieved_at` is populated for every item, and the Research Agent's instruction tells the model to flag sources over a year old — but nothing in the deterministic pipeline itself computes an item's age or blocks a stale item from becoming a claim. A stale claim (like the 2023 employee-count record) still becomes ordinary claim text unless it happens to also be part of a detected conflict.

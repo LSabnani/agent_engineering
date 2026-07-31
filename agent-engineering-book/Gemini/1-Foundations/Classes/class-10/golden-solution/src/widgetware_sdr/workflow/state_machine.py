@@ -1,4 +1,10 @@
-"""The workflow state machine — Book 1, Chapter 9 (§9.3).
+"""The workflow state machine — Book 1, Chapter 9 (§9.3), extended by
+Chapter 11 (§11.6) with two states that only make sense once accounts
+are processed unattended, in a batch, rather than one at a time:
+
+- `RETRY_PENDING` — a recoverable failure occurred and attempts remain.
+- `NEEDS_HUMAN_REVIEW` — the loop is not authorized to resolve this
+  account on its own.
 
 State transitions are validated here, deterministically, before any
 agent's own prose or reasoning is consulted. A model may recommend the
@@ -26,6 +32,8 @@ class WorkflowState(str, Enum):
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
     BLOCKED = "BLOCKED"
+    RETRY_PENDING = "RETRY_PENDING"
+    NEEDS_HUMAN_REVIEW = "NEEDS_HUMAN_REVIEW"
 
 
 ALLOWED_TRANSITIONS: dict[WorkflowState, set[WorkflowState]] = {
@@ -35,10 +43,20 @@ ALLOWED_TRANSITIONS: dict[WorkflowState, set[WorkflowState]] = {
     WorkflowState.QUALIFYING: {WorkflowState.REVIEW_REQUIRED, WorkflowState.BLOCKED},
     WorkflowState.REVIEW_REQUIRED: {WorkflowState.DRAFT_READY, WorkflowState.BLOCKED},
     WorkflowState.DRAFT_READY: {WorkflowState.AWAITING_APPROVAL},
-    WorkflowState.AWAITING_APPROVAL: {WorkflowState.APPROVED, WorkflowState.REJECTED, WorkflowState.DRAFT_READY},
+    WorkflowState.AWAITING_APPROVAL: {
+        WorkflowState.APPROVED,
+        WorkflowState.REJECTED,
+        WorkflowState.DRAFT_READY,
+    },
     WorkflowState.APPROVED: set(),
     WorkflowState.REJECTED: set(),
-    WorkflowState.BLOCKED: set(),
+    # BLOCKED is terminal for one single-account run (Chapter 9), but
+    # the batch loop (Chapter 11) may classify a BLOCKED account as
+    # either recoverable (RETRY_PENDING) or not (NEEDS_HUMAN_REVIEW) —
+    # a decision the loop makes, never this state machine itself.
+    WorkflowState.BLOCKED: {WorkflowState.RETRY_PENDING, WorkflowState.NEEDS_HUMAN_REVIEW},
+    WorkflowState.RETRY_PENDING: {WorkflowState.RESEARCHING},
+    WorkflowState.NEEDS_HUMAN_REVIEW: set(),
 }
 
 

@@ -36,6 +36,9 @@ def create_drafting_agent() -> Agent:
     return Agent(
         name="drafting_agent",
         model=get_model_id(),
-        description="Drafts outreach messages using only pre-approved claims. Never sends anything — no send-capable tool exists.",
+        description=(
+            "Drafts outreach messages using only pre-approved claims. "
+            "Never sends anything — no send-capable tool exists."
+        ),
         instruction=build_agent_instruction(),
     )

@@ -15,7 +15,7 @@ This is the self-paced counterpart to the classroom cadence in `00_Course_Framew
    git remote add upstream https://github.com/sensei-ji/agent_engineering.git
    ```
 
-3. **Install tools** per `SETUP.md` — Antigravity, Git, Python 3.11+. This happens once, before Class 01, precisely so Class 01 isn't also an installation tutorial and Class 02 isn't a prerequisite for Class 01's own exercise.
+3. **Install tools** per `SETUP.md` — Antigravity, Git, Python 3.11+. This happens once, before Class 1, precisely so Class 1's own exercise — drafting the charter *and* standing up the runnable repository harness — isn't also an installation tutorial.
 
 ## Per class-0N
 
@@ -34,7 +34,7 @@ This is the self-paced counterpart to the classroom cadence in `00_Course_Framew
          agent-engineering-book/my-work/gemini-book-1/class-0N/
    ```
 
-   `class-0N/golden-solution/` in the repo is the finished reference solution — don't open it yet. (Class 01 has no predecessor; start from its own `BUILD.md` directly, working in a scratch directory rather than `my-work/`, since Class 01 produces no code.)
+   `class-0N/golden-solution/` in the repo is the finished reference solution — don't open it yet. (Class 1 has no predecessor; start from its own `BUILD.md` directly, working in a scratch directory rather than `my-work/`, since there is no prior checkpoint to copy forward yet.)
 
 6. **Read the manuscript chapter** (`../Manuscript/0N_Chapter_...md`) for the concept, then work through `class-0N/BUILD.md` — but building inside `my-work/gemini-book-1/class-0N/`, not the reference folder.
 

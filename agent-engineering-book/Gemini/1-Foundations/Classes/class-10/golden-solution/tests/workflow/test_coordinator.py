@@ -47,7 +47,9 @@ def _stub_draft(review):
 
 
 def test_success_scenario_reaches_awaiting_approval() -> None:
-    run = run_workflow(ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft)
+    run = run_workflow(
+        ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft
+    )
     assert run.state is WorkflowState.AWAITING_APPROVAL
     assert run.outreach_draft is not None
     assert run.stop_reason is None
@@ -55,7 +57,10 @@ def test_success_scenario_reaches_awaiting_approval() -> None:
 
 def test_insufficient_evidence_scenario_blocks_before_qualification() -> None:
     run = run_workflow(
-        NO_EVIDENCE_ACCOUNT, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft
+        NO_EVIDENCE_ACCOUNT,
+        qualify=_stub_qualify_success,
+        review=_stub_review_approves,
+        draft=_stub_draft,
     )
     assert run.state is WorkflowState.BLOCKED
     assert "insufficient evidence" in run.stop_reason
@@ -66,7 +71,9 @@ def test_source_conflict_scenario_preserves_the_conflict_through_the_run() -> No
     """Book 1 §8.4's conflict, still visible after Chapter 9 composes
     the stages — never silently dropped on the way to qualification.
     """
-    run = run_workflow(ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft)
+    run = run_workflow(
+        ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft
+    )
     assert len(run.research_brief.conflicts) == 1
     assert run.state is WorkflowState.AWAITING_APPROVAL  # a conflict doesn't halt the run by itself
 
@@ -75,7 +82,9 @@ def test_malformed_output_scenario_blocks_without_losing_research() -> None:
     def _stub_qualify_raises(brief):
         raise ValueError("malformed qualification output")
 
-    run = run_workflow(ACME, qualify=_stub_qualify_raises, review=_stub_review_approves, draft=_stub_draft)
+    run = run_workflow(
+        ACME, qualify=_stub_qualify_raises, review=_stub_review_approves, draft=_stub_draft
+    )
     assert run.state is WorkflowState.BLOCKED
     assert "qualification failed" in run.stop_reason
     # Book 1 §9.7: a failure should not lose prior successful work.
@@ -84,7 +93,9 @@ def test_malformed_output_scenario_blocks_without_losing_research() -> None:
 
 
 def test_rejected_approval_scenario_does_not_proceed() -> None:
-    run = run_workflow(ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft)
+    run = run_workflow(
+        ACME, qualify=_stub_qualify_success, review=_stub_review_approves, draft=_stub_draft
+    )
     assert run.state is WorkflowState.AWAITING_APPROVAL
 
     final_state = record_approval_decision(ApprovalDecision.REJECT)
@@ -105,6 +116,8 @@ def test_evidence_review_rejecting_everything_blocks_before_drafting() -> None:
             approved_for_drafting=False,
         )
 
-    run = run_workflow(ACME, qualify=_stub_qualify_success, review=_stub_review_rejects_all, draft=_stub_draft)
+    run = run_workflow(
+        ACME, qualify=_stub_qualify_success, review=_stub_review_rejects_all, draft=_stub_draft
+    )
     assert run.state is WorkflowState.BLOCKED
     assert run.outreach_draft is None

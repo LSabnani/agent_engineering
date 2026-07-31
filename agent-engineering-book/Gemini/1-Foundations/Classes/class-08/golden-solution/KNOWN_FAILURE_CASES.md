@@ -2,28 +2,28 @@
 
 ## Carried forward from Classes 1–5
 
-- The semantic scenario tests in `tests/integration/` still require live credentials and still only prove construction offline.
-- `data/sample_accounts/` and `tests/fixtures/accounts/` remain duplicated, not shared from one source.
-- `calculate_fit_score`'s weights are still an invented, uncalibrated placeholder.
+- The semantic scenario tests in `tests/integration/` still require live credentials.
+- `research.py`'s conflict detection is still one narrow regular expression.
+- `calculate_fit_score`'s weights remain an invented, uncalibrated placeholder.
 
 ## New at this checkpoint
 
-### 1. The research source is a local mock, not a real external source
+### 1. The coordinator's scenario tests use stub qualify/review/draft functions, not the real agents
 
-`search_public_records` reads `data/mock_public_sources.yaml` — a small, hand-authored, deterministic file, not a real web search, news API, or MCP server. This is a genuine simplification, not just a testing convenience: it means Book 1 §8.3's "assess source quality and freshness" guidance is only exercised against sources this course invented and dated for the purpose, never a genuinely unpredictable real-world source. A real integration (a live MCP server, an actual search API) would need its own error handling, rate limiting, and result-quality variance this mock never exhibits.
+`test_coordinator.py`'s five scenario tests (success, insufficient evidence, source conflict, malformed output, rejected approval) prove the **state machine, checkpointing, and partial-failure handling** are correct. They do not exercise the real `qualification_agent`, `evidence_reviewer`, or `drafting_agent` at all — those are injected as plain Python functions returning pre-built contract objects. This is a deliberate, defensible design choice (it's what makes 90 tests pass with zero API calls), but it means "the workflow works" and "the workflow works with real agents making real decisions" are two different claims, and only the first one is verified here.
 
-### 2. Conflict detection is a single regular expression, not a general capability
+### 2. "Malformed output" is simulated by an exception, not a real malformed model response
 
-`detect_employee_count_conflict` only catches the specific phrase pattern "approximately N employees" appearing more than once with different values. It would not catch a conflict phrased differently ("roughly 22K staff" vs. "approximately 19,500 employees"), a conflict in a different field entirely (industry classification, headquarters location), or a conflict spread across more than two sources with partial agreement. Book 1 §8.4 does not specify a general algorithm either — but a reader could easily overestimate what this checkpoint's conflict detection actually covers if they don't read the regex directly.
+The malformed-output scenario test makes `qualify()` raise a `ValueError` directly. A real malformed response from Gemini would more likely be a `QualificationResult` that fails Pydantic validation inside `parse_qualification_result` (Class 4), which already returns `BLOCKED` rather than raising — meaning a *real* malformed-output case would never reach the coordinator's `except Exception` branch at all; it would arrive as an already-`BLOCKED` `QualificationResult` object. This checkpoint's test exercises the coordinator's own exception handling, which is a real and useful thing to test, but it is not quite the same failure path a live deployment would actually hit most often.
 
-### 3. The Research Agent's isolation instruction is untested against a real model
+### 3. `run_workflow`'s conflict handling is permissive by design, and that's not obviously right
 
-Exactly the same caveat as Class 4 and Class 5: `test_instruction_establishes_retrieved_content_as_untrusted` proves the instruction *says* the right thing. It proves nothing about whether Gemini actually resists the embedded "IGNORE ALL PREVIOUS INSTRUCTIONS" text in `meridian-003`'s mock evidence when asked to synthesize a brief. That test requires live credentials and lives in `tests/integration/` — not yet written for the Research Agent specifically at this checkpoint; see the Extension homework.
+A research-brief conflict does not block the workflow — `test_source_conflict_scenario_preserves_the_conflict_through_the_run` confirms the run reaches `AWAITING_APPROVAL` even with an unresolved employee-count conflict, trusting the qualification and review stages to react to it appropriately. Whether that's the correct policy (versus routing straight to `BLOCKED` on any conflict) is a real design decision this checkpoint makes once, implicitly, and does not revisit or justify at length.
 
-### 4. `research.py`'s claim construction is naive: one claim per evidence item, verbatim
+### 4. Checkpoint files are overwritten, not versioned
 
-Real research synthesis would combine, compare, and selectively cite evidence, not turn every non-conflicting record into a claim with identical wording. This checkpoint's deterministic pipeline is intentionally simple so it can be fully tested offline — the Research Agent (`research_agent.py`) is where actual synthesis is meant to happen, and that part is exactly what requires a live model to evaluate.
+`_checkpoint()` writes `{account_id}.json`, replacing the previous checkpoint every time. There is no history of what the workflow's state was three stages ago beyond what's in the current `history` list — if you needed to debug exactly when a specific field changed, the checkpoint file alone won't tell you; you'd need the coordinator's own logs.
 
-### 5. Freshness is recorded but never enforced
+### 5. No test actually simulates a process restart
 
-`EvidenceItem.retrieved_at` is populated for every item, and the Research Agent's instruction tells the model to flag sources over a year old — but nothing in the deterministic pipeline itself computes an item's age or blocks a stale item from becoming a claim. A stale claim (like the 2023 employee-count record) still becomes ordinary claim text unless it happens to also be part of a detected conflict.
+"Resume from checkpoint" is described in the Hands-on Lab and supported by `load_checkpoint()`, but no test in this checkpoint kills a running process and restarts it against a saved checkpoint — the checkpoint read/write round-trip is tested, but not an actual resume-and-continue flow, because `run_workflow` always runs a account from `RECEIVED` to completion in one call; there's no code path yet that starts from a loaded mid-run checkpoint instead of from the beginning. That capability doesn't exist until Class 7's loop.

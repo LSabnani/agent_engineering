@@ -6,31 +6,29 @@
 
 ## Required (30–45 minutes)
 
-Get all baseline checks passing behind one documented command:
-
-1. Copy your Class 1 charter files into the repository structure from `golden-solution/README.md`.
-2. Add `pyproject.toml`, `.env.example`, and the `src/widgetware_sdr` package with a health-check function and test.
-3. Add `scripts/check.sh` (format check, lint, test) and confirm `./scripts/check.sh` passes cleanly.
-4. Commit the workspace.
+1. Add `config/products.yaml`, `config/icp.yaml`, `config/policies.yaml` with WidgetWare's real business facts (see `docs/widgetware-business-brief.md`).
+2. Add `src/widgetware_sdr/instructions.py` (fixed system instructions, centralized model selection) and `src/widgetware_sdr/context_builder.py` (assembles the four context layers, with account content always confined to a delimited, labeled evidence section).
+3. Add all four required context tests: a clearly qualified account, a clearly unqualified account, an account with insufficient evidence, and a malicious note that attempts to override policy.
+4. Confirm `./scripts/check.sh` passes with all tests green.
 
 ## Diagnostic (targeted fix)
 
-Ask Antigravity (or simulate this yourself) to produce a gap report against your `SPEC.md`. It will surface at least one real gap — commonly a missing `.gitignore` entry, an undocumented setup step, or a command in `README.md` that doesn't actually match `scripts/check.sh`. Close it.
+The provided `malicious-note` test case in `golden-solution/` currently only checks that the note text is *present* in the assembled prompt. Strengthen it to also confirm the note text does not appear anywhere before `=== BEGIN EVIDENCE ===` — i.e., prove positionally, not just by presence, that it never reached the instructions or business-context sections.
 
 ## Extension (optional)
 
-Write repository instructions (§2.5-style) precise enough that a new contributor's very first Antigravity task would be automatically well-scoped — for example, a standing instruction that any task touching `src/widgetware_sdr` must state which tests should pass before it's considered complete.
+Add a fifth context quality failure test from §3.6's list not covered in class — for example, "stale data presented as current": construct an account profile where one field is explicitly marked with an old `retrieved_at` date, and confirm the assembled context surfaces that staleness rather than presenting it as equally current with fresher fields.
 
 ## Submission
 
-- Terminal output of `./scripts/check.sh` running clean.
-- A one-paragraph note on the gap Antigravity's report surfaced and how you closed it.
+- Test output showing all context tests passing.
+- The assembled-context printout (`context.assembled_prompt`) for the malicious-note case, so the delimiting is visible.
 
 ## Constraints
 
-- Still no ADK agent, no Gemini model call, no external network call — Class 2 is harness only.
-- Do not skip the `.env.example` step even though there are no real secrets yet; the pattern matters more than the content at this stage.
+- No ADK `Agent` object yet. This chapter builds the context an agent will receive, not the agent itself — resist the urge to jump ahead to Class 3's territory.
+- Business facts in `config/icp.yaml` must match `docs/widgetware-business-brief.md` exactly — drift here will silently break Class 3's sample account profiles.
 
 ## What "done" looks like
 
-A stranger can clone your repository, run one documented command, and get a clean pass — without asking you anything.
+You can print `context.assembled_prompt` for any of the four scenario accounts, read it top to bottom, and understand exactly what a model would see and why — including exactly where the untrusted content begins and ends.

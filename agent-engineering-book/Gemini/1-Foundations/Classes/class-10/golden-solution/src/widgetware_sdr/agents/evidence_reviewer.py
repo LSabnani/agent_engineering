@@ -40,6 +40,9 @@ def create_evidence_reviewer_agent() -> Agent:
     return Agent(
         name="evidence_reviewer",
         model=get_model_id(),
-        description="Verifies qualification claims are cited, current, and free of unsurfaced contradictions before drafting proceeds.",
+        description=(
+            "Verifies qualification claims are cited, current, and free of "
+            "unsurfaced contradictions before drafting proceeds."
+        ),
         instruction=build_agent_instruction(),
     )
