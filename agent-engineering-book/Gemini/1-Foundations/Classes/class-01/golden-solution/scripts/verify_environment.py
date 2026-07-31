@@ -64,7 +64,7 @@ def check_package_importable() -> None:
     spec = importlib.util.find_spec("widgetware_sdr")
     if spec is None:
         raise VerificationError(
-            "widgetware_sdr is not importable. Run `pip install -e \".[dev]\"` first."
+            'widgetware_sdr is not importable. Run `pip install -e ".[dev]"` first.'
         )
 
 

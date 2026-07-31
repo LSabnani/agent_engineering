@@ -1,19 +1,39 @@
 # Known Failure Cases — Class 1 Checkpoint
 
-This checkpoint is charter and fixture files only — there is no code to fail at runtime. "Failure cases" here means known gaps in the charter itself: places a careless reading of these documents could lead a later class astray.
+This checkpoint is genuinely runnable — `pip install -e ".[dev]"` and `./scripts/check.sh` both actually execute, and both actually pass. What follows is not "why this doesn't work"; it is an honest account of what this checkpoint deliberately does not yet prove, so a later class doesn't mistake a real gap for a regression.
 
-## 1. Acceptance criteria that read as testable but aren't yet
+## 1. No Gemini call exists yet
 
-`docs/acceptance-criteria.md`'s six criteria are written to be mechanically checkable, but none of them are actually checked by anything yet — there is no test suite, no schema, no code. Treat every criterion here as a **commitment**, not a **guarantee**. Class 5 (contracts) and Class 10 (evaluation) are where these become real, enforced checks.
+The health check makes no model call, by design. Nothing in this checkpoint can demonstrate that Gemini reasoning works, because nothing here invokes it. That starts Class 3 (Book 1, Chapter 4).
 
-## 2. The three scenario accounts are illustrative, not exhaustive
+## 2. No ADK agent exists yet
 
-`tests/fixtures/accounts/` covers exactly one qualifying, one disqualifying, and one ambiguous account. This is enough to exercise the three qualification directions once code exists, but it is not a representative dataset — Class 8's golden dataset (Book 1, Chapter 10) is where breadth actually gets addressed. Do not mistake these three fixtures for adequate test coverage later in the course.
+There is no `google.adk.agents.Agent`, no session, no runner. `tests/unit/test_repository_contract.py` actively checks for the *absence* of an ADK import — that's a feature of this checkpoint, not an oversight to fix.
 
-## 3. "Expected output" here is a written prediction, not a verified fact
+## 3. No live account research exists
 
-`tests/fixtures/expected/*.yaml` states what each account's qualification direction *should* be, based on a human reading `docs/widgetware-business-brief.md`'s ICP by hand. It has not been checked against any deterministic rule yet — that starts in Class 3 (`icp_match`, checked against real config) and becomes fully enforced by Class 5's contract invariants. If a later checkpoint's actual behavior disagrees with these files, treat the disagreement as worth investigating, not automatically a bug in the later code — the ICP was hand-applied here and could itself be wrong.
+`tests/fixtures/accounts/` and `tests/fixtures/expected/` describe three accounts and their expected qualification direction, but nothing in this codebase retrieves, researches, or evaluates them. There is no research pipeline until Class 6–7 (Book 1, Chapters 7–8).
 
-## 4. This checkpoint cannot demonstrate the no-autonomous-send guarantee
+## 4. Qualification directions are fixture expectations, not generated agent results
 
-Acceptance criterion 4 ("no autonomous send") is meaningless to verify against a codebase that doesn't exist yet. The guarantee only becomes checkable once there is a codebase to grep for the absence of a send-capable tool — practically speaking, this is not truly verifiable until Class 7 (Book 1, Chapter 9) and remains re-verifiable at every checkpoint after that.
+`expected_qualification_direction` in each `tests/fixtures/expected/*.yaml` file is a human's hand-applied reading of `docs/widgetware-business-brief.md`'s ICP, written down before any code exists to check it against. `tests/unit/test_repository_contract.py` verifies the *structure* of these fixtures (matching account IDs, an allowed direction value) — it does not and cannot verify that the *direction itself* is correct, because there is no independent qualification logic yet to check it against. Treat these values as a considered prediction, not a verified fact, until a real qualification agent exists (starting Class 3) and a contract enforces it (Class 5).
+
+## 5. Product-level acceptance criteria are not yet implemented
+
+`docs/acceptance-criteria.md` Section B (schema conformance, evidence citation, no drafting on insufficient evidence, explainability, usability) describes the finished system, not this checkpoint. None of Section B is tested here, and none of it should be — there is nothing yet for those criteria to apply to. Section A is what this checkpoint is actually held to, and Section A is fully enforced by `./scripts/check.sh`.
+
+## 6. Antigravity GUI installation cannot be proven by portable repository tests
+
+`verify_environment.py` deliberately does not check whether Antigravity is installed, authenticated, or configured on the machine running it — that's real state, but it's local, GUI-based state, not something a committed Python script run in someone else's environment could verify. A facilitator confirms this once, for a room, at the start of Class 1; a self-paced learner confirms it against `SETUP.md`. This is a considered scope boundary, not a gap to close later.
+
+## 7. Only a small, illustrative scenario set exists
+
+`tests/fixtures/accounts/` covers exactly one qualifying, one disqualifying, and one ambiguous account. This is enough to exercise the three qualification directions once code exists to check them, but it is not a representative dataset — Class 9's golden dataset (Book 1, Chapter 10) is where breadth actually gets addressed.
+
+## 8. The no-send boundary is currently guaranteed by absence, not by a runtime check
+
+`docs/architecture-decisions/0002-no-outbound-send.md` explains the reasoning: there is no send-capable function anywhere in `src/` for a policy check to gate, because the capability itself does not exist in code. `tests/unit/test_repository_contract.py` verifies this by scanning for send-shaped code, not by exercising a permission check at runtime — there is no runtime workflow yet for such a check to sit inside.
+
+## 9. The health check proves the harness, not SDR intelligence
+
+`health_check()` returning `{"status": "ok", ...}` proves the package installs, imports, and runs in a clean environment. It says nothing about whether WidgetWare's actual business problem is being solved — that claim doesn't become testable until real qualification logic exists, starting Class 3.

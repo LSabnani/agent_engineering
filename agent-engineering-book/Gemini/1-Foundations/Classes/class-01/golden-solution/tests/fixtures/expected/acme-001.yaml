@@ -2,7 +2,7 @@
 #
 # At this checkpoint (Class 1) nothing in the codebase can check this
 # automatically — there is no ICP configuration and no code yet. This
-# file is the written contract that Class 3's icp_match section, and
+# file is the written contract that Class 2's icp_match section, and
 # eventually a real qualification agent, must agree with.
 account_id: acme-001
 scenario: qualifying_account

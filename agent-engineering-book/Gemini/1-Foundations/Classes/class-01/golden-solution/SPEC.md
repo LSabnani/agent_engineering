@@ -34,7 +34,7 @@ Help a WidgetWare SDR decide, quickly and defensibly, whether a target company i
 
 ## State transitions
 
-Defined in full starting in Class 9 (Book 1, Chapter 9). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
+Defined in full starting Class 8 (Book 1, Chapter 9). At this checkpoint, only the terminal boundary matters: no state this system can reach permits an autonomous send.
 
 ## Error behavior
 
@@ -42,11 +42,16 @@ When evidence is insufficient to qualify a company one way or the other, the sys
 
 ## Approval rules
 
-No outbound action of any kind may occur without a prior, explicit, human-approved state. This is a structural guarantee, not an instruction the model is asked to follow — Book 1 contains no send-capable tool anywhere in the codebase, by design, through Chapter 11.
+No outbound action of any kind may occur without a prior, explicit, human-approved state. This is a structural guarantee, not an instruction the model is asked to follow — see `docs/architecture-decisions/0002-no-outbound-send.md`. Book 1 contains no send-capable tool anywhere in the codebase, by design, through the end of the book.
 
 ## Completion criteria for this checkpoint (Class 1)
 
+Class 1 now merges Book 1, Chapters 1 and 2 — the charter *and* the repository harness. This checkpoint is the first runnable, reproducible, known-good baseline, not a documents-only artifact.
+
 - [x] Business objective is stated in one sentence a stakeholder could repeat back correctly.
 - [x] Required and prohibited behavior are both explicit and reviewable.
-- [x] Every acceptance criterion in `docs/acceptance-criteria.md` is independently testable.
-- [x] No agent code exists yet — this chapter is charter only.
+- [x] Every Section A criterion in `docs/acceptance-criteria.md` is independently testable and, at this checkpoint, actually verified by `./scripts/check.sh`.
+- [x] The repository installs cleanly, imports as a package, and passes formatting, linting, type checking, and tests in one documented command.
+- [x] No Gemini call, no ADK agent, no network access, and no send capability exist anywhere in this codebase — see `docs/architecture-decisions/0001-bounded-autonomy.md` and `0002-no-outbound-send.md`.
+
+Full details: `README.md`'s completion checklist and `docs/acceptance-criteria.md` Section A.
