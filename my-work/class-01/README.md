@@ -1,18 +1,20 @@
-# Agent Engineering
+# Class 1 Assignment
 
-This repo holds one project: **Agent Engineering — From First Agent to
-Production-Grade Autonomous Systems**, a book by Venkatesh Tadinada, with
-its companion reference implementation.
+## Student Information
+- Name:Lalit Sabnani  
+- GitHub username:LSabnani
+- Date completed:8/3/2026
 
-Start here: [`agent-engineering-book/README.md`](agent-engineering-book/README.md).
+## Workspace Setup
+- Forked the repo
+- Cloned my fork
+- Opened it in Antigravity
+- Created my-work/class-01
+- Committed and pushed
 
-That directory contains:
+## What I Learned
+Write a short reflection.Learned how to fork and clone repository and git pull and push
 
-- `manuscript/` — all 50 chapters drafted as complete blueprints, organized
-  as five books of ten chapters each (not yet expanded into full technical
-  chapters — see the book README for the precise status)
-- `book-1-foundations/` — the reference implementation for Book 1, one
-  self-sufficient folder per class (chapter). Classes 02–03 built and
-  tested; current focus.
-- `archive/` — an earlier, shorter course build and its planning docs,
-  superseded by and reconciled into the above
+## Challenges
+Describe what you fixed or learned.
+Editing the readme.md file was tricky and I'm not sure if I did it right.
