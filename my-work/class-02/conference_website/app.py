@@ -146,6 +146,16 @@ TALKS = [
         "start_time": "03:15 PM",
         "end_time": "04:00 PM",
         "type": "talk"
+    },
+    {
+        "id": "TALK-09",
+        "title": "Evening talk",
+        "speakers": [SPEAKERS["spk2"], SPEAKERS["spk3"]],
+        "category": "Infrastructure & Architecture",
+        "description": "An open discussion and panel on the future of GCP architectures, GKE, and serverless integration, concluding the main summit tracks.",
+        "start_time": "04:00 PM",
+        "end_time": "04:45 PM",
+        "type": "talk"
     }
 ]
 
