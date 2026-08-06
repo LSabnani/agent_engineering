@@ -6,18 +6,23 @@
 - Date completed:8/3/2026
 
 ## Workspace Setup
-- Forked the repo
-- Cloned my fork
-- Opened it in Antigravity
-- Created my-work/class-01
-- Committed and pushed
+- Fork 
+- Clone 
+- Open in Antigravity
+- Create folder my-work/class-01
+- Commit and push
 
 ## What I Learned
-I got access to antigravity both the app and the IDE and explored some of its features
-I created a repository for antigravity in github and linked it with the IDE
-I learned how to fork, clone, push and pull in github
-I also learned how to sync code between local and remote repositories as well as comment on each update
-it is important to pull updates on a periodic basis to avoid merge conflicts and to keep code up to date
+Opened my github and forked from source https://github.com/sensei-ji/agent_engineering, created a copy in my github account which is a offline repository. If there were to be multiple approaches I could make many branches.
+Cloned it - downloaded into my pc
+Opened Antigravity IDE
+Created my work folder - my-work/class-01
+Edited the readme.md file
+Committed and pushed.
+
+Learned that it is a good practice to periodically pull updates if any in the source to keep code upto date.
+
+I also learned that it possible to commit smaller updates - like a single file versus the entire project, this may be more efficient in the future. Also noting the case of file names - need to be careful about spaces and capital letters.
 
 ## Challenges
 I had forgotten the syntax for git - add, commit, pull, push, so class members helped refresh it as well as using gemini
