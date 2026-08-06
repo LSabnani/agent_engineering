@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA — Aesthetic Pomodoro & Mindfulness Space</title>
+    
+    <!-- Meta Descriptions for SEO -->
+    <meta name="description" content="A calm, aesthetic Pomodoro timer and mindfulness dashboard. Custom Web Audio ambient soundscapes, focus tracking, and a mindful task list.">
+    <meta name="keywords" content="pomodoro, productivity, aesthetic timer, calm timer, mindfulness, web audio synthesizer, task manager, focus timer">
+    <meta name="author" content="Antigravity">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- TailwindCSS or complex framework was not requested; using local stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Dynamic Animated Gradient Background Mesh -->
+    <div class="bg-gradient-mesh" id="bgMesh"></div>
+    <div class="dawn-sun-glow"></div>
+    <div class="dawn-rays-container">
+        <div class="dawn-ray ray-1"></div>
+        <div class="dawn-ray ray-2"></div>
+        <div class="dawn-ray ray-3"></div>
+        <div class="dawn-ray ray-4"></div>
+    </div>
+    <div class="bg-noise-overlay"></div>
+
+    <div class="app-container" id="appContainer">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-logo">
+                <span class="logo-dot"></span>
+                <h1 class="logo-text">A U R A</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="current-time" id="currentTime">12:00 PM</div>
+                
+                <!-- Background Theme Picker -->
+                <div class="theme-picker-wrapper">
+                    <button class="icon-btn" id="btnThemePicker" aria-label="Change Background Theme" title="Change Theme">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                    </button>
+                    <div class="theme-dropdown" id="themeDropdown">
+                        <div class="theme-dropdown-header">Background Themes</div>
+                        <button class="theme-option active" data-theme="mistyforest">
+                            <span class="theme-swatch swatch-mistyforest"></span> Misty Forest & Dawn
+                        </button>
+                        <button class="theme-option" data-theme="sunset">
+                            <span class="theme-swatch swatch-sunset"></span> Sunset Amber
+                        </button>
+                        <button class="theme-option" data-theme="emerald">
+                            <span class="theme-swatch swatch-emerald"></span> Emerald Mint
+                        </button>
+                        <button class="theme-option" data-theme="midnight">
+                            <span class="theme-swatch swatch-midnight"></span> Midnight Cyberpunk
+                        </button>
+                        <button class="theme-option" data-theme="obsidian">
+                            <span class="theme-swatch swatch-obsidian"></span> Dark Obsidian
+                        </button>
+                        <button class="theme-option" data-theme="aurora">
+                            <span class="theme-swatch swatch-aurora"></span> Aurora Cyan
+                        </button>
+                        <button class="theme-option" data-theme="rosequartz">
+                            <span class="theme-swatch swatch-rosequartz"></span> Rose Quartz
+                        </button>
+                    </div>
+                </div>
+
+                <button class="icon-btn" id="btnSettings" aria-label="Open Settings" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+                <button class="icon-btn" id="btnFullscreen" aria-label="Toggle Fullscreen" title="Toggle Focus Mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-maximize"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="app-main">
+            
+            <!-- LEFT PANEL: Mindful Tasks -->
+            <section class="glass-card panel-left" id="panelTasks">
+                <div class="panel-header">
+                    <h2>Focus Intentions</h2>
+                    <span class="panel-subtitle">Align your mind, one task at a time</span>
+                </div>
+                
+                <div class="task-input-container">
+                    <input type="text" id="taskInput" placeholder="Write a gentle intention..." aria-label="New focus intention">
+                    <button id="btnAddTask" aria-label="Add Intention">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                </div>
+                
+                <div class="tasks-list-wrapper">
+                    <ul id="tasksList" class="tasks-list">
+                        <!-- Tasks dynamically generated by JS -->
+                    </ul>
+                </div>
+                
+                <div class="active-task-footer" id="activeTaskFooter">
+                    <span class="label">Current Focus:</span>
+                    <span class="value" id="currentFocusTaskName">No active intention selected</span>
+                </div>
+            </section>
+
+            <!-- CENTER AREA: Timer & Controls -->
+            <section class="timer-section">
+                <!-- Modes Switcher -->
+                <div class="timer-modes" id="timerModes">
+                    <button class="mode-btn active" data-mode="focus" id="modeFocus">Focus</button>
+                    <button class="mode-btn" data-mode="short" id="modeShort">Short Break</button>
+                    <button class="mode-btn" data-mode="long" id="modeLong">Long Break</button>
+                    <button class="mode-btn" data-mode="breathe" id="modeBreathe">4-7-8 Breathe</button>
+                </div>
+
+                <!-- Circular Timer Dial -->
+                <div class="timer-dial-container" id="timerDialContainer">
+                    <svg class="timer-svg" viewBox="0 0 220 220">
+                        <circle class="timer-bg-circle" cx="110" cy="110" r="95"></circle>
+                        <circle class="timer-progress-circle" id="progressRing" cx="110" cy="110" r="95"></circle>
+                    </svg>
+                    
+                    <div class="timer-content">
+                        <div class="breathe-phase-badge" id="breathePhaseBadge" style="display: none;">Inhale</div>
+                        <div class="timer-countdown" id="timerCountdown">25:00</div>
+                        <div class="timer-status" id="timerStatus">Let's begin</div>
+                        <div class="breathe-cycle-count" id="breatheCycleCount" style="display: none;">Cycle 1 of 4</div>
+                    </div>
+                </div>
+
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <button class="control-btn secondary" id="btnReset" aria-label="Reset timer" title="Reset Session">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                    </button>
+                    
+                    <button class="control-btn primary" id="btnPlayPause" aria-label="Play or Pause timer" title="Start / Pause">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="play-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </button>
+                    
+                    <button class="control-btn secondary" id="btnSkip" aria-label="Skip session" title="Skip Session">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                    </button>
+                </div>
+
+                <!-- 4-7-8 Break Breathing Banner -->
+                <div class="break-breathe-container" id="breakBreatheContainer" style="display: none;">
+                    <button id="btnToggleBreakBreathe" class="break-breathe-btn active" title="Toggle 4-7-8 Breathing Guide during break">
+                        <span class="pulse-dot"></span>
+                        <span id="breakBreatheLabel">🫁 4-7-8 Breathing Guide Active</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Ambience Sound Mixer & Stats -->
+            <section class="glass-card panel-right" id="panelRight">
+                <!-- Soundscapes Mixer -->
+                <div class="panel-section">
+                    <div class="panel-header">
+                        <h2>Ambient Space</h2>
+                        <span class="panel-subtitle">Blend natural sounds to soothe your mind</span>
+                    </div>
+                    
+                    <div class="ambience-mixer">
+                        <!-- Rain Synth -->
+                        <div class="mixer-row" data-sound="rain">
+                            <div class="sound-info">
+                                <span class="sound-icon">🌧️</span>
+                                <span class="sound-label">Summer Rain</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <button class="mute-toggle" aria-label="Toggle mute rain">🔊</button>
+                                <input type="range" min="0" max="100" value="0" class="volume-slider" id="sliderRain" aria-label="Rain volume">
+                            </div>
+                        </div>
+
+                        <!-- Forest Synth -->
+                        <div class="mixer-row" data-sound="forest">
+                            <div class="sound-info">
+                                <span class="sound-icon">🌲</span>
+                                <span class="sound-label">Nature Forest</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <button class="mute-toggle" aria-label="Toggle mute forest">🔊</button>
+                                <input type="range" min="0" max="100" value="0" class="volume-slider" id="sliderForest" aria-label="Forest birds volume">
+                            </div>
+                        </div>
+
+                        <!-- Ocean Waves Synth -->
+                        <div class="mixer-row" data-sound="ocean">
+                            <div class="sound-info">
+                                <span class="sound-icon">🌊</span>
+                                <span class="sound-label">Deep Ocean</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <button class="mute-toggle" aria-label="Toggle mute ocean">🔊</button>
+                                <input type="range" min="0" max="100" value="0" class="volume-slider" id="sliderOcean" aria-label="Ocean waves volume">
+                            </div>
+                        </div>
+
+                        <!-- Cozy Drone Synth -->
+                        <div class="mixer-row" data-sound="drone">
+                            <div class="sound-info">
+                                <span class="sound-icon">🎹</span>
+                                <span class="sound-label">Cosmic Chords</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <button class="mute-toggle" aria-label="Toggle mute drone">🔊</button>
+                                <input type="range" min="0" max="100" value="0" class="volume-slider" id="sliderDrone" aria-label="Ambient drone volume">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="panel-section border-top">
+                    <div class="panel-header">
+                        <h2>Your Journey</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-value" id="statPomodoros">0</span>
+                            <span class="stat-label">Flows Today</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="statTime">0m</span>
+                            <span class="stat-label">Focus Time</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER: Mindful Quotes -->
+        <footer class="app-footer">
+            <p class="quote-text" id="quoteText">"Simplicity is the ultimate sophistication."</p>
+            <p class="quote-author" id="quoteAuthor">— Leonardo da Vinci</p>
+        </footer>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="btnSettingsClose" aria-label="Close SettingsModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Durations -->
+                <div class="settings-group">
+                    <h3>Duration (Minutes)</h3>
+                    <div class="durations-inputs">
+                        <div class="input-field">
+                            <label for="inputFocus">Focus</label>
+                            <input type="number" id="inputFocus" min="1" max="180" value="25">
+                        </div>
+                        <div class="input-field">
+                            <label for="inputShort">Short Break</label>
+                            <input type="number" id="inputShort" min="1" max="60" value="5">
+                        </div>
+                        <div class="input-field">
+                            <label for="inputLong">Long Break</label>
+                            <input type="number" id="inputLong" min="1" max="120" value="15">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Bell -->
+                <div class="settings-group">
+                    <h3>Notification Chime</h3>
+                    <div class="select-field">
+                        <select id="selectChime" aria-label="Select notification chime">
+                            <option value="singing-bowl">Tibetan Singing Bowl (Organic)</option>
+                            <option value="warm-chime">Cozy Velvet Bell</option>
+                            <option value="digital-pip">Gentle Digital Ping</option>
+                            <option value="none">Silent Transition</option>
+                        </select>
+                        <button class="test-sound-btn" id="btnTestChime">Test Sound</button>
+                    </div>
+                </div>
+
+                <!-- Auto-start toggles -->
+                <div class="settings-group">
+                    <h3>Flow Preferences</h3>
+                    <div class="toggle-row">
+                        <label for="toggleAutoFocus">Auto-start Focus sessions</label>
+                        <input type="checkbox" id="toggleAutoFocus" class="custom-toggle">
+                    </div>
+                    <div class="toggle-row">
+                        <label for="toggleAutoBreaks">Auto-start Break sessions</label>
+                        <input type="checkbox" id="toggleAutoBreaks" class="custom-toggle">
+                    </div>
+                    <div class="toggle-row">
+                        <label for="toggleBreakBreathe">Guide 4-7-8 Breathing during breaks</label>
+                        <input type="checkbox" id="toggleBreakBreathe" class="custom-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="modal-btn secondary" id="btnResetSettings">Restore Defaults</button>
+                <button class="modal-btn primary" id="btnSaveSettings">Apply Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCRIPT -->
+    <script src="app.js"></script>
+</body>
+</html>
