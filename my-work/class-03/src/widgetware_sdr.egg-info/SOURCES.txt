@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+src/widgetware_sdr/__init__.py
+src/widgetware_sdr/app.py
+src/widgetware_sdr/context_builder.py
+src/widgetware_sdr/health.py
+src/widgetware_sdr/instructions.py
+src/widgetware_sdr.egg-info/PKG-INFO
+src/widgetware_sdr.egg-info/SOURCES.txt
+src/widgetware_sdr.egg-info/dependency_links.txt
+src/widgetware_sdr.egg-info/requires.txt
+src/widgetware_sdr.egg-info/top_level.txt
+src/widgetware_sdr/agents/__init__.py
+src/widgetware_sdr/agents/qualification_agent.py
