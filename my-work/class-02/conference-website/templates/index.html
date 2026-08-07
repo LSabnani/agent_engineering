@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GCP NextGen Summit 2026 - A 1-Day Technical Deep Dive into Google Cloud Technologies.">
+  <title>{{ config.title }}</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <!-- Background Decorative Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Header Section -->
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <span class="logo-dot blue"></span>
+        <span class="logo-dot red"></span>
+        <span class="logo-dot yellow"></span>
+        <span class="logo-dot green"></span>
+        <span class="logo-text">Cloud Summit</span>
+      </div>
+      <h1>{{ config.title }}</h1>
+      <p class="tagline">{{ config.description }}</p>
+      
+      <div class="meta-info">
+        <div class="meta-item" id="meta-date">
+          <span class="meta-icon">📅</span>
+          <span>{{ config.date }}</span>
+        </div>
+        <div class="meta-item" id="meta-location">
+          <span class="meta-icon">📍</span>
+          <span>{{ config.location }}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Controls Section -->
+  <section class="controls-section">
+    <div class="controls-container">
+      <div class="search-wrapper">
+        <input type="text" id="search-input" placeholder="Search by talk title, speaker name, or category..." autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <!-- Quick Filter Tags -->
+      <div class="filter-pills">
+        <button class="filter-btn active" data-category="all">All Sessions</button>
+        <button class="filter-btn" data-category="Cloud Infrastructure">Infrastructure</button>
+        <button class="filter-btn" data-category="AI & Data">AI & Data</button>
+        <button class="filter-btn" data-category="App Development">App Dev</button>
+        <button class="filter-btn" data-category="Security & Governance">Security</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule Timeline -->
+  <main class="timeline-container">
+    <div class="timeline" id="schedule-timeline">
+      
+      {% for item in schedule %}
+        {% if item.type == 'break' %}
+          <!-- Break Card -->
+          <div class="timeline-item break-item" id="{{ item.id }}" data-categories="">
+            <div class="time-column">
+              <span class="time-label">{{ item.time }}</span>
+              <span class="duration-badge">60 Min Break</span>
+            </div>
+            <div class="card-column">
+              <div class="talk-card glass-card break-card">
+                <div class="break-icon">☕</div>
+                <div class="card-content">
+                  <h2 class="talk-title">{{ item.title }}</h2>
+                  <p class="talk-desc">{{ item.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <!-- Talk Card -->
+          <div class="timeline-item talk-item" id="{{ item.id }}" data-categories="{{ item.categories | join(',') }}">
+            <div class="time-column">
+              <span class="time-label">{{ item.time }}</span>
+            </div>
+            <div class="card-column">
+              <div class="talk-card glass-card">
+                <div class="card-header">
+                  <div class="category-tags">
+                    {% for cat in item.categories %}
+                      <span class="cat-tag">{{ cat }}</span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="card-content">
+                  <h2 class="talk-title">{{ item.title }}</h2>
+                  <p class="talk-desc">{{ item.description }}</p>
+                </div>
+                <div class="card-footer">
+                  <div class="speakers-list">
+                    {% for speaker in item.speakers %}
+                      <div class="speaker-avatar-wrap">
+                        <div class="speaker-avatar">{{ speaker.first_name[0] }}{{ speaker.last_name[0] }}</div>
+                        <div class="speaker-details">
+                          <span class="speaker-name">{{ speaker.first_name }} {{ speaker.last_name }}</span>
+                          <a href="{{ speaker.linkedin }}" target="_blank" rel="noopener" class="linkedin-link">
+                            <svg class="linkedin-icon" viewBox="0 0 24 24">
+                              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                            LinkedIn
+                          </a>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- No Results State -->
+      <div id="no-results" class="no-results-card glass-card hidden">
+        <p class="no-results-emoji">🔍</p>
+        <h2>No sessions found</h2>
+        <p>Try refining your search terms or category filter.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 {{ config.title }} | Powered by Python, Flask and Glassmorphic CSS</p>
+  </footer>
+
+  <!-- JS Logic -->
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>

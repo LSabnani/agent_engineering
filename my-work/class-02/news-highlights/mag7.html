@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Magnificent 7 stock performance tracker across daily, weekly, monthly, quarterly, and yearly intervals.">
+  <title>Magnificent 7 Performance Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+      --card-bg: rgba(30, 41, 59, 0.45);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-purple: #c084fc;
+      --accent-teal: #2dd4bf;
+      --accent-green: #4ade80;
+      --accent-red: #f87171;
+      --glow-blue: rgba(56, 189, 248, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--glow-blue) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .title-area {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 3rem;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #ffffff, #93c5fd, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: -1.5rem auto 3rem;
+      max-width: 400px;
+      background: rgba(30, 41, 59, 0.3);
+      padding: 0.4rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-blue));
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.5);
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue), var(--accent-teal));
+      border-radius: 24px 24px 0 0;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    th {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .ticker {
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .company-name {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+
+    .price {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+
+    .perf-val {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+    }
+
+    .perf-val.positive {
+      color: var(--accent-green);
+    }
+
+    .perf-val.negative {
+      color: var(--accent-red);
+    }
+
+    .disclaimer {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-top: 2rem;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 5rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 300;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.25rem;
+      }
+      body {
+        padding: 1.5rem 0.5rem;
+      }
+      .container {
+        padding: 1.25rem;
+      }
+      th, td {
+        padding: 1rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-area">
+      <h1 id="main-heading">Magnificent 7 Performance</h1>
+      <p class="subtitle" id="publish-date">Core Tech Leaders Board — Friday, August 7, 2026</p>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-link">News Highlights</a>
+    <a href="stocks.html" class="nav-link">Market Movers</a>
+    <a href="mag7.html" class="nav-link active">Magnificent 7</a>
+  </nav>
+
+  <main class="container">
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Ticker</th>
+            <th>Price</th>
+            <th>Day</th>
+            <th>Week</th>
+            <th>Month</th>
+            <th>Qtr</th>
+            <th>Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Nvidia</strong>
+              <span class="company-name">AI Hardware & Infrastructure</span>
+            </td>
+            <td><span class="ticker">NVDA</span></td>
+            <td class="price">$124.50</td>
+            <td class="perf-val positive">+1.80%</td>
+            <td class="perf-val negative">-2.50%</td>
+            <td class="perf-val negative">-4.20%</td>
+            <td class="perf-val negative">-8.00%</td>
+            <td class="perf-val positive">+148.00%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Microsoft</strong>
+              <span class="company-name">Enterprise & Cloud computing</span>
+            </td>
+            <td><span class="ticker">MSFT</span></td>
+            <td class="price">$492.30</td>
+            <td class="perf-val positive">+0.60%</td>
+            <td class="perf-val positive">+14.80%</td>
+            <td class="perf-val positive">+12.30%</td>
+            <td class="perf-val positive">+15.50%</td>
+            <td class="perf-val positive">+38.50%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Apple</strong>
+              <span class="company-name">Consumer Devices & Ecosystems</span>
+            </td>
+            <td><span class="ticker">AAPL</span></td>
+            <td class="price">$208.75</td>
+            <td class="perf-val negative">-0.40%</td>
+            <td class="perf-val negative">-7.20%</td>
+            <td class="perf-val negative">-5.10%</td>
+            <td class="perf-val negative">-3.80%</td>
+            <td class="perf-val positive">+18.20%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Alphabet</strong>
+              <span class="company-name">Search & AI Hyper-scaler</span>
+            </td>
+            <td><span class="ticker">GOOGL</span></td>
+            <td class="price">$168.20</td>
+            <td class="perf-val positive">+1.20%</td>
+            <td class="perf-val positive">+3.50%</td>
+            <td class="perf-val negative">-2.80%</td>
+            <td class="perf-val positive">+1.20%</td>
+            <td class="perf-val positive">+24.60%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Amazon</strong>
+              <span class="company-name">E-Commerce & AWS Cloud</span>
+            </td>
+            <td><span class="ticker">AMZN</span></td>
+            <td class="price">$192.40</td>
+            <td class="perf-val positive">+2.10%</td>
+            <td class="perf-val positive">+15.20%</td>
+            <td class="perf-val positive">+11.80%</td>
+            <td class="perf-val positive">+13.40%</td>
+            <td class="perf-val positive">+45.10%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Meta Platforms</strong>
+              <span class="company-name">Social Media & Ad Tech</span>
+            </td>
+            <td><span class="ticker">META</span></td>
+            <td class="price">$485.60</td>
+            <td class="perf-val positive">+0.80%</td>
+            <td class="perf-val positive">+7.10%</td>
+            <td class="perf-val positive">+4.60%</td>
+            <td class="perf-val positive">+6.20%</td>
+            <td class="perf-val positive">+52.30%</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Tesla</strong>
+              <span class="company-name">EVs & Autonomous Systems</span>
+            </td>
+            <td><span class="ticker">TSLA</span></td>
+            <td class="price">$198.50</td>
+            <td class="perf-val negative">-1.50%</td>
+            <td class="perf-val negative">-4.80%</td>
+            <td class="perf-val negative">-8.50%</td>
+            <td class="perf-val negative">-14.20%</td>
+            <td class="perf-val negative">-18.40%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="disclaimer">
+      Disclaimer: Performance values are representative of trading sessions leading up to August 7, 2026. Verify values via local tickers before executing trade orders.
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Daily Highlights Reader. All information retrieved and curated via Google Search & financial reports.</p>
+  </footer>
+
+</body>
+</html>

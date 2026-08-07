@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Top stock gainers and losers priced over $15 with volume above average.">
+  <title>Market Movers - Stock Highlights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
+      --card-bg: rgba(30, 41, 59, 0.45);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-purple: #c084fc;
+      --accent-teal: #2dd4bf;
+      --accent-green: #4ade80;
+      --accent-red: #f87171;
+      --glow-blue: rgba(56, 189, 248, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--glow-blue) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .title-area {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 3rem;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #ffffff, #93c5fd, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: -1.5rem auto 3rem;
+      max-width: 400px;
+      background: rgba(30, 41, 59, 0.3);
+      padding: 0.4rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-blue));
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .market-section {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .market-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-teal));
+    }
+
+    .market-section.losers::before {
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-purple));
+    }
+
+    .market-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px -15px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+    }
+
+    .badge.green {
+      color: var(--accent-green);
+      background: rgba(74, 222, 128, 0.1);
+    }
+
+    .badge.red {
+      color: var(--accent-red);
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    th {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .ticker {
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .company-name {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+
+    .price {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+
+    .change {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+    }
+
+    .change.positive {
+      color: var(--accent-green);
+    }
+
+    .change.negative {
+      color: var(--accent-red);
+    }
+
+    .volume-data {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .filter-notice {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 5rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 300;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2.25rem;
+      }
+      body {
+        padding: 1.5rem 0.5rem;
+      }
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="title-area">
+      <h1 id="main-heading">Market Movers</h1>
+      <p class="subtitle" id="publish-date">Current Stock Highlights — Friday, August 7, 2026</p>
+    </div>
+  </header>
+
+  <nav class="nav-bar">
+    <a href="index.html" class="nav-link">News Highlights</a>
+    <a href="stocks.html" class="nav-link active">Market Movers</a>
+    <a href="mag7.html" class="nav-link">Magnificent 7</a>
+  </nav>
+
+  <div class="filter-notice">
+    Showing Top Movers with <strong>Price > $15</strong> and <strong>Volume > Average Volume</strong>
+  </div>
+
+  <main class="container">
+    <!-- Top Gainers / Winners -->
+    <section class="market-section" id="gainers-section">
+      <div class="section-header">
+        <h2 class="section-title">Top Gainers</h2>
+        <span class="badge green">Winners</span>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>Change</th>
+              <th>Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="ticker">TEAM</span>
+                <span class="company-name">Atlassian Corporation</span>
+              </td>
+              <td class="price">$143.63</td>
+              <td class="change positive">+32.40%</td>
+              <td class="volume-data">11.1M <br><small style="font-size: 0.7rem;">(Rel: ~5.2x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">ABNB</span>
+                <span class="company-name">Airbnb, Inc.</span>
+              </td>
+              <td class="price">$120.50</td>
+              <td class="change positive">+15.50%</td>
+              <td class="volume-data">15.2M <br><small style="font-size: 0.7rem;">(Rel: ~3.8x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">DOCS</span>
+                <span class="company-name">Doximity, Inc.</span>
+              </td>
+              <td class="price">$27.66</td>
+              <td class="change positive">+31.93%</td>
+              <td class="volume-data">43.8M <br><small style="font-size: 0.7rem;">(Rel: ~12.5x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">QNST</span>
+                <span class="company-name">QuinStreet, Inc.</span>
+              </td>
+              <td class="price">$20.61</td>
+              <td class="change positive">+35.24%</td>
+              <td class="volume-data">2.9M <br><small style="font-size: 0.7rem;">(Rel: ~6.1x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">TWLO</span>
+                <span class="company-name">Twilio Inc.</span>
+              </td>
+              <td class="price">$60.00</td>
+              <td class="change positive">+31.19%</td>
+              <td class="volume-data">8.5M <br><small style="font-size: 0.7rem;">(Rel: ~4.2x avg)</small></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Top Losers -->
+    <section class="market-section losers" id="losers-section">
+      <div class="section-header">
+        <h2 class="section-title">Top Losers</h2>
+        <span class="badge red">Losers</span>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>Change</th>
+              <th>Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="ticker">CVRX</span>
+                <span class="company-name">CVRx, Inc.</span>
+              </td>
+              <td class="price">$18.20</td>
+              <td class="change negative">-41.08%</td>
+              <td class="volume-data">4.1M <br><small style="font-size: 0.7rem;">(Rel: ~8.4x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">XHLD</span>
+                <span class="company-name">TEN Holdings</span>
+              </td>
+              <td class="price">$25.10</td>
+              <td class="change negative">-33.07%</td>
+              <td class="volume-data">1.2M <br><small style="font-size: 0.7rem;">(Rel: ~4.9x avg)</small></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="ticker">WYHG</span>
+                <span class="company-name">Wing Yip Food Holdings</span>
+              </td>
+              <td class="price">$16.30</td>
+              <td class="change negative">-32.86%</td>
+              <td class="volume-data">1.5M <br><small style="font-size: 0.7rem;">(Rel: ~5.3x avg)</small></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Daily Highlights Reader. All information retrieved and curated via Google Search & Finviz.</p>
+  </footer>
+
+</body>
+</html>
