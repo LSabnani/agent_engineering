@@ -1,3 +1,3 @@
-"""WidgetWare SDR Lab — bounded account research, qualification, and outreach-drafting system."""
+"""WidgetWare SDR Class 3 package."""
 
-__version__ = "0.1.0"
+__all__: list[str] = []

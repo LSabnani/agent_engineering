@@ -1,5 +1,8 @@
+# WidgetWare ideal-customer-profile configuration.
+# Stable policy as data, not prose — Book 1 §3.3.
+
 minimum_employee_count: 5000
-maximum_employee_count: null
+maximum_employee_count: null  # no upper bound
 
 preferred_industries:
   - manufacturing
@@ -20,7 +23,6 @@ buying_signals:
   - digital_transformation_program
   - genai_hiring
 
-required_account_fields:
-  - employee_count
-  - industry
-  - region
+requires_human_approval:
+  - external_outreach
+  - crm_write
