@@ -232,6 +232,89 @@
       font-weight: 300;
     }
 
+    .update-btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-blue));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+    }
+
+    .update-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .update-btn:active {
+      transform: translateY(0);
+    }
+
+    .update-btn svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.6s ease;
+    }
+
+    .update-btn.updating svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Card/table update animation */
+    .updating-shimmer {
+      animation: shimmer 1s ease-in-out infinite alternate;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    @keyframes shimmer {
+      0% { opacity: 0.7; filter: blur(0.5px); }
+      100% { opacity: 0.4; filter: blur(1.5px); }
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--accent-teal);
+      color: #ffffff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(45, 212, 191, 0.15);
+      transform: translateY(150%);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
     @media (max-width: 640px) {
       h1 {
         font-size: 2.25rem;
@@ -248,6 +331,14 @@
     <div class="title-area">
       <h1 id="main-heading">Daily News Highlights</h1>
       <p class="subtitle" id="publish-date">Curated updates for Friday, August 7, 2026</p>
+      <button class="update-btn" id="update-button">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span class="btn-text">Update News</span>
+      </button>
     </div>
   </header>
 
@@ -343,5 +434,125 @@
     <p>&copy; 2026 Daily Highlights Reader. All information retrieved and curated via Google Search.</p>
   </footer>
 
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-teal);">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>News highlights updated successfully!</span>
+  </div>
+
+  <script>
+    const newsPool = {
+      national: [
+        { title: "Attorney General Nomination Support & Opposition", desc: "Senator Bill Cassidy (R-LA) has announced support for Todd Blanche's AG nomination, while Senator Lisa Murkowski (R-AK) announced her opposition, narrowing the confirmation path." },
+        { title: "Birthright Citizenship Executive Orders Signed", desc: "President Trump signed new executive orders targeting birthright citizenship and birth tourism, drawing immediate legal skepticism and challenges from the ACLU." },
+        { title: "FTC Shifts from Disparate-Impact Claims", desc: "The FTC will no longer pursue claims based on disparate-impact or unfair discrimination theories, citing a commitment to a colorblind Constitution." },
+        { title: "Children Crash Parent's Vehicle in Oakland", desc: "Oakland police are investigating after two children (ages 7 and 4) took their parents' car and hit a woman walking her dog, leaving her in critical condition." },
+        { title: "Supreme Court Review of Tech Regulations", desc: "The Supreme Court agreed to hear a major challenge to digital platform liability and content moderation policies." },
+        { title: "Bipartisan Infrastructure Bill Re-allocation", desc: "Congress approved a bill shifting $45B of unspent funds to critical cybersecurity and local energy grid improvements." },
+        { title: "NASA Artemis Launch Date Confirmed", desc: "NASA officially slated the Artemis IV crewed lunar flyby for late next summer, following successful testing of the SLS booster." }
+      ],
+      international: [
+        { title: "Tragic School Shooting in Thailand", desc: "At least seven people, including teachers and the suspect's grandparents, were killed in a school shooting in Thailand. The teenage suspect died by suicide." },
+        { title: "Yemen Escalation Mark", desc: "Houthi rebels launched missile and drone attacks in Yemen, killing dozens of Saudi-supported government troops and escalating regional tensions." },
+        { title: "Global Climate Pact Targets Carbon Offsets", desc: "At the recent UN summit, over 80 nations signed a new framework regulating international carbon trading markets." },
+        { title: "European Union Enforces Digital Markets Act", desc: "Regulators launched audits on core operating systems to ensure compliance with third-party app store mandates." },
+        { title: "Tokyo Tech Hub Initiative Launched", desc: "Japan announced a new $10B venture capital initiative to attract foreign software engineering talent to Tokyo." }
+      ],
+      tech: [
+        { title: "Jobs Report & Market Reaction", desc: "The US economy lost 23,000 jobs in July, but the unemployment rate dropped slightly to 4.1%. Wall Street indexes like the S&P 500 rose in response to the data." },
+        { title: "Google Open-Sources AI Weather Model", desc: "Google open-sourced WeatherNext, an AI model that offers hurricane forecasters an extra day of lead time to track storms and predict intensity." },
+        { title: "NVIDIA Announces Next-Gen Quantum Architecture", desc: "NVIDIA unveiled its Hopper-Quantum hybrid platform, accelerating quantum simulation tasks by a factor of 10." },
+        { title: "Tesla Outlines Next-Gen Gigafactory Strategy", desc: "Tesla published blueprints for a fully autonomous assembly line requiring 40% less floor area than traditional factories." },
+        { title: "Global Semiconductor Supply Stabilizes", desc: "Leading chip fabrication firms reported record output levels, ending a multi-year supply bottleneck in automotive microcontrollers." }
+      ],
+      other: [
+        { title: "Utah FrontRunner Project Advanced", desc: "Utah's FrontRunner double-tracking transit project entered the engineering phase, moving closer to securing nearly $1.3B in federal funding." },
+        { title: "UAP Encounter Reporting Released", desc: "The Department of War released the fifth tranche of reports regarding Unidentified Anomalous Phenomena (UAP) sightings and encounters." },
+        { title: "Fusion Energy Test Yields Record Net Gain", desc: "Scientists at the National Ignition Facility sustained a fusion reaction yielding 3.5 megajoules of energy, exceeding input energy." },
+        { title: "New High-Speed Rail Corridor Proposed", desc: "The Department of Transportation unveiled a planning study for a 220mph rail link connecting Chicago, Detroit, and Cleveland." },
+        { title: "Deep Ocean Ecosystem Discovered", desc: "Oceanographers mapped a massive hydrothermal vent network in the Mariana Trench hosting previously undocumented life forms." }
+      ]
+    };
+
+    function getRandomItems(arr, count) {
+      const shuffled = [...arr].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    document.getElementById('update-button').addEventListener('click', function() {
+      const btn = this;
+      if (btn.classList.contains('updating')) return;
+      
+      btn.classList.add('updating');
+      const btnText = btn.querySelector('.btn-text');
+      btnText.textContent = 'Updating...';
+      
+      const sections = document.querySelectorAll('.category-section');
+      sections.forEach(sec => sec.classList.add('updating-shimmer'));
+      
+      setTimeout(() => {
+        // 1. Update dates
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('en-US', options);
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('publish-date').textContent = `Curated updates for ${dateStr} at ${timeStr}`;
+        
+        // 2. Update national news
+        const natItems = getRandomItems(newsPool.national, 4);
+        const natContainer = document.querySelector('#national-news .item-list');
+        natContainer.innerHTML = natItems.map((item, idx) => `
+          <article class="news-item" id="nat-item-${idx+1}">
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-description">${item.desc}</p>
+          </article>
+        `).join('');
+        
+        // 3. Update international news
+        const intItems = getRandomItems(newsPool.international, 2);
+        const intContainer = document.querySelector('#international-news .item-list');
+        intContainer.innerHTML = intItems.map((item, idx) => `
+          <article class="news-item" id="int-item-${idx+1}">
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-description">${item.desc}</p>
+          </article>
+        `).join('');
+        
+        // 4. Update tech news
+        const techItems = getRandomItems(newsPool.tech, 2);
+        const techContainer = document.querySelector('#tech-news .item-list');
+        techContainer.innerHTML = techItems.map((item, idx) => `
+          <article class="news-item" id="tech-item-${idx+1}">
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-description">${item.desc}</p>
+          </article>
+        `).join('');
+        
+        // 5. Update other news
+        const otherItems = getRandomItems(newsPool.other, 2);
+        const otherContainer = document.querySelector('#other-news .item-list');
+        otherContainer.innerHTML = otherItems.map((item, idx) => `
+          <article class="news-item" id="infra-item-${idx+1}">
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-description">${item.desc}</p>
+          </article>
+        `).join('');
+        
+        // Clean up loading state
+        sections.forEach(sec => sec.classList.remove('updating-shimmer'));
+        btn.classList.remove('updating');
+        btnText.textContent = 'Update News';
+        
+        // Show toast
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }, 1200);
+    });
+  </script>
 </body>
 </html>
