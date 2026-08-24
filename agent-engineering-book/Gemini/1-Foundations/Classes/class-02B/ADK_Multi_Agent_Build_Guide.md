@@ -1,6 +1,6 @@
-# Class 02B Build Guide: From a Single Agent to Multi-Agent Workflows
+# Class 02B Build Guide: Multi-Agent Workflows with ADK 2.x
 
-This guide uses the supplied `class-02B.zip` starter package and builds the solution in small, testable stages:
+This guide modernizes the supplied `class-02B.zip` starter package for ADK 2.x and builds the solution in small, testable stages. The instructions were compatibility-tested with ADK `2.6.0`:
 
 1. Run the root agent as a single agent.
 2. Add parent-to-sub-agent delegation.
@@ -61,15 +61,15 @@ class-02B/
     └── plugins.py
 ```
 
-## 2. Create an isolated Python environment
+## 2. Create an isolated ADK 2.x environment
 
-The supplied Google Skills lab is written for ADK `1.30.0`. Use a class-local virtual environment so another globally installed ADK version does not change the exercise.
+Use a class-local virtual environment so another globally installed ADK version does not change the exercise. This guide pins ADK `2.6.0`, the current ADK 2.x version used for validation.
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install "google-adk[otel-gcp]==1.30.0" \
+PIP_CACHE_DIR=.pip-cache python -m pip install "google-adk[gcp]==2.6.0" \
   -r adk_multiagent_systems/requirements.txt
 ```
 
@@ -84,10 +84,122 @@ Verify the tools:
 ```bash
 python --version
 adk --version
-python -c "import google.adk; print('google.adk import: OK')"
+python -c "import importlib.metadata; print('google-adk', importlib.metadata.version('google-adk'))"
 ```
 
-## 3. Choose one `.env` authentication mode
+Expected ADK result:
+
+```text
+google-adk 2.6.0
+```
+
+The `[gcp]` extra supplies the Google Cloud packages used by the starter's logging and Vertex AI path. If pip reports a read-only cache error, keep `PIP_CACHE_DIR=.pip-cache` in the command as shown.
+
+## 3. Apply the ADK 2.x compatibility updates
+
+The starter was originally written for ADK 1.x. Its core agent definitions, session state, `SequentialAgent`, `LoopAgent`, and `ParallelAgent` remain valid in ADK 2.x. Update the following integration points before running it.
+
+### 3.1 Update the `App` import
+
+In both files:
+
+- `adk_multiagent_systems/parent_and_subagents/agent.py`
+- `adk_multiagent_systems/workflow_agents/agent.py`
+
+replace:
+
+```python
+from google.adk.apps.app import App
+```
+
+with:
+
+```python
+from google.adk.apps import App
+```
+
+The old path remains an alias in ADK 2.6.0, but the new import is the documented public route.
+
+### 3.2 Update the LangChain integration import
+
+In `adk_multiagent_systems/workflow_agents/agent.py`, replace:
+
+```python
+from google.adk.tools.langchain_tool import LangchainTool
+```
+
+with:
+
+```python
+from google.adk.integrations.langchain import LangchainTool
+```
+
+The old import emits a deprecation warning in ADK 2.6.0.
+
+### 3.3 Update the plugin error hook
+
+In `adk_utils/plugins.py`, replace the old `on_model_error` method with ADK 2.x's `on_model_error_callback` hook:
+
+```python
+async def on_model_error_callback(
+    self,
+    *,
+    callback_context,
+    llm_request,
+    error: Exception,
+) -> LlmResponse | None:
+    """Return a controlled fallback when the model reports quota exhaustion."""
+    if "RESOURCE_EXHAUSTED" in str(error) or "429" in str(error):
+        print(
+            "\n[PLUGIN TRIGGERED] "
+            f"Caught 429 error. Returning fallback for {self.name}."
+        )
+        fallback = self._get_fallback_text(llm_request)
+        return LlmResponse(
+            content=types.Content(
+                role="model",
+                parts=[types.Part.from_text(text=fallback)],
+            )
+        )
+    return None
+```
+
+ADK 2.x calls this method with `callback_context`, `llm_request`, and `error`. The previous `on_model_error(agent, model, input, error)` method is not an ADK 2.x plugin hook.
+
+### 3.4 Remove the internal model monkey patch
+
+In both agent files, remove:
+
+```python
+graceful_plugin.apply_429_interceptor(root_agent)
+```
+
+Keep the plugin registered on the application:
+
+```python
+app = App(
+    name="parent_and_subagents",  # workflow_agents in the other file
+    root_agent=root_agent,
+    plugins=[graceful_plugin],
+)
+```
+
+The application-level ADK 2.x plugin hook now handles the error. Monkey-patching `Gemini.generate_content_async` couples the code to model internals and is unnecessary.
+
+### 3.5 What remains unchanged
+
+These constructs continue to work in ADK 2.x:
+
+```python
+from google.adk import Agent
+from google.adk.agents import SequentialAgent, LoopAgent, ParallelAgent
+from google.adk.models import Gemini
+from google.adk.tools import exit_loop
+```
+
+The `Agent(..., sub_agents=[...])`, state templating, `ToolContext`, `output_key`, `max_iterations`, callbacks, and workflow-agent composition used in this class remain available.
+
+## 4. Choose one `.env` authentication mode
 
 Create the active `.env` inside `adk_multiagent_systems/parent_and_subagents/`, then copy it to `workflow_agents/`.
 
@@ -157,7 +269,7 @@ for path in [
 PY
 ```
 
-## 4. Make logging work in both authentication modes
+## 5. Make logging work in both authentication modes
 
 Both starter `agent.py` files create a Google Cloud Logging client immediately. That works in Cloud Shell or with Application Default Credentials, but an API-key-only laptop may raise `DefaultCredentialsError` before the agent starts.
 
@@ -208,7 +320,42 @@ else:
     logging.basicConfig(level=logging.INFO)
 ```
 
-## 5. Milestone 1: Run the root as a single agent
+## 6. Validate the ADK 2.x imports before the first run
+
+From the expanded `class-02B` directory, run:
+
+```bash
+source .venv/bin/activate
+cd adk_multiagent_systems
+
+python - <<'PY'
+import importlib.metadata
+from parent_and_subagents.agent import app as travel_app
+from workflow_agents.agent import app as workflow_app
+from adk_utils.plugins import Graceful429Plugin
+
+print("ADK:", importlib.metadata.version("google-adk"))
+print("Travel app:", travel_app.name)
+print("Workflow app:", workflow_app.name)
+print(
+    "ADK 2 error hook:",
+    callable(getattr(Graceful429Plugin, "on_model_error_callback", None)),
+)
+PY
+```
+
+Expected result:
+
+```text
+ADK: 2.6.0
+Travel app: parent_and_subagents
+Workflow app: workflow_agents
+ADK 2 error hook: True
+```
+
+This validates imports and application construction without making a model request.
+
+## 7. Milestone 1: Run the root as a single agent
 
 The starter defines specialist objects, but the `root_agent` does not yet list them as sub-agents. Therefore ADK begins with only the `steering` root in the active topology.
 
@@ -235,7 +382,7 @@ exit
 
 Checkpoint: the environment, model, package import, and `root_agent` discovery all work before multi-agent routing is introduced.
 
-## 6. Milestone 2: Add parent and sub-agents
+## 8. Milestone 2: Add parent and sub-agents
 
 Open:
 
@@ -302,7 +449,7 @@ Expected: the conversation can move from `attractions_planner` to its peer `trav
 
 Checkpoint: the parent uses the specialists' names, descriptions, and instructions to route the conversation.
 
-## 7. Milestone 3: Add shared session state
+## 9. Milestone 3: Add shared session state
 
 Under the `# Tools` heading in `parent_and_subagents/agent.py`, add:
 
@@ -366,7 +513,7 @@ Inspect:
 
 Checkpoint: the tool writes durable session state and the instruction reads it through `{ attractions? }`.
 
-## 8. Milestone 4: Run the starter sequential workflow
+## 10. Milestone 4: Run the starter sequential workflow
 
 Stop ADK Web with `Ctrl+C`, then review:
 
@@ -418,7 +565,7 @@ find movie_pitches -maxdepth 1 -type f -print
 
 Checkpoint: all three sub-agents execute in list order without waiting for another user message.
 
-## 9. Milestone 5: Add a bounded writers' room loop
+## 11. Milestone 5: Add a bounded writers' room loop
 
 At the imports in `workflow_agents/agent.py`, add:
 
@@ -497,7 +644,7 @@ The loop ends when `critic` calls `exit_loop` or after five iterations. Then the
 
 Checkpoint: the loop has both a semantic quality gate and a hard safety cap.
 
-## 10. Milestone 6: Add parallel branches
+## 12. Milestone 6: Add parallel branches
 
 Add these two specialists and the parallel team before `film_concept_team`:
 
@@ -557,7 +704,7 @@ Why this is safe to parallelize:
 - Each writes to a different state key.
 - The downstream file writer performs the gather.
 
-## 11. Update the gather step
+## 13. Update the gather step
 
 Replace `file_writer`'s instruction with:
 
@@ -599,7 +746,7 @@ greeter
        -> file_writer
 ```
 
-## 12. Run the completed solution
+## 14. Run the completed solution
 
 From `adk_multiagent_systems/`:
 
@@ -637,9 +784,12 @@ Open the newest file and verify that it contains:
 - A box-office report
 - A casting report
 
-## 13. Quick validation checklist
+## 15. Quick validation checklist
 
-- [ ] `adk --version` reports the class-pinned version.
+- [ ] ADK reports version `2.6.0`.
+- [ ] Both applications pass the import-validation script.
+- [ ] The custom plugin exposes `on_model_error_callback`.
+- [ ] No `google.adk.tools.langchain_tool` deprecation warning appears.
 - [ ] Only one authentication mode is active.
 - [ ] Both agent directories contain a `.env` file.
 - [ ] API-key mode starts without Google Cloud ADC.
@@ -653,7 +803,7 @@ Open the newest file and verify that it contains:
 - [ ] The file writer gathers all three final content sections.
 - [ ] A pitch file appears under `movie_pitches/`.
 
-## 14. Troubleshooting
+## 16. Troubleshooting
 
 ### `ModuleNotFoundError: No module named 'google.adk'`
 
@@ -661,14 +811,38 @@ Activate the class virtual environment and reinstall:
 
 ```bash
 source .venv/bin/activate
-python -m pip install "google-adk[otel-gcp]==1.30.0" \
+PIP_CACHE_DIR=.pip-cache python -m pip install "google-adk[gcp]==2.6.0" \
   -r adk_multiagent_systems/requirements.txt
 ```
 
 ### `DefaultCredentialsError`
 
 - Vertex AI mode: run `gcloud auth application-default login` and confirm the project.
-- API-key mode: confirm the logging fallback in Section 4 is present and `GOOGLE_GENAI_USE_VERTEXAI=FALSE`.
+- API-key mode: confirm the logging fallback in Section 5 is present and `GOOGLE_GENAI_USE_VERTEXAI=FALSE`.
+
+### `AttributeError` or the 429 fallback never runs
+
+Confirm the plugin method is named:
+
+```python
+on_model_error_callback
+```
+
+and remove both calls to:
+
+```python
+graceful_plugin.apply_429_interceptor(root_agent)
+```
+
+### LangChain import deprecation warning
+
+Use:
+
+```python
+from google.adk.integrations.langchain import LangchainTool
+```
+
+not the older `google.adk.tools.langchain_tool` path.
 
 ### `404 NOT_FOUND` for the model
 
@@ -705,7 +879,7 @@ max_iterations=2
 
 Restore the intended cap after the workflow is stable.
 
-## 15. Instructor demonstration order
+## 17. Instructor demonstration order
 
 1. Show the root agent alone and ask students what it cannot do.
 2. Add `sub_agents` and visibly trigger each routing path.
@@ -725,5 +899,6 @@ Restore the intended cap after the workflow is stable.
 - Parallel workflow: <https://google.github.io/adk-docs/agents/workflow-agents/parallel-agents/>
 - State: <https://google.github.io/adk-docs/sessions/state/>
 - Development UI: <https://google.github.io/adk-docs/runtime/web-interface/>
+- ADK 2.0 overview and migration notes: <https://google.github.io/adk-docs/2.0/>
 
-> Version note: the supplied exercise intentionally pins ADK 1.30.0. Current ADK 2.x documentation also presents graph-based and dynamic workflows. Keep the class environment pinned while teaching this lab so the starter code, lab steps, and observed behavior remain aligned.
+> ADK 2.x note: graph-based and dynamic workflows are the forward-looking orchestration model. This class deliberately retains `SequentialAgent`, `LoopAgent`, and `ParallelAgent` because they remain supported, make the three core control patterns explicit, and provide a clear bridge into graph workflows.

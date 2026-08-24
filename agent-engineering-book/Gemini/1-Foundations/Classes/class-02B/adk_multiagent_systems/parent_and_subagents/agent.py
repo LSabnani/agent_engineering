@@ -15,7 +15,7 @@ from google.adk.tools.tool_context import ToolContext
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from adk_utils.plugins import Graceful429Plugin
-from google.adk.apps.app import App
+from google.adk.apps import App
 
 load_dotenv()
 

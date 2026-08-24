@@ -16,7 +16,7 @@ from google.genai import types
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from adk_utils.plugins import Graceful429Plugin
-from google.adk.apps.app import App
+from google.adk.apps import App
 
 from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
