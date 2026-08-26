@@ -1,149 +1,278 @@
-# Class 02C — OpenTelemetry with Google Cloud Trace
+# Class 02C — Observe, Record, Play, and Replay an ADK Agent
 
-This lab adds observability to the existing Class 02B multi-agent system **without changing the Class 02B source code**.
+## Purpose
 
-## Starter package
+Class 02C is a self-contained observability lab. You do **not** need to complete any earlier class, and you will not build a multi-agent system in this lab.
 
-After expanding `class-02C.zip`, enter the package:
+The supplied `class-02C.zip` begins with a **completed golden multi-agent application**. You will use that working application as the system under observation while you learn to:
 
-```bash
-unzip class-02C.zip
-cd class-02C
-```
-
-The package includes the complete Class 02B codebase directly in the `class-02C/` root, plus ready-to-run helper utilities under `class-02C-work/`. There is no nested archive to expand.
-
-You will:
-
-1. run the existing Class 02B agents with ADK's native OpenTelemetry export;
-2. inspect the live execution in Google Cloud Trace;
+1. export ADK's native OpenTelemetry spans directly to Google Cloud Trace;
+2. inspect a live multi-agent trace;
 3. record the ADK session event history as JSONL;
-4. show and play the recorded events locally; and
-5. replay the recording as a new OpenTelemetry trace in the same Google Cloud project.
+4. show and play the recorded events locally;
+5. replay those events as a new trace without calling Gemini or executing tools; and
+6. compare a real execution trace with a telemetry-only replay.
 
-There is no Jaeger server, local collector, or separate observability backend. Google Cloud Trace is the only trace backend.
+Google Cloud Trace is the only observability backend. This lab uses no Jaeger server, Docker container, local collector, or third-party tracing service.
 
-## What “no code changes” means
+---
 
-Do not edit:
+## What is already complete
+
+The package contains a working movie-pitch application built with Google ADK. The agent accepts a historical figure, researches the subject, develops and critiques a screenplay, generates two reports in parallel, and writes the final pitch to a text file.
+
+You are **not** expected to edit or rebuild this application. Treat it as a golden reference system whose behavior you will observe.
+
+The main application is named:
 
 ```text
-adk_multiagent_systems/
-pyproject.toml
-scripts/
+workflow_agents
 ```
 
-Class 02C creates its generated files in the supplied work directory:
+The package also contains a smaller `parent_and_subagents` application, but the lab uses `workflow_agents` because its sequential, loop, parallel, model, state, and tool activity creates a richer trace.
 
-```text
-class-02C-work/
-├── sessions.db
-├── run-01.json
-├── run-02.json
-├── session.json
-├── events.jsonl
-└── replay_events.py
-```
-
-Installing an additional Python package in `.venv`, setting shell environment variables, and creating files in `class-02C-work` do not modify the Class 02B source code.
-
-## Architecture
+### Golden application flow
 
 ```mermaid
 flowchart TD
-    A[Existing Class 02B agents] --> B[ADK native OTel spans]
-    A --> C[ADK session events]
-    B --> D[Google Cloud Trace]
-    C --> E[events.jsonl]
-    E --> F[Show or timed play]
-    E --> G[Telemetry-only replay]
-    G --> D
+    U["User names a historical figure"] --> G["Greeter stores the prompt"]
+    G --> R["Researcher gathers facts"]
+    R --> S["Screenwriter drafts the plot"]
+    S --> C{"Critic approves?"}
+    C -- "Improve" --> R
+    C -- "Ready" --> P["Preproduction team"]
+    P --> B["Box-office report"]
+    P --> A["Casting report"]
+    B --> J["Join both reports"]
+    A --> J
+    J --> F["File writer saves final pitch"]
 ```
+
+Under the hood:
+
+- `film_concept_team` is a `SequentialAgent`.
+- `writers_room` is a bounded `LoopAgent` containing `researcher`, `screenwriter`, and `critic`.
+- The critic exits early when the pitch is good enough; otherwise the loop stops at its configured maximum.
+- `preproduction_team` is a `ParallelAgent` containing `box_office_researcher` and `casting_agent`.
+- The two parallel branches write results into session state.
+- `file_writer` gathers the plot and both reports and writes `movie_pitches/<title>.txt`.
+
+You need this functional picture to read the trace; you do not need to study or change the multi-agent source code.
+
+---
+
+## Observability flow
+
+The live execution and the replay take different paths:
+
+```mermaid
+flowchart TD
+    A["Golden ADK application"] --> B["Native OpenTelemetry spans"]
+    B --> C["Google Cloud Trace: live trace"]
+    A --> D["ADK session events"]
+    D --> E["events.jsonl recording"]
+    E --> F["Show or timed local play"]
+    E --> G["Telemetry-only replayer"]
+    G --> H["New OpenTelemetry spans"]
+    H --> I["Google Cloud Trace: replay trace"]
+```
+
+Important distinction:
+
+| Artifact | What it represents | Created by |
+|---|---|---|
+| Trace | One end-to-end execution | OpenTelemetry instrumentation |
+| Span | One timed operation within a trace | ADK runtime, model, workflow, or tool instrumentation |
+| Span event | A timestamped annotation inside a span | OpenTelemetry instrumentation |
+| ADK Event | A unit of agent conversation or state history | ADK runtime |
+| `events.jsonl` | One recorded ADK Event per line | This lab's recording step |
+| Replay trace | A new trace reconstructed from recorded events | The supplied replay utility |
+
+An ADK Event is not the same thing as an OpenTelemetry span event.
+
+---
 
 ## Learning objectives
 
 By the end of the lab, you can:
 
-- distinguish an ADK Event from an OpenTelemetry span event;
-- identify a trace, span, parent span, attribute, status, and duration;
-- export ADK's native agent, workflow, model, and tool spans to Cloud Trace;
-- retrieve the chronological event history stored in an ADK session;
-- record the events as portable JSON Lines;
-- play the recording without calling the agent; and
-- replay the recording as a new trace without calling Gemini or executing tools.
+- explain trace, span, parent span, attribute, event, status, and duration;
+- relate the trace waterfall to sequential, loop, parallel, model, and tool activity;
+- separate model authentication from telemetry authentication;
+- export native ADK telemetry directly to Google Cloud Trace;
+- retrieve and record an ADK session's ordered event history;
+- inspect and play a JSONL recording without rerunning the agent;
+- replay event metadata into a new trace without reproducing side effects; and
+- explain what telemetry replay does and does not prove.
 
 ---
 
-## Task 0 — Expand and verify the package
+## Prerequisites
 
-Expand the self-contained archive and enter it:
+Use a Bash terminal such as Google Cloud Shell, Linux, or macOS Terminal.
+
+You need:
+
+- Python 3.11, 3.12, or 3.13;
+- the Google Cloud CLI (`gcloud`);
+- `curl`, `jq`, and `unzip`;
+- a Google Cloud project;
+- permission to enable APIs or a project where the required APIs are already enabled;
+- permission to write and view Cloud Trace data; and
+- either Vertex AI access or a Google AI Studio API key for Gemini.
+
+Confirm the command-line tools:
+
+```bash
+python3 --version
+gcloud --version
+curl --version
+jq --version
+unzip -v | head -n 2
+```
+
+---
+
+## Lab files
+
+After extraction, the important paths are:
+
+```text
+class-02C/
+├── adk_multiagent_systems/       # Completed golden agent applications
+├── movie_pitches/                # Generated movie-pitch files
+├── scripts/                      # Package validation utilities
+├── class-02C-work/               # Observability helpers and generated evidence
+│   ├── start_api_server.sh
+│   ├── run_and_record.sh
+│   ├── show_events.sh
+│   ├── play_events.sh
+│   └── replay_events.py
+├── .env.api-key.example
+├── .env.vertex.example
+├── pyproject.toml
+└── class_02C_instructions.md
+```
+
+Generated session and recording files remain under `class-02C-work/`. You do not need to modify the golden agent source.
+
+---
+
+## Task 1 — Expand and install the complete package
 
 ```bash
 unzip class-02C.zip
 cd class-02C
 ```
 
-The complete Class 02B agent code is already present under `adk_multiagent_systems/`. If its guided TODOs are not complete, use `CLASS_02B_INSTRUCTIONS.md` before running the advanced workflows.
-
-Activate the existing environment, or create it if necessary:
+Create an isolated Python environment and install the application plus the Google Cloud OpenTelemetry integration:
 
 ```bash
-if [[ ! -d .venv ]]; then
-  python3 -m venv .venv
-fi
-
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e .
-```
-
-Class 02C needs ADK's Google Cloud OpenTelemetry integration. Install it in the virtual environment without editing `pyproject.toml`:
-
-```bash
 python -m pip install "google-adk[otel-gcp]==2.6.0"
 ```
 
-Verify the inherited package:
+Verify the installation:
 
 ```bash
-python scripts/validate_starter.py
 python -c "import google.adk; print('ADK', google.adk.__version__)"
+python scripts/validate_starter.py
 ```
 
-The existing `.env` must already support either Gemini API-key mode or Vertex AI mode. If the inherited Class 02B code does not run yet, complete Task 1 in `CLASS_02B_INSTRUCTIONS.md` before continuing.
-
-### Verify the inherited source baseline
-
-The package includes a checksum manifest created from the original Class 02B archive. Verify it before beginning:
+Verify that this is the completed golden application:
 
 ```bash
-export CLASS02C_ROOT="$PWD"
-export CLASS02C_WORK="$PWD/class-02C-work"
-
-./class-02C-work/verify_class02b_unchanged.sh
+rg -n "TODO [2356][A-D]" adk_multiagent_systems || true
+python scripts/check_progress.py
 ```
 
-Run the same verifier again at the end of the lab.
+Expected result:
+
+- the `rg` command prints no incomplete exercise markers; and
+- every progress check reports `PASS`.
+
+If those expectations are not met, stop. The ZIP contains the wrong source version; students should not repair it during this observability lab.
 
 ---
 
-## Task 1 — Configure Google Cloud Trace
+## Task 2 — Configure model authentication
 
-Set the project that will receive both the live and replayed traces:
+Choose **one** authentication mode.
+
+### Option A — Vertex AI
+
+Set your Google Cloud project and authenticate:
 
 ```bash
 export PROJECT_ID=replace_with_your_google_cloud_project_id
 gcloud config set project "$PROJECT_ID"
-```
-
-Authenticate Application Default Credentials:
-
-```bash
+gcloud auth login
 gcloud auth application-default login
 gcloud auth application-default set-quota-project "$PROJECT_ID"
 ```
 
-Enable the required Google Cloud APIs:
+Create `.env` from the supplied template:
+
+```bash
+cp .env.vertex.example .env
+nano .env
+```
+
+Set these values in `.env`:
+
+```dotenv
+GOOGLE_GENAI_USE_VERTEXAI=TRUE
+GOOGLE_CLOUD_PROJECT=replace_with_your_google_cloud_project_id
+GOOGLE_CLOUD_LOCATION=global
+MODEL=gemini-2.5-flash
+```
+
+Save the file and return to the terminal.
+
+### Option B — Google AI Studio API key
+
+Set the Google Cloud project used for telemetry:
+
+```bash
+export PROJECT_ID=replace_with_your_google_cloud_project_id
+gcloud config set project "$PROJECT_ID"
+gcloud auth application-default login
+gcloud auth application-default set-quota-project "$PROJECT_ID"
+```
+
+Create `.env` from the supplied template:
+
+```bash
+cp .env.api-key.example .env
+nano .env
+```
+
+Set these values in `.env`:
+
+```dotenv
+GOOGLE_GENAI_USE_VERTEXAI=FALSE
+GOOGLE_API_KEY=replace_with_your_google_ai_studio_api_key
+MODEL=gemini-2.5-flash
+```
+
+The API key authenticates the Gemini request. Application Default Credentials authenticate writes to Google Cloud Trace. They are separate authentication paths.
+
+Protect `.env`:
+
+```bash
+chmod 600 .env
+```
+
+Never commit or share `.env`.
+
+---
+
+## Task 3 — Prepare Google Cloud Trace
+
+Enable the required services:
 
 ```bash
 gcloud services enable \
@@ -153,485 +282,303 @@ gcloud services enable \
   --project="$PROJECT_ID"
 ```
 
-If the Class 02B model uses Vertex AI, also enable:
+If you selected Vertex AI, also enable:
 
 ```bash
 gcloud services enable aiplatform.googleapis.com --project="$PROJECT_ID"
 ```
 
-Confirm that ADC can issue a token:
+Confirm that Application Default Credentials work:
 
 ```bash
 gcloud auth application-default print-access-token >/dev/null \
   && echo "Application Default Credentials: OK"
 ```
 
-### Required access
+Confirm the selected project:
 
-The runtime identity needs permission to write traces. For a service account, the normal least-privilege role is:
-
-```text
-roles/cloudtrace.agent
+```bash
+echo "PROJECT_ID=$PROJECT_ID"
+gcloud config get-value project
 ```
 
-The person inspecting traces normally needs permissions included in:
+### Required IAM access
 
-```text
-roles/cloudtrace.user
-```
+The runtime identity normally needs `roles/cloudtrace.agent` to write traces. The person opening Trace Explorer normally needs `roles/cloudtrace.user` to view them.
 
-In a managed classroom project, ask the administrator to provision access. Do not grant a broad role merely to make the lab pass.
+In a managed classroom project, ask the administrator to provision these roles. Do not grant broad Owner or Editor access merely to make the lab work.
 
 ---
 
-## Task 2 — Start the unchanged agents with native telemetry
+## Task 4 — Start the golden application with native telemetry
 
-From `class-02C`, load the existing model configuration and add telemetry settings to the current shell only:
+Open **Terminal 1** in `class-02C`:
 
 ```bash
-cd "$CLASS02C_ROOT"
 source .venv/bin/activate
-
-set -a
-source .env
-set +a
-
-export GOOGLE_CLOUD_PROJECT="$PROJECT_ID"
-export OTEL_SERVICE_NAME=class-02c-live
-export OTEL_RESOURCE_ATTRIBUTES="deployment.environment=classroom,class.name=02C"
-export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=NO_CONTENT
+export PROJECT_ID=replace_with_your_google_cloud_project_id
+./class-02C-work/start_api_server.sh "$PROJECT_ID"
 ```
 
-Start the ADK API server:
+The helper:
 
-```bash
-adk api_server \
-  --otel_to_cloud \
-  --port 8000 \
-  --session_service_uri="sqlite:///$CLASS02C_WORK/sessions.db" \
-  adk_multiagent_systems
+- loads `.env`;
+- sets `GOOGLE_CLOUD_PROJECT`;
+- labels the live service `class-02c-live`;
+- disables prompt and response content capture in telemetry;
+- stores sessions in `class-02C-work/sessions.db`; and
+- starts `adk api_server` with `--otel_to_cloud` on port `8000`.
+
+Expected final line:
+
+```text
+Uvicorn running on http://127.0.0.1:8000
 ```
 
-Why this works:
+Leave Terminal 1 running.
 
-- `--otel_to_cloud` enables ADK's native OpenTelemetry export to Google Cloud Observability.
-- `OTEL_SERVICE_NAME` makes the live traces easy to filter.
-- the SQLite session database is stored under `class-02C-work`, outside the inherited agent source;
-- `NO_CONTENT` avoids copying prompt and response text into telemetry; and
-- no agent, tool, plugin, callback, or workflow file is changed.
-
-Leave this terminal running.
+ADK's `--otel_to_cloud` option sends native OpenTelemetry data directly to Google Cloud Observability. It does not require a separate collector for this lab.
 
 ---
 
-## Task 3 — Create a session and record a live run
+## Task 5 — Confirm that ADK discovered the applications
 
-Open a second terminal:
+Open **Terminal 2**:
 
 ```bash
 cd class-02C
 source .venv/bin/activate
-
-export CLASS02C_ROOT="$PWD"
-export CLASS02C_WORK="$PWD/class-02C-work"
-export BASE_URL=http://127.0.0.1:8000
-export APP_NAME=workflow_agents
-export USER_ID=class02c-user
-export SESSION_ID="class02c-$(date +%Y%m%d-%H%M%S)"
-```
-
-Confirm that ADK discovered both applications:
-
-```bash
-curl -sS "$BASE_URL/list-apps" | jq .
+curl -sS http://127.0.0.1:8000/list-apps | jq .
 ```
 
 Expected applications:
 
-```text
-parent_and_subagents
-workflow_agents
+```json
+[
+  "parent_and_subagents",
+  "workflow_agents"
+]
 ```
 
-Create a new persistent session:
-
-```bash
-curl -sS -X POST \
-  "$BASE_URL/apps/$APP_NAME/users/$USER_ID/sessions/$SESSION_ID" \
-  -H 'Content-Type: application/json' \
-  -d '{}' \
-  | jq .
-```
-
-Send the first message:
-
-```bash
-jq -n \
-  --arg app "$APP_NAME" \
-  --arg user "$USER_ID" \
-  --arg session "$SESSION_ID" \
-  --arg text "Hello" \
-  '{
-    appName: $app,
-    userId: $user,
-    sessionId: $session,
-    newMessage: {role: "user", parts: [{text: $text}]}
-  }' \
-  | curl -sS -X POST "$BASE_URL/run" \
-      -H 'Content-Type: application/json' \
-      --data-binary @- \
-  | tee "$CLASS02C_WORK/run-01.json" \
-  | jq 'map({timestamp, author, id, invocationId})'
-```
-
-Send the historical figure that starts the existing movie workflow:
-
-```bash
-jq -n \
-  --arg app "$APP_NAME" \
-  --arg user "$USER_ID" \
-  --arg session "$SESSION_ID" \
-  --arg text "Ada Lovelace" \
-  '{
-    appName: $app,
-    userId: $user,
-    sessionId: $session,
-    newMessage: {role: "user", parts: [{text: $text}]}
-  }' \
-  | curl -sS -X POST "$BASE_URL/run" \
-      -H 'Content-Type: application/json' \
-      --data-binary @- \
-  | tee "$CLASS02C_WORK/run-02.json" \
-  | jq 'map({timestamp, author, id, invocationId})'
-```
-
-This is the only step that executes the agent, calls Gemini, and may call tools.
+The remainder of the lab uses `workflow_agents`.
 
 ---
 
-## Task 4 — Record the ADK Events as JSONL
+## Task 6 — Run the agent and record its session events
 
-ADK stores the chronological event history inside the session. Retrieve the complete session:
-
-```bash
-curl -sS \
-  "$BASE_URL/apps/$APP_NAME/users/$USER_ID/sessions/$SESSION_ID" \
-  | tee "$CLASS02C_WORK/session.json" \
-  | jq -c '.events[]' \
-  > "$CLASS02C_WORK/events.jsonl"
-```
-
-Confirm the recording:
+From Terminal 2:
 
 ```bash
-wc -l "$CLASS02C_WORK/events.jsonl"
-jq -s 'length' "$CLASS02C_WORK/events.jsonl"
+export PROJECT_ID=replace_with_your_google_cloud_project_id
+export APP_NAME=workflow_agents
+export USER_ID=class02c-user
+export SESSION_ID="class02c-$(date +%Y%m%d-%H%M%S)"
+
+./class-02C-work/run_and_record.sh "Ada Lovelace"
 ```
 
-Each line is one complete ADK Event. The file is a recording of the event history, not a second observability backend.
+The helper performs four actions:
+
+1. creates a new persistent ADK session;
+2. sends `Hello` so the greeter asks for a historical figure;
+3. sends `Ada Lovelace` to start the full movie-pitch workflow; and
+4. retrieves the complete session and writes one ADK Event per line to `class-02C-work/events.jsonl`.
+
+This is the only task that calls Gemini, invokes the real workflow, calls tools, changes session state, and writes a movie-pitch file.
+
+Confirm the evidence files:
+
+```bash
+ls -lh class-02C-work/run-01.json \
+       class-02C-work/run-02.json \
+       class-02C-work/session.json \
+       class-02C-work/events.jsonl
+
+wc -l class-02C-work/events.jsonl
+jq -s 'length' class-02C-work/events.jsonl
+find movie_pitches -maxdepth 1 -type f -print
+```
+
+The two event counts should match and be greater than zero.
 
 ---
 
-## Task 5 — Show the recorded events
+## Task 7 — Inspect the live trace in Google Cloud
 
-Display a compact event table:
+In Google Cloud Console:
 
-```bash
-printf 'TIME\tAUTHOR\tPART TYPES\tSTATE KEYS\n'
+1. select the project stored in `PROJECT_ID`;
+2. open **Trace Explorer** using the console search bar;
+3. set the time window to the last 30 minutes;
+4. set the trace scope to the current project if necessary;
+5. filter for service `class-02c-live`;
+6. open the newest trace; and
+7. expand the span waterfall.
 
-jq -r '
-  ([.content.parts[]? | keys[]] | unique | join(",")) as $parts
-  | ((.actions.stateDelta // {}) | keys | join(",")) as $state
-  | [
-      (.timestamp | tostring),
-      (.author // "unknown"),
-      (if $parts == "" then "event" else $parts end),
-      (if $state == "" then "-" else $state end)
-    ]
-  | @tsv
-' "$CLASS02C_WORK/events.jsonl"
-```
+Find evidence of:
 
-Look for:
+- the root invocation;
+- the greeter and workflow handoff;
+- repeated researcher, screenwriter, and critic work;
+- model-generation spans;
+- tool calls and state changes;
+- the two parallel preproduction branches; and
+- the final file-writing stage.
 
-- different agent authors;
-- text, function call, and function response parts;
-- the shared `invocationId` for events in one request; and
-- state changes written by the inherited tools.
+For three spans, record:
 
----
+| Span | Parent | Duration | Important attributes | What it tells you |
+|---|---|---:|---|---|
+| Root invocation |  |  |  |  |
+| One model call |  |  |  |  |
+| One tool or workflow span |  |  |  |  |
 
-## Task 6 — Play the recording at human speed
-
-This command reads only the JSONL file. It does not contact ADK, Gemini, Wikipedia, or Google Cloud:
-
-```bash
-while IFS= read -r event; do
-  jq -r '
-    ([.content.parts[]? | keys[]] | unique | join(",")) as $parts
-    | "[\(.author // "unknown")] \(if $parts == "" then "event" else $parts end)"
-  ' <<<"$event"
-  sleep 0.75
-done < "$CLASS02C_WORK/events.jsonl"
-```
-
-Change `0.75` to `0.25` for faster playback or `1.5` for slower playback.
+Trace ingestion is asynchronous. A new project can take several minutes to show its first trace.
 
 ---
 
-## Task 7 — Create the external telemetry replayer
+## Task 8 — Show the recorded ADK Events
 
-The starter already supplies this utility as `class-02C-work/replay_events.py`. You may skip the next creation block. It is retained as a teaching reference and as a way to reconstruct the utility if it is accidentally removed:
+Display the complete event sequence as a compact table:
 
 ```bash
-cat > "$CLASS02C_WORK/replay_events.py" <<'PY'
-#!/usr/bin/env python3
-"""Replay an ADK JSONL event recording as a fresh Google Cloud trace."""
-
-from __future__ import annotations
-
-import argparse
-import json
-import os
-import time
-from pathlib import Path
-from typing import Any
-
-
-def load_events(path: Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line_number, line in enumerate(handle, start=1):
-            if not line.strip():
-                continue
-            value = json.loads(line)
-            if not isinstance(value, dict):
-                raise ValueError(f"Line {line_number} is not a JSON object")
-            records.append(value)
-    return records
-
-
-def event_types(event: dict[str, Any]) -> str:
-    kinds: list[str] = []
-    for part in (event.get("content") or {}).get("parts") or []:
-        if not isinstance(part, dict):
-            continue
-        if "text" in part:
-            kinds.append("text")
-        if "functionCall" in part:
-            kinds.append("function_call")
-        if "functionResponse" in part:
-            kinds.append("function_response")
-        if "inlineData" in part:
-            kinds.append("inline_data")
-    state_delta = ((event.get("actions") or {}).get("stateDelta") or {})
-    if state_delta:
-        kinds.append("state_delta")
-    return ",".join(dict.fromkeys(kinds)) or "event"
-
-
-def attributes(event: dict[str, Any], sequence: int) -> dict[str, Any]:
-    actions = event.get("actions") or {}
-    state_delta = actions.get("stateDelta") or {}
-    return {
-        "replay.telemetry_only": True,
-        "recorded.event.sequence": sequence,
-        "recorded.event.id": str(event.get("id") or ""),
-        "recorded.event.author": str(event.get("author") or "unknown"),
-        "recorded.event.type": event_types(event),
-        "recorded.invocation_id": str(event.get("invocationId") or ""),
-        "recorded.state_delta.keys": ",".join(sorted(state_delta)),
-    }
-
-
-def planned_timestamps(events: list[dict[str, Any]], speed: float) -> list[int]:
-    raw = [float(event.get("timestamp") or 0.0) for event in events]
-    first = raw[0]
-    relative = [max(0.0, timestamp - first) / speed for timestamp in raw]
-    anchor = time.time_ns() - int(relative[-1] * 1_000_000_000) - 1_000_000_000
-    return [anchor + int(delta * 1_000_000_000) for delta in relative]
-
-
-def emit(events: list[dict[str, Any]], project_id: str, speed: float) -> None:
-    os.environ["GOOGLE_CLOUD_PROJECT"] = project_id
-    os.environ["OTEL_SERVICE_NAME"] = "class-02c-replay"
-    os.environ["OTEL_RESOURCE_ATTRIBUTES"] = (
-        "deployment.environment=classroom,class.name=02C,replay.mode=telemetry_only"
-    )
-
-    from google.adk.telemetry.google_cloud import get_gcp_exporters
-    from google.adk.telemetry.setup import maybe_set_otel_providers
-    from opentelemetry import trace
-
-    exporters = get_gcp_exporters(enable_cloud_tracing=True)
-    maybe_set_otel_providers([exporters])
-
-    provider = trace.get_tracer_provider()
-    tracer = trace.get_tracer("class-02c.event-replay")
-    timestamps = planned_timestamps(events, speed)
-
-    root = tracer.start_span(
-        "replay.adk.session",
-        start_time=timestamps[0],
-        attributes={
-            "replay.telemetry_only": True,
-            "replay.event_count": len(events),
-            "replay.source_invocation_id": str(events[0].get("invocationId") or ""),
-        },
-    )
-    parent_context = trace.set_span_in_context(root)
-
-    try:
-        for sequence, (event, start_time) in enumerate(
-            zip(events, timestamps, strict=True), start=1
-        ):
-            event_attributes = attributes(event, sequence)
-            author = event_attributes["recorded.event.author"]
-            span = tracer.start_span(
-                f"replay.event.{author}",
-                context=parent_context,
-                start_time=start_time,
-                attributes=event_attributes,
-            )
-            span.add_event(
-                "recorded.adk.event",
-                attributes=event_attributes,
-                timestamp=start_time,
-            )
-            span.end(end_time=start_time + 1_000_000)
-    finally:
-        root.end(end_time=timestamps[-1] + 10_000_000)
-        force_flush = getattr(provider, "force_flush", None)
-        if callable(force_flush):
-            force_flush()
-        shutdown = getattr(provider, "shutdown", None)
-        if callable(shutdown):
-            shutdown()
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("recording", type=Path)
-    parser.add_argument("--project-id", default=os.getenv("GOOGLE_CLOUD_PROJECT"))
-    parser.add_argument("--speed", type=float, default=4.0)
-    parser.add_argument("--dry-run", action="store_true")
-    args = parser.parse_args()
-
-    if args.speed <= 0:
-        parser.error("--speed must be greater than zero")
-
-    events = load_events(args.recording)
-    if not events:
-        raise SystemExit("The recording contains no events")
-
-    if args.dry_run:
-        print(f"Would replay {len(events)} events")
-        for sequence, event in enumerate(events, start=1):
-            print(
-                f"{sequence:03d} "
-                f"{event.get('author', 'unknown')}: "
-                f"{event_types(event)}"
-            )
-        return
-
-    if not args.project_id:
-        raise SystemExit("Set GOOGLE_CLOUD_PROJECT or pass --project-id")
-
-    emit(events, args.project_id, args.speed)
-    print(
-        f"Replayed {len(events)} events to Google Cloud Trace "
-        f"in project {args.project_id}"
-    )
-
-
-if __name__ == "__main__":
-    main()
-PY
-
-chmod +x "$CLASS02C_WORK/replay_events.py"
-python -m py_compile "$CLASS02C_WORK/replay_events.py"
+./class-02C-work/show_events.sh
 ```
 
-The utility reconstructs telemetry only. It imports no Class 02B agent and invokes no model or tool.
+The columns show:
+
+- `SEQ`: the event's position in the recording;
+- `TIME`: the recorded timestamp;
+- `AUTHOR`: the user, agent, or workflow that produced the event;
+- `PART TYPES`: text, function call, function response, or other content; and
+- `STATE KEYS`: state fields changed by the event.
+
+Inspect one raw event:
+
+```bash
+head -n 1 class-02C-work/events.jsonl | jq .
+```
+
+Inspect the distinct authors:
+
+```bash
+jq -r '.author // "unknown"' class-02C-work/events.jsonl | sort -u
+```
+
+Inspect events that changed state:
+
+```bash
+jq -c 'select((.actions.stateDelta // {}) | length > 0) | {
+  timestamp,
+  author,
+  stateDelta: .actions.stateDelta
+}' class-02C-work/events.jsonl
+```
+
+The JSONL file is a portable classroom recording. It is not another observability backend.
 
 ---
 
-## Task 8 — Preview and export the replay trace
+## Task 9 — Play the event recording
 
-Preview the replay plan without sending telemetry:
+Play the event sequence with a `0.75` second delay:
 
 ```bash
-python "$CLASS02C_WORK/replay_events.py" \
-  "$CLASS02C_WORK/events.jsonl" \
+./class-02C-work/play_events.sh class-02C-work/events.jsonl 0.75
+```
+
+Try a faster playback:
+
+```bash
+./class-02C-work/play_events.sh class-02C-work/events.jsonl 0.20
+```
+
+Playback only reads the local JSONL file. It does not contact ADK, Gemini, Wikipedia, or Google Cloud and cannot repeat the file-writing side effect.
+
+---
+
+## Task 10 — Preview the telemetry replay
+
+Before exporting anything, inspect what the replayer plans to create:
+
+```bash
+python class-02C-work/replay_events.py \
+  class-02C-work/events.jsonl \
   --dry-run
 ```
 
-Export the replay to Google Cloud Trace:
+Expected pattern:
+
+```text
+Would replay <N> events
+001 user: text
+002 greeter: text
+...
+```
+
+The dry run reads and classifies events but emits no telemetry.
+
+---
+
+## Task 11 — Replay the recording into Google Cloud Trace
+
+Export a new telemetry-only trace:
 
 ```bash
 export GOOGLE_CLOUD_PROJECT="$PROJECT_ID"
 
-python "$CLASS02C_WORK/replay_events.py" \
-  "$CLASS02C_WORK/events.jsonl" \
+python class-02C-work/replay_events.py \
+  class-02C-work/events.jsonl \
   --project-id "$PROJECT_ID" \
   --speed 4
 ```
 
-Expected terminal result:
+Expected result:
 
 ```text
 Replayed <N> events to Google Cloud Trace in project <PROJECT_ID>
 ```
 
+The replay utility:
+
+- creates a new root span named `replay.adk.session`;
+- creates one child span per recorded ADK Event;
+- copies selected non-content metadata into span attributes;
+- preserves event ordering and scales relative timing; and
+- labels the service `class-02c-replay`.
+
+It does **not** import the agent application, call Gemini, invoke Wikipedia, execute tools, mutate session state, or write a second movie-pitch file.
+
 ---
 
-## Task 9 — Inspect the live and replayed traces
+## Task 12 — Compare the live and replay traces
 
-In Google Cloud Console:
+Return to Trace Explorer:
 
-1. Select `PROJECT_ID`.
-2. Open **Observability → Trace Explorer**.
-3. Set the time window to the last 30 minutes.
-4. Filter first for service `class-02c-live`.
-5. Open the newest live trace.
-6. Inspect agent, workflow, model, and tool spans.
-7. Filter for service `class-02c-replay`.
-8. Open the newest `replay.adk.session` trace.
+1. use the last 30 minutes as the time range;
+2. filter for service `class-02c-replay`;
+3. open the newest `replay.adk.session` trace;
+4. inspect its child spans and `recorded.*` attributes; and
+5. compare it with the earlier `class-02c-live` trace.
 
-Compare the two traces:
-
-| Live trace — `class-02c-live` | Replay trace — `class-02c-replay` |
+| Live trace | Replay trace |
 |---|---|
-| Created by the real ADK execution | Created from `events.jsonl` |
-| Native agent, workflow, model, and tool spans | One reconstructed child span per recorded event |
-| Real runtime duration | Scaled relative event timing |
-| May call Gemini and tools | Calls no model and executes no tool |
-| Original trace and span IDs | New trace and span IDs |
+| Produced by real ADK execution | Produced from `events.jsonl` |
+| Contains native runtime, agent, model, and tool spans | Contains one reconstructed span per recorded event |
+| Measures real latency | Uses scaled relative event timing |
+| Can call models and tools | Calls no model and executes no tool |
+| Has original trace and span IDs | Has new trace and span IDs |
+| Proves what ran at that moment | Reconstructs the recorded event story |
 
-Replay preserves the recorded story. It does not reproduce the original execution.
+Answer these questions:
 
----
-
-## Task 10 — Prove that Class 02B was not changed
-
-Return to the Class 02C package root and verify the inherited Class 02B source and configuration:
-
-```bash
-cd "$CLASS02C_ROOT"
-./class-02C-work/verify_class02b_unchanged.sh
-```
-
-Every line should end with:
-
-```text
-OK
-```
-
-The only new lab artifacts should be in:
-
-```bash
-find "$CLASS02C_WORK" -maxdepth 1 -type f -print | sort
-```
+1. Which live span consumed the most time?
+2. Where can you see the loop repeat?
+3. Where can you see parallel fan-out and join?
+4. Which ADK Events changed state?
+5. Why are the replay trace IDs and durations different?
+6. Why is telemetry replay safer and cheaper than rerunning the agent?
+7. What debugging questions require the live trace rather than the replay?
 
 ---
 
@@ -639,27 +586,28 @@ find "$CLASS02C_WORK" -maxdepth 1 -type f -print | sort
 
 The lab is complete when:
 
-- [ ] no Class 02B Python or project file was edited;
-- [ ] the unchanged agent runs through the ADK API server;
-- [ ] Cloud Trace displays a `class-02c-live` trace;
-- [ ] `events.jsonl` contains the ordered ADK session events;
-- [ ] the show command displays event authors and types;
-- [ ] the playback command displays the recording without executing the agent;
-- [ ] Cloud Trace displays a `class-02c-replay` trace;
-- [ ] replay performs no model call or tool side effect; and
+- [ ] the supplied golden application passes its validation checks;
+- [ ] the application runs with `--otel_to_cloud`;
+- [ ] Trace Explorer displays a `class-02c-live` trace;
+- [ ] the student can identify sequential, loop, and parallel behavior in the trace;
+- [ ] `events.jsonl` contains the ordered ADK session history;
+- [ ] the show utility displays authors, part types, and state keys;
+- [ ] the play utility works without calling the agent;
+- [ ] the dry-run replay classifies the recording;
+- [ ] Trace Explorer displays a `class-02c-replay` trace;
+- [ ] no second model execution or tool side effect occurs during replay; and
 - [ ] the student can explain why live execution and telemetry replay are different.
 
 ---
 
 ## Troubleshooting
 
-### `jq: command not found`
+### `rg: command not found`
 
-Google Cloud Shell normally includes `jq`. On Debian or Ubuntu:
+The `rg` verification is convenient but optional. Run the progress checker:
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y jq
+python scripts/check_progress.py
 ```
 
 ### `adk: command not found`
@@ -669,37 +617,54 @@ cd class-02C
 source .venv/bin/activate
 which python
 which adk
-```
-
-### `No module named ... opentelemetry ...`
-
-Install the ADK telemetry extra in the active virtual environment:
-
-```bash
+python -m pip install -e .
 python -m pip install "google-adk[otel-gcp]==2.6.0"
 ```
 
-### The API server does not list the agents
+### `Missing class-02C/.env`
 
-Start it from `class-02C` and pass the agents directory explicitly:
+Create `.env` from exactly one supplied template:
 
 ```bash
-adk api_server --otel_to_cloud --port 8000 adk_multiagent_systems
+cp .env.vertex.example .env
 ```
+
+or:
+
+```bash
+cp .env.api-key.example .env
+```
+
+Then edit the placeholder values and protect the file with `chmod 600 .env`.
+
+### `/list-apps` does not show `workflow_agents`
+
+Stop Terminal 1 with `Ctrl-C`, return to the package root, and restart:
+
+```bash
+cd class-02C
+source .venv/bin/activate
+./class-02C-work/start_api_server.sh "$PROJECT_ID"
+```
+
+Read any import error shown before the Uvicorn startup message.
 
 ### `Session already exists`
 
-Generate a new ID:
+Create a unique ID:
 
 ```bash
 export SESSION_ID="class02c-$(date +%Y%m%d-%H%M%S)"
 ```
 
-### The agent responds, but no live trace appears
+Then rerun `run_and_record.sh`.
 
-Confirm the project, credentials, and API:
+### The model works but Cloud Trace export fails
+
+Model authentication and telemetry authentication are separate. Check:
 
 ```bash
+echo "$PROJECT_ID"
 gcloud config get-value project
 gcloud auth application-default print-access-token >/dev/null \
   && echo "ADC: OK"
@@ -709,20 +674,31 @@ gcloud services list \
   --filter='name:cloudtrace.googleapis.com'
 ```
 
-Restart the API server, run a new session, wait briefly for exporter flush, and widen the Trace Explorer time window.
+Also confirm that the runtime identity can write traces and the console user can view traces.
 
-### API-key mode works, but Trace export fails
+### The agent ran, but no trace appears
 
-The Gemini API key authenticates the model call only. Google Cloud Trace still requires:
+- Confirm that Terminal 1 used `start_api_server.sh`, which includes `--otel_to_cloud`.
+- Confirm that the Cloud Console project matches `PROJECT_ID`.
+- Set Trace Explorer's scope to the current project.
+- Widen the time range to one hour.
+- Wait several minutes and refresh; ingestion is asynchronous.
+- Run a new session so the exporter receives fresh spans.
 
-- `GOOGLE_CLOUD_PROJECT`;
-- Application Default Credentials;
-- the Cloud Trace API; and
-- trace-write permission.
+### `events.jsonl` is empty or missing
 
-### Replay succeeds, but the trace is not visible
+Confirm that the server is still running and that the agent run completed:
 
-Check that:
+```bash
+curl -sS http://127.0.0.1:8000/list-apps | jq .
+ls -lh class-02C-work/run-*.json
+```
+
+Then run the recorder again with a new `SESSION_ID`.
+
+### Replay succeeds, but `class-02c-replay` is not visible
+
+Confirm that all project values match:
 
 ```bash
 echo "$PROJECT_ID"
@@ -730,31 +706,60 @@ echo "$GOOGLE_CLOUD_PROJECT"
 gcloud config get-value project
 ```
 
-all identify the same project. Then filter Trace Explorer for `class-02c-replay` and use the last 30 minutes.
+Wait several minutes, widen the time range, and filter for `class-02c-replay` or span name `replay.adk.session`.
 
-### Replay has different durations
+### Replay durations differ from the live run
 
-That is expected. Replay creates a new trace with scaled relative timestamps. It preserves order and selected event metadata, not original runtime measurement.
+This is expected. Replay preserves order and selected metadata but scales relative timestamps. It is not a performance benchmark or deterministic re-execution.
 
 ---
 
-## Privacy note
+## Privacy and safety
 
-The live server uses:
+The live server sets:
 
 ```bash
 OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=NO_CONTENT
 ```
 
-The JSONL session recording can still contain user messages, model responses, tool arguments, tool results, and state. Treat it as classroom data. Do not record secrets, credentials, personal information, or regulated data.
+This prevents prompt and response content from being copied into the exported telemetry. However, the local `events.jsonl` session recording can still contain user messages, model responses, tool arguments, tool results, and state.
+
+Use only synthetic classroom prompts. Do not record passwords, API keys, personal information, customer data, regulated data, or confidential material. Do not commit `.env`, `sessions.db`, run JSON, session JSON, or `events.jsonl` to source control.
+
+---
+
+## Clean up generated evidence
+
+Stop the API server in Terminal 1 with `Ctrl-C`.
+
+To preserve evidence for review, keep:
+
+```text
+class-02C-work/session.json
+class-02C-work/events.jsonl
+```
+
+To reset before teaching the lab again, remove only the generated files listed below:
+
+```bash
+rm -f class-02C-work/sessions.db \
+      class-02C-work/run-01.json \
+      class-02C-work/run-02.json \
+      class-02C-work/session.json \
+      class-02C-work/events.jsonl \
+      class-02C-work/last_session.env
+```
+
+This cleanup does not delete the golden source code.
 
 ---
 
 ## Official references
 
-- ADK traces: <https://adk.dev/observability/traces/>
-- ADK Google Cloud Trace integration: <https://adk.dev/integrations/cloud-trace/>
-- ADK API server and session endpoints: <https://adk.dev/runtime/api-server/>
-- ADK events: <https://adk.dev/events/>
-- ADK sessions: <https://adk.dev/sessions/session/>
-- Google Cloud Trace IAM: <https://cloud.google.com/trace/docs/iam>
+- [ADK Google Cloud Trace integration](https://google.github.io/adk-docs/observability/cloud-trace/)
+- [ADK API server](https://google.github.io/adk-docs/runtime/api-server/)
+- [ADK CLI 2.6.0](https://google.github.io/adk-docs/api-reference/cli/)
+- [ADK sessions](https://google.github.io/adk-docs/sessions/session/)
+- [Google Cloud Trace setup](https://docs.cloud.google.com/trace/docs/setup)
+- [Google Cloud Trace IAM](https://docs.cloud.google.com/trace/docs/iam)
+- [Find and explore traces](https://docs.cloud.google.com/trace/docs/finding-traces)
