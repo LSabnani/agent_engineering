@@ -140,21 +140,32 @@ After extraction, the important paths are:
 ```text
 class-02C/
 ├── adk_multiagent_systems/       # Completed golden agent applications
+│   ├── workflow_agents/          # The application used in this lab
+│   ├── parent_and_subagents/     # A smaller application, not used here
+│   └── shared/                   # Helper package shared by both applications
 ├── movie_pitches/                # Generated movie-pitch files
 ├── scripts/                      # Package validation utilities
+│   ├── validate_starter.py
+│   └── check_progress.py
 ├── class-02C-work/               # Observability helpers and generated evidence
 │   ├── start_api_server.sh
 │   ├── run_and_record.sh
 │   ├── show_events.sh
 │   ├── play_events.sh
-│   └── replay_events.py
+│   ├── replay_events.py
+│   ├── verify_golden_source.sh
+│   └── golden-source.sha256
 ├── .env.api-key.example
 ├── .env.vertex.example
 ├── pyproject.toml
-└── class_02C_instructions.md
+├── README.md
+├── class_02C_instructions.md     # This lab
+└── CLASS_02B_INSTRUCTIONS.md     # Background: how the golden app was built
 ```
 
 Generated session and recording files remain under `class-02C-work/`. You do not need to modify the golden agent source.
+
+`CLASS_02B_INSTRUCTIONS.md` is optional background reading. It documents how the loop and parallel stages were built. This lab does not ask you to perform those build steps.
 
 ---
 
@@ -192,7 +203,24 @@ python scripts/check_progress.py
 Expected result:
 
 - the `rg` command prints no incomplete exercise markers; and
-- every progress check reports `PASS`.
+- every progress check reports `PASS`:
+
+```text
+Task 2 delegation: PASS ['travel_brainstormer', 'attractions_planner']
+Task 3 session-state tool: PASS
+Task 4 sequential baseline: PASS ['writers_room', 'preproduction_team', 'file_writer']
+Task 5 loop: PASS ['researcher', 'screenwriter', 'critic']
+Task 6 parallel fan-out/gather: PASS ['box_office_researcher', 'casting_agent']
+All checkpoints PASS. This is the completed golden application.
+```
+
+The `Task N` labels refer to the build steps in `CLASS_02B_INSTRUCTIONS.md`. In this lab they are simply an acceptance gate: the checker exits non-zero if any stage is missing.
+
+Optionally confirm that nothing in the golden source has been modified:
+
+```bash
+./class-02C-work/verify_golden_source.sh
+```
 
 If those expectations are not met, stop. The ZIP contains the wrong source version; students should not repair it during this observability lab.
 
@@ -327,7 +355,9 @@ The helper:
 - labels the live service `class-02c-live`;
 - disables prompt and response content capture in telemetry;
 - stores sessions in `class-02C-work/sessions.db`; and
-- starts `adk api_server` with `--otel_to_cloud` on port `8000`.
+- starts `adk api_server` with `--otel_to_cloud` and `--no-reload` on port `8000`.
+
+`--no-reload` is used because auto-reload cannot be combined with an in-process application object; without it Uvicorn prints a warning and disables reload anyway.
 
 Expected final line:
 
@@ -356,9 +386,12 @@ Expected applications:
 ```json
 [
   "parent_and_subagents",
+  "shared",
   "workflow_agents"
 ]
 ```
+
+ADK lists every subdirectory of the agents directory, so the `shared` helper package appears alongside the two real applications. That is expected; `shared` holds common configuration, callbacks, and plugins rather than an agent, and you will not run it.
 
 The remainder of the lab uses `workflow_agents`.
 
@@ -620,6 +653,10 @@ which adk
 python -m pip install -e .
 python -m pip install "google-adk[otel-gcp]==2.6.0"
 ```
+
+### `check_progress.py` reports `TODO`, or `rg` finds `TODO` markers
+
+The ZIP contains the Class 02B student starter rather than the completed golden application. Stop and request the correct package. Do not complete the agent-building exercises during this observability lab; Tasks 6, 7, and 12 assume the loop and parallel stages already exist.
 
 ### `Missing class-02C/.env`
 
