@@ -2,6 +2,17 @@
 
 This lab adds observability to the existing Class 02B multi-agent system **without changing the Class 02B source code**.
 
+## Starter package
+
+After expanding `class-02C.zip`, enter the package:
+
+```bash
+unzip class-02C.zip
+cd class-02C
+```
+
+The package includes the complete Class 02B codebase directly in the `class-02C/` root, plus ready-to-run helper utilities under `class-02C-work/`. There is no nested archive to expand.
+
 You will:
 
 1. run the existing Class 02B agents with ADK's native OpenTelemetry export;
@@ -17,12 +28,12 @@ There is no Jaeger server, local collector, or separate observability backend. G
 Do not edit:
 
 ```text
-class-02B/adk_multiagent_systems/
-class-02B/pyproject.toml
-class-02B/scripts/
+adk_multiagent_systems/
+pyproject.toml
+scripts/
 ```
 
-Class 02C creates its files in a sibling directory:
+Class 02C creates its generated files in the supplied work directory:
 
 ```text
 class-02C-work/
@@ -63,24 +74,16 @@ By the end of the lab, you can:
 
 ---
 
-## Task 0 — Expand and verify Class 02B
+## Task 0 — Expand and verify the package
 
-The official archive name is `class-02B.zip`. If your copy is named `class_02B.zip`, normalize the name first:
-
-```bash
-if [[ -f class_02B.zip && ! -f class-02B.zip ]]; then
-  mv class_02B.zip class-02B.zip
-fi
-```
-
-Expand the archive:
+Expand the self-contained archive and enter it:
 
 ```bash
-unzip class-02B.zip
-cd class-02B
+unzip class-02C.zip
+cd class-02C
 ```
 
-If you already completed Class 02B, keep your completed `class-02B` directory and continue from there.
+The complete Class 02B agent code is already present under `adk_multiagent_systems/`. If its guided TODOs are not complete, use `CLASS_02B_INSTRUCTIONS.md` before running the advanced workflows.
 
 Activate the existing environment, or create it if necessary:
 
@@ -107,24 +110,20 @@ python scripts/validate_starter.py
 python -c "import google.adk; print('ADK', google.adk.__version__)"
 ```
 
-The existing `.env` must already support either Gemini API-key mode or Vertex AI mode. If Class 02B does not run yet, complete Task 1 in its `README.md` before continuing.
+The existing `.env` must already support either Gemini API-key mode or Vertex AI mode. If the inherited Class 02B code does not run yet, complete Task 1 in `CLASS_02B_INSTRUCTIONS.md` before continuing.
 
-### Record a source-code checksum
+### Verify the inherited source baseline
 
-Create the external Class 02C work directory and record the current Python source hashes:
+The package includes a checksum manifest created from the original Class 02B archive. Verify it before beginning:
 
 ```bash
-export CLASS02B_ROOT="$PWD"
-export CLASS02C_WORK="$(cd .. && pwd)/class-02C-work"
-mkdir -p "$CLASS02C_WORK"
+export CLASS02C_ROOT="$PWD"
+export CLASS02C_WORK="$PWD/class-02C-work"
 
-find adk_multiagent_systems -type f -name '*.py' -print0 \
-  | sort -z \
-  | xargs -0 sha256sum \
-  > "$CLASS02C_WORK/class-02B-python.sha256"
+./class-02C-work/verify_class02b_unchanged.sh
 ```
 
-You will verify these hashes at the end of the lab.
+Run the same verifier again at the end of the lab.
 
 ---
 
@@ -187,10 +186,10 @@ In a managed classroom project, ask the administrator to provision access. Do no
 
 ## Task 2 — Start the unchanged agents with native telemetry
 
-From `class-02B`, load the existing model configuration and add telemetry settings to the current shell only:
+From `class-02C`, load the existing model configuration and add telemetry settings to the current shell only:
 
 ```bash
-cd "$CLASS02B_ROOT"
+cd "$CLASS02C_ROOT"
 source .venv/bin/activate
 
 set -a
@@ -217,7 +216,7 @@ Why this works:
 
 - `--otel_to_cloud` enables ADK's native OpenTelemetry export to Google Cloud Observability.
 - `OTEL_SERVICE_NAME` makes the live traces easy to filter.
-- the SQLite session database is stored outside `class-02B`;
+- the SQLite session database is stored under `class-02C-work`, outside the inherited agent source;
 - `NO_CONTENT` avoids copying prompt and response text into telemetry; and
 - no agent, tool, plugin, callback, or workflow file is changed.
 
@@ -230,11 +229,11 @@ Leave this terminal running.
 Open a second terminal:
 
 ```bash
-cd class-02B
+cd class-02C
 source .venv/bin/activate
 
-export CLASS02B_ROOT="$PWD"
-export CLASS02C_WORK="$(cd .. && pwd)/class-02C-work"
+export CLASS02C_ROOT="$PWD"
+export CLASS02C_WORK="$PWD/class-02C-work"
 export BASE_URL=http://127.0.0.1:8000
 export APP_NAME=workflow_agents
 export USER_ID=class02c-user
@@ -382,7 +381,7 @@ Change `0.75` to `0.25` for faster playback or `1.5` for slower playback.
 
 ## Task 7 — Create the external telemetry replayer
 
-Create the following utility in `class-02C-work`, not in the Class 02B project:
+The starter already supplies this utility as `class-02C-work/replay_events.py`. You may skip the next creation block. It is retained as a teaching reference and as a way to reconstruct the utility if it is accidentally removed:
 
 ```bash
 cat > "$CLASS02C_WORK/replay_events.py" <<'PY'
@@ -615,11 +614,11 @@ Replay preserves the recorded story. It does not reproduce the original executio
 
 ## Task 10 — Prove that Class 02B was not changed
 
-Return to the Class 02B root and verify every inherited Python file:
+Return to the Class 02C package root and verify the inherited Class 02B source and configuration:
 
 ```bash
-cd "$CLASS02B_ROOT"
-sha256sum -c "$CLASS02C_WORK/class-02B-python.sha256"
+cd "$CLASS02C_ROOT"
+./class-02C-work/verify_class02b_unchanged.sh
 ```
 
 Every line should end with:
@@ -666,7 +665,7 @@ sudo apt-get install -y jq
 ### `adk: command not found`
 
 ```bash
-cd class-02B
+cd class-02C
 source .venv/bin/activate
 which python
 which adk
@@ -682,7 +681,7 @@ python -m pip install "google-adk[otel-gcp]==2.6.0"
 
 ### The API server does not list the agents
 
-Start it from `class-02B` and pass the agents directory explicitly:
+Start it from `class-02C` and pass the agents directory explicitly:
 
 ```bash
 adk api_server --otel_to_cloud --port 8000 adk_multiagent_systems
