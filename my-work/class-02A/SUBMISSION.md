@@ -9,12 +9,12 @@ Commit hash:
 What was visible at L1?
 
 At L1, the skill `renewal-advisor` was visible with the description:
-`TODO - replace this with accurate L1 routing metadata without policy details.`
+`Unimplemented placeholder - replace this with accurate L1 routing metadata without policy details.`
 
 What weaknesses did you observe before completing `SKILL.md`?
 
-- The L1 description is a placeholder containing "TODO" and does not specify what the skill is for, meaning the agent cannot dynamically route tasks to it based on user intent.
-- The L2 instructions in `SKILL.md` are completely empty (all sections are placeholder `TODO`s), which gives the agent no guidance on triggers, inputs, step-by-step procedures, or how to route to L3 resources.
+- The L1 description is a placeholder and does not specify what the skill is for, meaning the agent cannot dynamically route tasks to it based on user intent.
+- The L2 instructions in `SKILL.md` are completely empty (all sections are placeholder blocks), which gives the agent no guidance on triggers, inputs, step-by-step procedures, or how to route to L3 resources.
 - There is no mapping of question types to specific resource paths, so the agent cannot load L3 files selectively.
 
 ## 2. Trace evidence

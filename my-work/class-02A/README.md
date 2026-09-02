@@ -63,7 +63,11 @@ The source documents are already provided. Your job is to engineer the skill, no
 ### Task 1 — Establish the baseline
 
 1. Complete the setup in `SETUP.md`.
-2. Start ADK Web.
+2. Start ADK Web using:
+   ```bash
+   adk web renewal_desk_agent
+   ```
+   (or `adk web .` from the project root)
 3. Ask: `What specialist skills are available to you? Give only their names and descriptions.`
 4. Inspect the trace and record what was visible at L1 in `SUBMISSION.md`.
 5. Ask: `A customer asked for a renewal discount. What should I do?`

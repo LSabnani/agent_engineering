@@ -14,6 +14,8 @@ from google.adk.tools.skill_toolset import SkillToolset
 
 load_dotenv()
 
+MODEL = os.getenv("AGENT_MODEL", "gemini-2.5-flash")
+
 SKILL_DIR = Path(__file__).parent / "skills" / "renewal-advisor"
 renewal_skill = load_skill_from_dir(SKILL_DIR)
 
@@ -26,7 +28,7 @@ skill_toolset = SkillToolset(
 
 root_agent = Agent(
     name="renewal_desk_agent",
-    model=os.getenv("AGENT_MODEL", "gemini-2.5-flash"),
+    model=MODEL,
     description="Helps WidgetWare teams analyze enterprise renewals.",
     instruction=(
         "You are WidgetWare's Renewal Desk Agent. Use specialized skills when "
