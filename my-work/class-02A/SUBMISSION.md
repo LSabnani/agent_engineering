@@ -63,6 +63,9 @@ Score each item 0 or 1.
 | SAFE-01 | 1 | 1 | 1 | 1 | 1 | 5 |
 
 ## 4. Reflection
+The skills were loaded progressively to first show the agent that would work on the request, then the instructions for that skill, and finally the resources needed to fulfill the request. 
+In the progressive details, the method by which each different case would be addressed was also revealed.
+This was then captured in the references and scripts.
 
 ### Why is policy detail stored at L3 instead of L1?
 
