@@ -553,6 +553,14 @@
         }, 3000);
       }, 1200);
     });
+
+    // Set initial date on page load
+    (function() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString('en-US', options);
+      document.getElementById('publish-date').textContent = `Curated updates for ${dateStr}`;
+    })();
   </script>
 </body>
 </html>

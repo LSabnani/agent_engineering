@@ -532,6 +532,61 @@
   </div>
 
   <script>
+    // Fallback randomized updater logic when server is offline
+    function runMockFallback(btn, btnText, sections) {
+      setTimeout(() => {
+        // 1. Update date
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('en-US', options);
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('publish-date').textContent = `Current Stock Highlights — ${dateStr} at ${timeStr} (Offline Mock)`;
+        
+        // 2. Randomize prices slightly
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+          const priceTd = row.querySelector('.price');
+          const changeTd = row.querySelector('.change');
+          const volumeTd = row.querySelector('.volume-data');
+          
+          let price = parseFloat(priceTd.textContent.replace('$', ''));
+          const variance = (Math.random() * 5 - 2.5) / 100;
+          let newPrice = price * (1 + variance);
+          priceTd.textContent = `$` + newPrice.toFixed(2);
+          
+          const isGainer = row.closest('.market-section').id === 'gainers-section';
+          let newChange;
+          if (isGainer) {
+            newChange = (Math.random() * 20 + 5);
+            changeTd.textContent = `+` + newChange.toFixed(2) + `%`;
+            changeTd.className = 'change positive';
+          } else {
+            newChange = -(Math.random() * 20 + 5);
+            changeTd.textContent = newChange.toFixed(2) + `%`;
+            changeTd.className = 'change negative';
+          }
+          
+          const relMultElement = volumeTd.querySelector('small');
+          if (relMultElement) {
+            const currentMult = parseFloat(relMultElement.textContent.match(/[\d.]+/)[0]);
+            const newMult = (currentMult * (0.85 + Math.random() * 0.3)).toFixed(1);
+            relMultElement.innerHTML = `(Rel: ~${newMult}x avg)`;
+          }
+        });
+        
+        sections.forEach(sec => sec.classList.remove('updating-shimmer'));
+        btn.classList.remove('updating');
+        btnText.textContent = 'Update Prices';
+        
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').textContent = 'Stock data updated (offline fallback)!';
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }, 1200);
+    }
+
     document.getElementById('update-button').addEventListener('click', function() {
       const btn = this;
       if (btn.classList.contains('updating')) return;
@@ -543,64 +598,81 @@
       const sections = document.querySelectorAll('.market-section');
       sections.forEach(sec => sec.classList.add('updating-shimmer'));
       
-      setTimeout(() => {
-        // 1. Update date
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateStr = now.toLocaleDateString('en-US', options);
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.getElementById('publish-date').textContent = `Current Stock Highlights — ${dateStr} at ${timeStr}`;
-        
-        // 2. Randomize prices slightly
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-          const priceTd = row.querySelector('.price');
-          const changeTd = row.querySelector('.change');
-          const volumeTd = row.querySelector('.volume-data');
-          
-          // Parse current price
-          let price = parseFloat(priceTd.textContent.replace('$', ''));
-          // Random variance: -2.5% to +2.5%
-          const variance = (Math.random() * 5 - 2.5) / 100;
-          let newPrice = price * (1 + variance);
-          priceTd.textContent = `$` + newPrice.toFixed(2);
-          
-          // Generate new change percentage
-          // If it's a gainer section, keep it positive, else negative
-          const isGainer = row.closest('.market-section').id === 'gainers-section';
-          let newChange;
-          if (isGainer) {
-            newChange = (Math.random() * 20 + 5); // 5% to 25%
-            changeTd.textContent = `+` + newChange.toFixed(2) + `%`;
-            changeTd.className = 'change positive';
-          } else {
-            newChange = -(Math.random() * 20 + 5); // -5% to -25%
-            changeTd.textContent = newChange.toFixed(2) + `%`;
-            changeTd.className = 'change negative';
+      fetch('/api/stocks')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Server returned HTTP ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.status !== 'success') {
+            throw new Error(data.message || 'API reported failure');
           }
           
-          // Randomize volume relative multiplier slightly
-          const relMultElement = volumeTd.querySelector('small');
-          if (relMultElement) {
-            const currentMult = parseFloat(relMultElement.textContent.match(/[\d.]+/)[0]);
-            const newMult = (currentMult * (0.85 + Math.random() * 0.3)).toFixed(1);
-            relMultElement.innerHTML = `(Rel: ~${newMult}x avg)`;
+          // 1. Update date
+          const now = new Date();
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const dateStr = now.toLocaleDateString('en-US', options);
+          const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          document.getElementById('publish-date').textContent = `Current Stock Highlights — ${dateStr} at ${timeStr}`;
+          
+          // 2. Populate Gainers
+          const gainersBody = document.querySelector('#gainers-section tbody');
+          if (data.gainers && data.gainers.length > 0) {
+            gainersBody.innerHTML = data.gainers.map(s => `
+              <tr>
+                <td>
+                  <span class="ticker">${s.ticker}</span>
+                  <span class="company-name">${s.company}</span>
+                </td>
+                <td class="price">${s.price.startsWith('$') ? s.price : '$' + s.price}</td>
+                <td class="change positive">${s.change.startsWith('+') ? s.change : '+' + s.change}</td>
+                <td class="volume-data">${s.volume} <br><small style="font-size: 0.7rem;">(Rel: ~${s.rel_volume}x avg)</small></td>
+              </tr>
+            `).join('');
           }
+          
+          // 3. Populate Losers
+          const losersBody = document.querySelector('#losers-section tbody');
+          if (data.losers && data.losers.length > 0) {
+            losersBody.innerHTML = data.losers.map(s => `
+              <tr>
+                <td>
+                  <span class="ticker">${s.ticker}</span>
+                  <span class="company-name">${s.company}</span>
+                </td>
+                <td class="price">${s.price.startsWith('$') ? s.price : '$' + s.price}</td>
+                <td class="change negative">${s.change}</td>
+                <td class="volume-data">${s.volume} <br><small style="font-size: 0.7rem;">(Rel: ~${s.rel_volume}x avg)</small></td>
+              </tr>
+            `).join('');
+          }
+          
+          sections.forEach(sec => sec.classList.remove('updating-shimmer'));
+          btn.classList.remove('updating');
+          btnText.textContent = 'Update Prices';
+          
+          const toast = document.getElementById('toast');
+          toast.querySelector('span').textContent = 'Stock data updated successfully!';
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        })
+        .catch(err => {
+          console.warn('Real-time stock update failed, using mock data:', err);
+          runMockFallback(btn, btnText, sections);
         });
-        
-        // Clean up loading state
-        sections.forEach(sec => sec.classList.remove('updating-shimmer'));
-        btn.classList.remove('updating');
-        btnText.textContent = 'Update Prices';
-        
-        // Show toast
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 3000);
-      }, 1200);
     });
+
+    // Set initial date on page load
+    (function() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString('en-US', options);
+      document.getElementById('publish-date').textContent = `Current Stock Highlights — ${dateStr}`;
+    })();
   </script>
 </body>
 </html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Summarizer - Instant Book & Story Summaries with Traceability</title>
+  <meta name="description" content="Generate executive story summaries, plot breakdowns, themes, character maps, and full execution provenance trace given any Title and Author.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo-group">
+        <div class="logo-icon">📖</div>
+        <div class="logo-text">StorySummarizer</div>
+      </div>
+      <div class="header-actions">
+        <button id="view-saved-btn" class="btn">
+          <span>🔖</span> Library
+        </button>
+        <button id="theme-toggle-btn" class="btn" title="Toggle Theme">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero / Search Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">Instant Story & Book Summarizer</h1>
+      <p class="hero-subtitle">Enter any title and author to unlock executive plot breakdowns, themes, character dossiers, audio summaries, and full execution traceability.</p>
+
+      <div class="glass-panel">
+        <div class="search-grid">
+          <div class="input-group">
+            <label for="title-input" class="input-label">Story / Book Title *</label>
+            <input type="text" id="title-input" class="input-field" placeholder="e.g. 1984, Pride and Prejudice, Dune..." value="1984">
+          </div>
+          <div class="input-group">
+            <label for="author-input" class="input-label">Author (Optional)</label>
+            <input type="text" id="author-input" class="input-field" placeholder="e.g. George Orwell, Jane Austen..." value="George Orwell">
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center;">
+          <button id="summarize-btn" class="btn btn-primary" style="padding: 0.8rem 2.5rem; font-size: 1.05rem;">
+            <span>✨</span> Generate Summary
+          </button>
+        </div>
+
+        <div class="quick-picks">
+          <span class="quick-picks-label">Popular Classics:</span>
+          <div id="quick-pills" style="display:inline-flex; gap:0.4rem; flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- Depth Selector Tabs -->
+        <div class="depth-selector">
+          <button class="depth-tab" data-depth="quick">⚡ 1-Min Brief</button>
+          <button class="depth-tab active" data-depth="executive">🎯 Executive Summary</button>
+          <button class="depth-tab" data-depth="deep">🔬 Deep Dive</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results-section" style="display: none;" class="summary-container">
+      <div class="glass-panel">
+        <div class="story-header-card">
+          <div class="story-meta">
+            <div id="story-genre" class="badge">Dystopian Fiction</div>
+            <h2 id="story-title" class="story-title">1984</h2>
+            <div id="story-author" class="story-author">By George Orwell</div>
+            <div id="story-logline" class="story-logline">"In a totalitarian future..."</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:1rem; align-items:flex-end;">
+            <div class="story-stats">
+              <div class="stat-box">
+                <div id="stat-read-time" class="stat-value">4 min</div>
+                <div class="stat-label">Summary Time</div>
+              </div>
+              <div class="stat-box">
+                <div id="stat-saved-time" class="stat-value">380 min</div>
+                <div class="stat-label">Time Saved</div>
+              </div>
+              <div class="stat-box">
+                <div id="stat-source" class="stat-value">Curated</div>
+                <div class="stat-label">Engine</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button id="view-trace-btn" class="btn" style="border-color:var(--accent-secondary); color:var(--accent-secondary);"><span>🔍</span> View Trace</button>
+              <button id="save-btn" class="btn"><span>🤍</span> Save Summary</button>
+              <button id="export-btn" class="btn"><span>📥</span> Export (.TXT)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Player Bar -->
+        <div class="audio-player-bar" style="margin-top: 1.5rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <span style="font-size:1.4rem;">🎧</span>
+            <div>
+              <div style="font-size:0.9rem; font-weight:700;">Audio Narrator</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Listen to this summary powered by SpeechSynthesis</div>
+            </div>
+          </div>
+
+          <div class="audio-controls">
+            <button id="play-audio-btn" class="btn btn-primary btn-sm">
+              <span id="audio-icon">🔊</span> <span id="audio-btn-text">Listen</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Body Breakdown Grid -->
+      <div class="content-grid">
+        <!-- Summary Text -->
+        <div class="glass-panel">
+          <h3 class="section-title"><span>📝</span> Plot Summary & Overview</h3>
+          <div id="summary-body-text" class="summary-text"></div>
+        </div>
+
+        <!-- Right Side Panel: Themes, Characters, Quotes -->
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          <!-- Themes -->
+          <div class="glass-panel">
+            <h3 class="section-title"><span>💡</span> Core Themes</h3>
+            <div id="themes-list"></div>
+          </div>
+
+          <!-- Characters -->
+          <div class="glass-panel">
+            <h3 class="section-title"><span>👤</span> Major Characters</h3>
+            <div id="characters-list"></div>
+          </div>
+
+          <!-- Key Quotes -->
+          <div class="glass-panel">
+            <h3 class="section-title"><span>💬</span> Notable Quotes</h3>
+            <div id="quotes-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Saved Library Modal Drawer -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-drawer">
+      <div class="modal-header">
+        <h3 style="font-family:var(--font-heading); font-size:1.4rem; font-weight:800;">🔖 Saved Library</h3>
+        <button id="close-modal-btn" class="btn btn-sm">✖</button>
+      </div>
+      <div id="saved-list-container"></div>
+    </div>
+  </div>
+
+  <!-- Traceability Modal Drawer -->
+  <div id="trace-modal-overlay" class="modal-overlay">
+    <div class="modal-drawer" style="max-width: 550px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-family:var(--font-heading); font-size:1.4rem; font-weight:800; color:var(--accent-secondary);">🔍 Execution Trace Log</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted);">Step-by-step summary generation provenance & reasoning pipeline</p>
+        </div>
+        <button id="close-trace-modal-btn" class="btn btn-sm">✖</button>
+      </div>
+      <div id="trace-confidence-header" style="margin-bottom:1rem; background:rgba(99,102,241,0.1); border:1px solid var(--border-color-glow); padding:0.75rem 1rem; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:0.9rem;">Trace Confidence Metric</span>
+        <span id="trace-confidence-score" class="badge" style="margin:0;">100%</span>
+      </div>
+      <div id="trace-timeline-container" class="trace-timeline"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Saved to library!</div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

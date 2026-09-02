@@ -366,7 +366,7 @@
               <span class="company-name">AI Hardware & Infrastructure</span>
             </td>
             <td><span class="ticker">NVDA</span></td>
-            <td class="price">$124.50</td>
+            <td class="price">$222.53</td>
             <td class="perf-val positive">+1.80%</td>
             <td class="perf-val negative">-2.50%</td>
             <td class="perf-val negative">-4.20%</td>
@@ -379,7 +379,7 @@
               <span class="company-name">Enterprise & Cloud computing</span>
             </td>
             <td><span class="ticker">MSFT</span></td>
-            <td class="price">$492.30</td>
+            <td class="price">$493.53</td>
             <td class="perf-val positive">+0.60%</td>
             <td class="perf-val positive">+14.80%</td>
             <td class="perf-val positive">+12.30%</td>
@@ -392,7 +392,7 @@
               <span class="company-name">Consumer Devices & Ecosystems</span>
             </td>
             <td><span class="ticker">AAPL</span></td>
-            <td class="price">$208.75</td>
+            <td class="price">$301.06</td>
             <td class="perf-val negative">-0.40%</td>
             <td class="perf-val negative">-7.20%</td>
             <td class="perf-val negative">-5.10%</td>
@@ -405,7 +405,7 @@
               <span class="company-name">Search & AI Hyper-scaler</span>
             </td>
             <td><span class="ticker">GOOGL</span></td>
-            <td class="price">$168.20</td>
+            <td class="price">$342.53</td>
             <td class="perf-val positive">+1.20%</td>
             <td class="perf-val positive">+3.50%</td>
             <td class="perf-val negative">-2.80%</td>
@@ -418,7 +418,7 @@
               <span class="company-name">E-Commerce & AWS Cloud</span>
             </td>
             <td><span class="ticker">AMZN</span></td>
-            <td class="price">$192.40</td>
+            <td class="price">$268.00</td>
             <td class="perf-val positive">+2.10%</td>
             <td class="perf-val positive">+15.20%</td>
             <td class="perf-val positive">+11.80%</td>
@@ -431,7 +431,7 @@
               <span class="company-name">Social Media & Ad Tech</span>
             </td>
             <td><span class="ticker">META</span></td>
-            <td class="price">$485.60</td>
+            <td class="price">$580.79</td>
             <td class="perf-val positive">+0.80%</td>
             <td class="perf-val positive">+7.10%</td>
             <td class="perf-val positive">+4.60%</td>
@@ -444,7 +444,7 @@
               <span class="company-name">EVs & Autonomous Systems</span>
             </td>
             <td><span class="ticker">TSLA</span></td>
-            <td class="price">$198.50</td>
+            <td class="price">$326.06</td>
             <td class="perf-val negative">-1.50%</td>
             <td class="perf-val negative">-4.80%</td>
             <td class="perf-val negative">-8.50%</td>
@@ -473,6 +473,55 @@
   </div>
 
   <script>
+    // Fallback randomized updater logic when server is offline
+    function runMockFallback(btn, btnText, container) {
+      setTimeout(() => {
+        // 1. Update date
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('en-US', options);
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('publish-date').textContent = `Core Tech Leaders Board — ${dateStr} at ${timeStr} (Offline Mock)`;
+        
+        // 2. Randomize prices and performance percentages
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+          const priceTd = row.querySelector('.price');
+          const perfTds = row.querySelectorAll('.perf-val'); // Get all performance columns
+          
+          let price = parseFloat(priceTd.textContent.replace('$', ''));
+          const dayVar = (Math.random() * 4 - 2) / 100; // -2% to +2%
+          let newPrice = price * (1 + dayVar);
+          priceTd.textContent = `$` + newPrice.toFixed(2);
+          
+          perfTds.forEach((td, idx) => {
+            let rangeMin, rangeMax;
+            if (idx === 0) { rangeMin = -2; rangeMax = 2; }
+            else if (idx === 1) { rangeMin = -5; rangeMax = 5; }
+            else if (idx === 2) { rangeMin = -10; rangeMax = 10; }
+            else if (idx === 3) { rangeMin = -15; rangeMax = 15; }
+            else { rangeMin = -20; rangeMax = 100; }
+            
+            const newVal = rangeMin + Math.random() * (rangeMax - rangeMin);
+            const isPositive = newVal >= 0;
+            td.textContent = (isPositive ? '+' : '') + newVal.toFixed(2) + '%';
+            td.className = `perf-val ${isPositive ? 'positive' : 'negative'}`;
+          });
+        });
+        
+        container.classList.remove('updating-shimmer');
+        btn.classList.remove('updating');
+        btnText.textContent = 'Update Board';
+        
+        const toast = document.getElementById('toast');
+        toast.querySelector('span').textContent = 'Magnificent 7 board updated (offline fallback)!';
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }, 1200);
+    }
+
     document.getElementById('update-button').addEventListener('click', function() {
       const btn = this;
       if (btn.classList.contains('updating')) return;
@@ -484,44 +533,79 @@
       const container = document.querySelector('.container');
       container.classList.add('updating-shimmer');
       
-      setTimeout(() => {
-        // 1. Update date
-        const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dateStr = now.toLocaleDateString('en-US', options);
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.getElementById('publish-date').textContent = `Core Tech Leaders Board — ${dateStr} at ${timeStr}`;
-        
-        // 2. Randomize prices and performance percentages
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-          const priceTd = row.querySelector('.price');
-          const dayTd = row.querySelector('.perf-val'); // Daily is first performance column
+      fetch('/api/mag7')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Server returned HTTP ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.status !== 'success') {
+            throw new Error(data.message || 'API reported failure');
+          }
           
-          let price = parseFloat(priceTd.textContent.replace('$', ''));
-          const dayVar = (Math.random() * 4 - 2) / 100; // -2% to +2%
-          let newPrice = price * (1 + dayVar);
-          priceTd.textContent = `$` + newPrice.toFixed(2);
+          // 1. Update date
+          const now = new Date();
+          const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const dateStr = now.toLocaleDateString('en-US', options);
+          const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          document.getElementById('publish-date').textContent = `Core Tech Leaders Board — ${dateStr} at ${timeStr}`;
           
-          const newDayVal = dayVar * 100;
-          const isPositive = newDayVal >= 0;
-          dayTd.textContent = (isPositive ? '+' : '') + newDayVal.toFixed(2) + '%';
-          dayTd.className = `perf-val ${isPositive ? 'positive' : 'negative'}`;
+          // 2. Populate table rows with the actual data
+          const rows = document.querySelectorAll('tbody tr');
+          data.stocks.forEach(s => {
+            let targetRow = null;
+            rows.forEach(row => {
+              const tickerSpan = row.querySelector('.ticker');
+              if (tickerSpan && tickerSpan.textContent.trim() === s.ticker) {
+                targetRow = row;
+              }
+            });
+            
+            if (targetRow) {
+              const priceTd = targetRow.querySelector('.price');
+              if (priceTd) {
+                priceTd.textContent = s.price.startsWith('$') ? s.price : '$' + s.price;
+              }
+              
+              const perfTds = targetRow.querySelectorAll('.perf-val');
+              const vals = [s.day, s.week, s.month, s.qtr, s.year];
+              
+              perfTds.forEach((td, idx) => {
+                const val = vals[idx];
+                td.textContent = val;
+                
+                const isPositive = !val.startsWith('-');
+                td.className = `perf-val ${isPositive ? 'positive' : 'negative'}`;
+              });
+            }
+          });
+          
+          container.classList.remove('updating-shimmer');
+          btn.classList.remove('updating');
+          btnText.textContent = 'Update Board';
+          
+          const toast = document.getElementById('toast');
+          toast.querySelector('span').textContent = 'Magnificent 7 board updated successfully!';
+          toast.classList.add('show');
+          setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        })
+        .catch(err => {
+          console.warn('Real-time stock update failed, using mock data:', err);
+          runMockFallback(btn, btnText, container);
         });
-        
-        // Clean up loading state
-        container.classList.remove('updating-shimmer');
-        btn.classList.remove('updating');
-        btnText.textContent = 'Update Board';
-        
-        // Show toast
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 3000);
-      }, 1200);
     });
+
+    // Set initial date on page load
+    (function() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString('en-US', options);
+      document.getElementById('publish-date').textContent = `Core Tech Leaders Board — ${dateStr}`;
+    })();
   </script>
 </body>
 </html>

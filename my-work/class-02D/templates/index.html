@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Travel Itinerary Planner | Autonomous Multi-Agent Pipeline</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AI Travel Itinerary Planner</h1>
+      <p>Autonomous Multi-Agent Vacation Planning Pipeline (Parallel Discovery & Iterative Loop Optimization)</p>
+    </header>
+
+    <div class="app-grid">
+      <!-- Input Sidebar Form -->
+      <div class="glass-panel">
+        <h2 style="font-size: 1.2rem; margin-bottom: 1.25rem;">Trip Preferences</h2>
+        <form id="itineraryForm">
+          <div class="form-group">
+            <label for="destination">Destination City & Country</label>
+            <input type="text" id="destination" class="form-control" value="Kyoto, Japan" required>
+          </div>
+
+          <div class="form-group">
+            <label for="days">Duration (Days)</label>
+            <input type="number" id="days" class="form-control" min="1" max="14" value="5" required>
+          </div>
+
+          <div class="form-group">
+            <label for="budget">Total Budget ($ USD)</label>
+            <input type="number" id="budget" class="form-control" min="100" max="50000" step="50" value="2000" required>
+          </div>
+
+          <div class="form-group">
+            <label for="interests">Interests (Comma separated)</label>
+            <input type="text" id="interests" class="form-control" value="Historic Culture, Food & Dining, Scenic Views">
+          </div>
+
+          <button type="submit" class="btn-primary" id="generateBtn">
+            Generate AI Itinerary
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Area -->
+      <div class="glass-panel">
+        <!-- Pipeline Stepper Status -->
+        <div class="pipeline-stepper">
+          <div class="step-item active" id="step1">
+            <span class="step-badge">1</span>
+            <span>Parallel Discovery</span>
+          </div>
+          <div class="step-item" id="step2">
+            <span class="step-badge">2</span>
+            <span>Loop Optimization</span>
+          </div>
+          <div class="step-item" id="step3">
+            <span class="step-badge">3</span>
+            <span>Final Itinerary</span>
+          </div>
+        </div>
+
+        <!-- Feedback Banner -->
+        <div id="feedbackContainer" style="display: none;" class="feedback-badge"></div>
+
+        <!-- Tabs Header -->
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('timelineTab')">Day Schedule</button>
+          <button class="tab-btn" onclick="switchTab('optionsTab')">Flight & Hotel</button>
+          <button class="tab-btn" onclick="switchTab('summaryTab')">Cost Breakdown</button>
+          <button class="tab-btn" onclick="switchTab('logsTab')">Pipeline Logs</button>
+        </div>
+
+        <!-- Tab 1: Day Schedule Timeline -->
+        <div id="timelineTab" class="tab-content active">
+          <div id="timelineContainer">
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">
+              Fill in your trip preferences and click "Generate AI Itinerary" to activate the multi-agent pipeline.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tab 2: Flight & Hotel Options -->
+        <div id="optionsTab" class="tab-content">
+          <div id="optionsContainer">
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No research generated yet.</p>
+          </div>
+        </div>
+
+        <!-- Tab 3: Cost Breakdown -->
+        <div id="summaryTab" class="tab-content">
+          <div class="cost-summary-grid" id="summaryGrid">
+            <div class="summary-card">
+              <h4>Flight Cost</h4>
+              <div class="val" id="flightCostVal">$0.00</div>
+            </div>
+            <div class="summary-card">
+              <h4>Hotel Total</h4>
+              <div class="val" id="hotelCostVal">$0.00</div>
+            </div>
+            <div class="summary-card">
+              <h4>Activities Total</h4>
+              <div class="val" id="activitiesCostVal">$0.00</div>
+            </div>
+            <div class="summary-card">
+              <h4>Total Estimated</h4>
+              <div class="val" id="totalCostVal" style="color: var(--accent-indigo);">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Pipeline Event Logs -->
+        <div id="logsTab" class="tab-content">
+          <div class="log-container" id="logContainer">
+            <p style="color: var(--text-muted); text-align: center; padding: 2rem;">Pipeline event logs will appear here live during generation.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    document.getElementById('itineraryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('generateBtn');
+      btn.innerText = "Running Agents Pipeline...";
+      btn.disabled = true;
+
+      // Update stepper
+      document.getElementById('step1').classList.add('active');
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step3').classList.remove('active');
+
+      const payload = {
+        destination: document.getElementById('destination').value,
+        days: parseInt(document.getElementById('days').value),
+        budget: parseFloat(document.getElementById('budget').value),
+        interests: document.getElementById('interests').value.split(',').map(s => s.trim()).filter(Boolean)
+      };
+
+      try {
+        const response = await fetch('/api/plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        renderResults(data);
+        await fetchLogs();
+
+        document.getElementById('step1').classList.remove('active');
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
+      } catch (err) {
+        alert("Pipeline Execution Error: " + err.message);
+      } finally {
+        btn.innerText = "Generate AI Itinerary";
+        btn.disabled = false;
+      }
+    });
+
+    function renderResults(state) {
+      const feedbackContainer = document.getElementById('feedbackContainer');
+      feedbackContainer.style.display = "block";
+      
+      if (state.budget_approved) {
+        feedbackContainer.className = "feedback-badge approved";
+        feedbackContainer.innerHTML = `<strong>✔ Budget Approved!</strong> Iterations: ${state.iteration_count}. ${state.critic_feedback}`;
+      } else {
+        feedbackContainer.className = "feedback-badge warning";
+        feedbackContainer.innerHTML = `<strong>⚠️ Budget Alert!</strong> Iterations: ${state.iteration_count}. ${state.critic_feedback}`;
+      }
+
+      // Render Timeline
+      const itin = state.current_itinerary;
+      const timelineContainer = document.getElementById('timelineContainer');
+      
+      if (itin && itin.schedule) {
+        let html = '';
+        itin.schedule.forEach(day => {
+          html += `
+            <div class="day-card">
+              <div class="day-header">
+                <div class="day-title">Day ${day.day}: ${day.theme}</div>
+                <span style="font-size: 0.8rem; background: rgba(0,242,254,0.15); color: var(--accent-cyan); padding: 0.2rem 0.6rem; border-radius: 20px;">
+                  📍 ${day.neighborhood}
+                </span>
+              </div>
+          `;
+          day.events.forEach(evt => {
+            html += `
+              <div class="event-item">
+                <div class="event-time">${evt.time}</div>
+                <div class="event-details">
+                  <h5>${evt.title}</h5>
+                  <p>${evt.description}</p>
+                </div>
+                <div class="event-cost">${evt.estimated_cost > 0 ? '$' + evt.estimated_cost.toFixed(2) : 'Free'}</div>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        });
+        timelineContainer.innerHTML = html;
+      }
+
+      // Summary Breakdown
+      if (itin) {
+        document.getElementById('flightCostVal').innerText = '$' + (itin.flight_cost || 0).toFixed(2);
+        document.getElementById('hotelCostVal').innerText = '$' + (itin.hotel_cost_total || 0).toFixed(2);
+        document.getElementById('activitiesCostVal').innerText = '$' + (itin.activities_cost_total || 0).toFixed(2);
+        document.getElementById('totalCostVal').innerText = '$' + (itin.total_estimated_cost || 0).toFixed(2);
+      }
+
+      // Options Tab
+      const raw = state.raw_research;
+      const optionsContainer = document.getElementById('optionsContainer');
+      let optionsHtml = '<h3 style="font-size: 1rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">Selected Flight</h3>';
+      
+      if (itin.selected_flight) {
+        const sf = itin.selected_flight;
+        optionsHtml += `
+          <div class="day-card" style="margin-bottom: 1.5rem;">
+            <strong>${sf.airline}</strong> (${sf.flight_number}) - Route: ${sf.route}<br>
+            Tier: ${sf.tier} | Duration: ${sf.duration} | Roundtrip: <strong>$${sf.round_trip_cost.toFixed(2)}</strong>
+          </div>
+        `;
+      }
+
+      optionsHtml += '<h3 style="font-size: 1rem; color: var(--accent-cyan); margin-bottom: 0.75rem;">Selected Lodging</h3>';
+      if (itin.selected_hotel) {
+        const sh = itin.selected_hotel;
+        optionsHtml += `
+          <div class="day-card">
+            <strong>${sh.name}</strong> - Rating: ⭐ ${sh.rating}<br>
+            Tier: ${sh.tier} | Nightly Rate: <strong>$${sh.nightly_rate.toFixed(2)}</strong> | Amenities: ${sh.amenities.join(', ')}
+          </div>
+        `;
+      }
+      optionsContainer.innerHTML = optionsHtml;
+    }
+
+    async function fetchLogs() {
+      try {
+        const res = await fetch('/api/events');
+        const logs = await res.json();
+        const container = document.getElementById('logContainer');
+        let html = '';
+        logs.forEach(log => {
+          html += `
+            <div class="log-entry">
+              <span class="log-time">[${log.formatted_time}]</span>
+              <span class="log-agent">${log.agent}</span>
+              <span class="log-event">${log.event_type}</span>
+              <span style="color: var(--text-muted);">${JSON.stringify(log.details)}</span>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch(e) {
+        console.error("Error fetching logs", e);
+      }
+    }
+  </script>
+</body>
+</html>
