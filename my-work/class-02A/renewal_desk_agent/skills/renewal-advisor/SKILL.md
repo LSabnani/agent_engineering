@@ -1,6 +1,6 @@
 ---
 name: renewal-advisor
-description: Helps evaluate WidgetWare enterprise software renewals. Handles discount approval routing, renewal process timelines, risk escalations, and renewal brief generation. Use when analyzing renewal requests, discount eligibility, auto-renewal changes, compliance or recovery time commitments, or generating renewal approval briefs with deterministic quote calculations.
+description: Helps evaluate WidgetWare enterprise software renewals. Handles discount approval routing, renewal process timing and schedules, risk escalations, and renewal brief generation. Do not use for general software troubleshooting or technical support. Use when analyzing renewal requests, discount eligibility, auto-renewal changes, compliance or recovery time commitments, or generating renewal approval briefs with deterministic quote calculations.
 ---
 
 # Renewal Advisor
