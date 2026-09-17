@@ -440,20 +440,38 @@ if (navStoryModeBtn && navGtmModeBtn) {
   });
 }
 
+// GTM Pipeline State
+let activeGTMCompanyKey = 'apple-vs-samsung';
+let activeGTMScenarioMode = 'balanced'; // 'balanced' | 'low-cost' | 'all-out'
+let currentGTMResult = null;
+
+const gtmScenarioPills = document.querySelectorAll('#gtm-scenario-pills .depth-tab');
+
 if (gtmPresetPills) {
   gtmPresetPills.forEach(pill => {
     pill.addEventListener('click', () => {
       gtmPresetPills.forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       activeGTMCompanyKey = pill.getAttribute('data-company');
-      handleGTMSimulation(activeGTMCompanyKey);
+      handleGTMSimulation(activeGTMCompanyKey, activeGTMScenarioMode);
+    });
+  });
+}
+
+if (gtmScenarioPills) {
+  gtmScenarioPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      gtmScenarioPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeGTMScenarioMode = pill.getAttribute('data-scenario');
+      handleGTMSimulation(activeGTMCompanyKey, activeGTMScenarioMode);
     });
   });
 }
 
 if (runGtmBtn) {
   runGtmBtn.addEventListener('click', () => {
-    handleGTMSimulation(activeGTMCompanyKey);
+    handleGTMSimulation(activeGTMCompanyKey, activeGTMScenarioMode);
   });
 }
 
@@ -473,10 +491,10 @@ if (exportGtmBtn) {
   });
 }
 
-function handleGTMSimulation(companyKey = 'apple-vs-samsung') {
-  currentGTMResult = runRedVsGreenSimulation(companyKey);
+function handleGTMSimulation(companyKey = 'apple-vs-samsung', scenarioMode = 'balanced') {
+  currentGTMResult = runRedVsGreenSimulation(companyKey, scenarioMode);
   renderGTMResults(currentGTMResult);
-  showToast(`Ran Red vs Green GTM Simulation for ${currentGTMResult.greenCompany} vs ${currentGTMResult.redCompany}!`);
+  showToast(`Ran Red vs Green Simulation (${scenarioMode.toUpperCase()}) for ${currentGTMResult.greenCompany} vs ${currentGTMResult.redCompany}!`);
 }
 
 function renderGTMResults(res) {

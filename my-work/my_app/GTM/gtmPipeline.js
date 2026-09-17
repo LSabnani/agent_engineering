@@ -107,7 +107,85 @@ export const COMPETITOR_MARKET_DATABASE = {
       redBrandSentiment: 'Strong hardware loyalty, but higher susceptibility to switching if hardware pricing shifts'
     },
 
-    // Red Team Offensive Strategies (Full-Information Attack Simulation)
+    // Attack Scenarios: Low-Cost Targeted vs. All-Out Blitz
+    attackScenarios: {
+      lowCost: {
+        scenarioTitle: 'Low-Cost Targeted Attack Scenario',
+        totalBudgetBillions: 1.2,
+        executionTimeframeMonths: '3 - 6 months',
+        avgSuccessProbability: 68.5,
+        greenDefensibilityScore: 79.2,
+        strategies: [
+          {
+            id: 'low-1',
+            title: 'Open-Source Galaxy AI SDK for Android Developers',
+            summary: 'Release free Galaxy AI API & NPU SDKs for top 10,000 Android app developers, bypassing expensive chip fabrication costs.',
+            probabilityOfSuccess: 72,
+            costBillions: 0.4,
+            executionTimeMonths: 4,
+            feasibilityScore: 9,
+            redAdvantage: 'Software API distribution with near-zero marginal hardware cost.',
+            greenCountermeasure: 'Apple expands CoreML and Swift AI framework grants.'
+          },
+          {
+            id: 'low-2',
+            title: 'Surgical Trade-In Top-Up for iPhone Switchers',
+            summary: 'Offer a targeted $300 trade-in credit top-up specifically for iPhone switchers purchasing Galaxy FE models, funded by internal display margin.',
+            probabilityOfSuccess: 65,
+            costBillions: 0.8,
+            executionTimeMonths: 3,
+            feasibilityScore: 9,
+            redAdvantage: 'High component margin absorbs trade-in promotional cost.',
+            greenCountermeasure: 'Apple matches trade-in values via Apple Card 0% financing.'
+          }
+        ]
+      },
+
+      allOut: {
+        scenarioTitle: 'All-Out Blitz Attack Scenario',
+        totalBudgetBillions: 12.5,
+        executionTimeframeMonths: '12 - 24 months',
+        avgSuccessProbability: 83.0,
+        greenDefensibilityScore: 62.7,
+        strategies: [
+          {
+            id: 'all-1',
+            title: 'Sub-$800 Mass-Market Foldable Fleet Launch',
+            summary: 'Flood retail and carrier channels with sub-$800 Z Fold/Flip models using 85% internal component subsidies to capture 15M+ premium iPhone users.',
+            probabilityOfSuccess: 88,
+            costBillions: 5.5,
+            executionTimeMonths: 12,
+            feasibilityScore: 8,
+            redAdvantage: 'Samsung controls 85%+ of global flexible OLED display manufacturing.',
+            greenCountermeasure: 'Apple deploys custom hinge patents and accelerates "iPhone Flip" launch.'
+          },
+          {
+            id: 'all-2',
+            title: 'Enterprise Multi-Device Hardware Bundle Subsidies',
+            summary: 'Subsidize Knox Security + Galaxy Books + Tab S tablets at 40% below Mac/iPad fleet TCO with 3-year buyback guarantees.',
+            probabilityOfSuccess: 82,
+            costBillions: 4.0,
+            executionTimeMonths: 9,
+            feasibilityScore: 9,
+            redAdvantage: 'Broad B2B hardware matrix and customizable Android enterprise policy.',
+            greenCountermeasure: 'Apple expands Apple Business Essentials with zero-touch deployment.'
+          },
+          {
+            id: 'all-3',
+            title: 'Global Retail & Carrier Exclusive Rebate Lockout',
+            summary: 'Deploy $3.0B in carrier shelf-space incentives across US/EU/Asia carriers to mandate 50%+ front-of-store Galaxy AI placement.',
+            probabilityOfSuccess: 79,
+            costBillions: 3.0,
+            executionTimeMonths: 18,
+            feasibilityScore: 8,
+            redAdvantage: 'Deep relationships with global telecom operators.',
+            greenCountermeasure: 'Apple leverages exclusive Apple Store retail network and carrier minimum quotas.'
+          }
+        ]
+      }
+    },
+
+    // Red Team Offensive Strategies (Balanced Baseline Simulation)
     redTeamStrategies: [
       {
         id: 'strat-1',
@@ -198,20 +276,36 @@ export const COMPETITOR_MARKET_DATABASE = {
     },
 
     headToHead: {
-      greenProduct: 'Microsoft Azure AI & Copilot 365',
+      greenProduct: 'Microsoft Azure AI & M365 Copilot',
       greenProductRevenue: '$110.0B',
-      redProduct: 'Google Cloud (GCP) & Gemini Enterprise',
+      greenSpecs: {
+        display: 'Native M365 Desktop Apps (Word, Excel, PPT, Teams) & Web Canvas',
+        chipset: 'Nvidia H100/H200 Superclusters + Custom Azure Maia 100 AI Chips',
+        memoryStorage: 'Enterprise Entra ID Data Isolation | Private Tenant Vault',
+        cameraSystem: 'Copilot Studio Agent Orchestration + OpenAI GPT-4o / O1 Models',
+        batteryCharging: 'High-Throughput Global Azure Hyperscale Data Centers (60+ Regions)',
+        specialFeatures: 'Entra ID Single Sign-On, Purview Compliance, GitHub Copilot Integration'
+      },
+      redProduct: 'Google Cloud Platform (GCP) & Gemini Enterprise',
       redProductRevenue: '$40.5B',
-      customerComparisonPair: 'Enterprise Cloud AI Platforms & Productivity Tools',
-      verdict: 'Microsoft holds massive lead in enterprise seat conversion, but Google leads in raw multimodal AI model capabilities.'
+      redSpecs: {
+        display: 'Google Workspace Cloud Suite (Docs, Sheets, Slides, Meet) & Vertex AI Console',
+        chipset: 'Custom Google TPU v5p / TPU v6e Trillium AI Supercomputers',
+        memoryStorage: 'Workspace Admin IAM Isolation | BeyondCorp Zero-Trust Vault',
+        cameraSystem: 'Gemini 1.5 Pro (2 Million Token Context Window) + Imagen 3 Multimodal',
+        batteryCharging: '24/7 Carbon-Free Energy Global GCP Hyperscale Infrastructure',
+        specialFeatures: 'Google Search Live Index Grounding, Android Workspace Integration, BigQuery AI'
+      },
+      customerComparisonPair: 'Enterprise Cloud AI Platforms & Office Productivity Suites ($30/user/mo Tier)',
+      verdict: 'Microsoft holds an entrenched lead in Fortune 500 enterprise seat distribution ($110B vs $40.5B), but Google leads in raw multimodal AI context window length (2M tokens vs 128K tokens) and in-house TPU chip cost efficiency.'
     },
 
     ipPortfolio: {
-      greenStrengths: ['Enterprise Identity (Active Directory / Entra)', 'Windows & Office File Format Standards', 'OpenAI Exclusive License IP'],
-      redStrengths: ['Transformer Architecture Foundation Patents', 'Custom TPU v5/v6 Hardware IP', 'Web Indexing & Search Ranking Algorithms'],
+      greenStrengths: ['Enterprise Identity (Active Directory / Entra ID)', 'Windows & Office OpenXML File Format Standards', 'OpenAI Exclusive Commercial IP License'],
+      redStrengths: ['Transformer Neural Network Foundation Patents', 'Custom TPU v5/v6 Silicon Hardware IP', 'Global Web Indexing & Real-Time Search Grounding'],
       unvettedAreas: [
-        'Autonomous AI Agent orchestration protocols',
-        'Copyright liabilities regarding web training data corpora'
+        'Autonomous AI Agent multi-step orchestration security',
+        'Copyright & training data liabilities across public web crawl corpora'
       ]
     },
 
@@ -219,7 +313,73 @@ export const COMPETITOR_MARKET_DATABASE = {
       greenRetentionRate: '95.2%',
       redRetentionRate: '88.1%',
       greenBrandSentiment: 'Irreplaceable operational backbone for Global 2000 enterprises',
-      redBrandSentiment: 'Essential consumer brand with expanding enterprise developer affinity'
+      redBrandSentiment: 'Essential consumer search brand with expanding cloud developer affinity'
+    },
+
+    attackScenarios: {
+      lowCost: {
+        scenarioTitle: 'Low-Cost Targeted Attack Scenario',
+        totalBudgetBillions: 1.5,
+        executionTimeframeMonths: '2 - 4 months',
+        avgSuccessProbability: 72.5,
+        greenDefensibilityScore: 77.4,
+        strategies: [
+          {
+            id: 'ms-low-1',
+            title: 'Free Developer Gemini API Tokens',
+            summary: 'Provide $10,000 in monthly Gemini 1.5 Pro API credits for top 50,000 GitHub developers to divert AI traffic from Azure OpenAI.',
+            probabilityOfSuccess: 70,
+            costBillions: 0.5,
+            executionTimeMonths: 2,
+            feasibilityScore: 9,
+            redAdvantage: 'Software API distribution leveraging internal TPU capacity.',
+            greenCountermeasure: 'Microsoft expands Founder Hub credits and Azure GitHub Enterprise perks.'
+          },
+          {
+            id: 'ms-low-2',
+            title: 'Workspace AI K-12 & Startup Free Tier',
+            summary: 'Bundle Gemini AI completely free for K-12 school districts and startups under 20 employees.',
+            probabilityOfSuccess: 75,
+            costBillions: 1.0,
+            executionTimeMonths: 4,
+            feasibilityScore: 9,
+            redAdvantage: 'Dominant market share in K-12 Chromebook ecosystem.',
+            greenCountermeasure: 'Microsoft counters with free M365 A1 student subscriptions.'
+          }
+        ]
+      },
+
+      allOut: {
+        scenarioTitle: 'All-Out Blitz Attack Scenario',
+        totalBudgetBillions: 14.0,
+        executionTimeframeMonths: '12 - 24 months',
+        avgSuccessProbability: 84.0,
+        greenDefensibilityScore: 62.2,
+        strategies: [
+          {
+            id: 'ms-all-1',
+            title: 'Zero-Cost Workspace Gemini Bundling for 3 Years',
+            summary: 'Offer full enterprise Gemini AI free inside Google Workspace for 3 years for any enterprise switching off M365 Copilot ($30/user/mo).',
+            probabilityOfSuccess: 86,
+            costBillions: 7.5,
+            executionTimeMonths: 6,
+            feasibilityScore: 9,
+            redAdvantage: 'Google TPU infrastructure lowers AI inference costs by 40% vs Azure.',
+            greenCountermeasure: 'Microsoft enforces deep M365 security & Entra ID compliance locks.'
+          },
+          {
+            id: 'ms-all-2',
+            title: 'TPU Cloud Compute Price War (50% Off Azure)',
+            summary: 'Slash GCP TPU v5e/v6e compute pricing by 50% below Azure Nvidia H100/H200 instances for Fortune 500 AI model workloads.',
+            probabilityOfSuccess: 82,
+            costBillions: 6.5,
+            executionTimeMonths: 12,
+            feasibilityScore: 8,
+            redAdvantage: 'Google owns custom TPU foundry IP and optical circuit switches.',
+            greenCountermeasure: 'Microsoft scales custom Azure Maia 100 silicon deployment.'
+          }
+        ]
+      }
     },
 
     redTeamStrategies: [
@@ -244,6 +404,191 @@ export const COMPETITOR_MARKET_DATABASE = {
         feasibilityScore: 9,
         redAdvantage: 'Superior TPU v5e cost-efficiency for LLM training.',
         greenCountermeasure: 'Microsoft expands Founder Hub credits and Azure GitHub integration.'
+      }
+    ]
+  },
+
+  'google-vs-meta': {
+    greenCompany: 'Alphabet / Google',
+    greenSymbol: 'GOOGL',
+    redCompany: 'Meta Platforms',
+    redSymbol: 'META',
+    sector: 'Digital Advertising, AI Foundation Models & Social Networks',
+    marketOverview: 'Google (Green) commands global search advertising, YouTube video ads, custom TPU silicon, and cloud AI infrastructure. Meta (Red) controls the global social graph (Facebook, Instagram, WhatsApp, Threads), high-margin ad targeting (82.1% Gross Margin), and leads open-source AI with the Llama 3 ecosystem.',
+    
+    greenFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [257.6, 282.8, 307.4, 340.0, 375.2],
+      grossMarginPct: [56.9, 55.6, 56.8, 57.5, 58.2],
+      freeCashFlow: [67.0, 60.0, 69.5, 76.0, 84.5],
+      cashWarChest: 110.9,
+      rdExpenses: 45.4,
+      netProfitMargin: 24.1
+    },
+    redFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [117.9, 116.6, 134.9, 160.2, 182.5],
+      grossMarginPct: [80.3, 77.9, 80.8, 81.5, 82.1],
+      freeCashFlow: [38.4, 19.0, 43.0, 51.2, 58.0],
+      cashWarChest: 65.2,
+      rdExpenses: 38.5,
+      netProfitMargin: 29.8
+    },
+
+    greenIRInsights: {
+      leadingProducts: ['Google Search & Performance Max', 'YouTube Video Ads', 'Google Cloud (GCP)', 'Gemini 1.5 Pro AI'],
+      strengths: [
+        'Monopoly in intent-based commercial search intent',
+        'In-house TPU silicon reducing AI inference power costs',
+        '2B+ logged-in user accounts across Android, Gmail, & Maps'
+      ],
+      weaknesses: [
+        'High reliance on search ad revenue vulnerable to LLM direct answers',
+        'Higher TAC (Traffic Acquisition Cost) payouts to Apple ($20B+/yr)'
+      ]
+    },
+    redIRInsights: {
+      leadingProducts: ['Meta Advantage+ AI Ads', 'Instagram Reels Ads', 'WhatsApp Business Messaging', 'Llama 3 Open-Source AI'],
+      strengths: [
+        'Industry-leading 82.1% Gross Margin driven by social ad automation',
+        'Massive 3.27 Billion Daily Active People (DAP) engagement',
+        'Open-source Llama model ecosystem creating de-facto developer standard'
+      ],
+      weaknesses: [
+        'Lack of public cloud infrastructure revenue stream',
+        'High CapEx exposure in Reality Labs hardware & VR/AR R&D'
+      ]
+    },
+
+    headToHead: {
+      greenProduct: 'Google Search Ads & Gemini 1.5 Pro',
+      greenProductRevenue: '$237.8B',
+      greenSpecs: {
+        display: 'Google Search Results, YouTube Video Player, & Google Ads Manager',
+        chipset: 'Custom Google TPU v5p / TPU v6e Trillium AI Supercomputers',
+        memoryStorage: '2 Billion Logged-In User Profiles | Google Cloud BigQuery Vault',
+        cameraSystem: 'Gemini 1.5 Pro (2 Million Token Context Window) + Imagen 3',
+        batteryCharging: 'Global GCP Data Center Hyperscale Infrastructure',
+        specialFeatures: 'Search Intent Targeting, Performance Max AI Campaigns, YouTube Shorts Ads'
+      },
+      redProduct: 'Meta Advantage+ Ads & Llama 3.1 405B',
+      redProductRevenue: '$175.2B',
+      redSpecs: {
+        display: 'Facebook Feed, Instagram Reels, WhatsApp Direct, & Threads Canvas',
+        chipset: '600,000+ Nvidia H100/H200 GPUs + Custom Meta MTIA v2 AI Silicon',
+        memoryStorage: '3.27 Billion Daily Active Profiles | Open-Source PyTorch Pipeline',
+        cameraSystem: 'Llama 3.1 / 3.2 Open Weights (405B Parameters) + Meta AI Assistant',
+        batteryCharging: 'Custom Meta Hyperscale AI Data Center Clusters',
+        specialFeatures: 'Social Graph AI Targeting, Advantage+ Automated Ad Creative, WhatsApp Click-to-Message'
+      },
+      customerComparisonPair: 'Digital Advertising Platforms & Generative AI Model Architectures',
+      verdict: 'Google holds a total revenue lead ($237.8B vs $175.2B) driven by commercial search intent, but Meta delivers higher Gross Margins (82.1% vs 58.2%) and disrupts Google Gemini by distributing state-of-the-art open-source Llama 3 model weights for free.'
+    },
+
+    ipPortfolio: {
+      greenStrengths: ['Search Ranking & PageRank Patents', 'Transformer Neural Network Core Patents', 'Custom TPU Hardware & Optical Circuit Switch IP'],
+      redStrengths: ['Social Graph Relationship Algorithms', 'PyTorch Open AI Framework Ownership', 'Llama Open Model Weights IP & Custom MTIA Accelerators'],
+      unvettedAreas: [
+        'Open-source model weight safety vs centralized API cloud hosting',
+        'AI-generated ad copy and visual asset copyright compliance'
+      ]
+    },
+
+    loyalty: {
+      greenRetentionRate: '91.5%',
+      redRetentionRate: '89.4%',
+      greenBrandSentiment: 'Essential global utility for information retrieval and digital marketing',
+      redBrandSentiment: 'Unmatched daily social habit for 3.27B users and dominant developer affinity via Llama'
+    },
+
+    attackScenarios: {
+      lowCost: {
+        scenarioTitle: 'Low-Cost Targeted Attack Scenario',
+        totalBudgetBillions: 1.0,
+        executionTimeframeMonths: '2 - 4 months',
+        avgSuccessProbability: 74.0,
+        greenDefensibilityScore: 76.7,
+        strategies: [
+          {
+            id: 'meta-low-1',
+            title: 'Free Llama 3 API Plugin Distribution for PyTorch',
+            summary: 'Integrate native Llama 3 inference plugins into PyTorch (used by 80%+ AI developers), bypassing Google Cloud API friction.',
+            probabilityOfSuccess: 76,
+            costBillions: 0.4,
+            executionTimeMonths: 2,
+            feasibilityScore: 9,
+            redAdvantage: 'Meta owns PyTorch, the standard AI developer framework.',
+            greenCountermeasure: 'Google integrates TensorFlow and JAX native Gemini bindings.'
+          },
+          {
+            id: 'meta-low-2',
+            title: 'WhatsApp Click-to-Message Ad Subsidy',
+            summary: 'Offer a $200 ad credit for small businesses using WhatsApp AI automated customer service agents.',
+            probabilityOfSuccess: 72,
+            costBillions: 0.6,
+            executionTimeMonths: 4,
+            feasibilityScore: 9,
+            redAdvantage: '2B+ active WhatsApp messaging user base.',
+            greenCountermeasure: 'Google expands Business Messages inside Google Maps and Search.'
+          }
+        ]
+      },
+
+      allOut: {
+        scenarioTitle: 'All-Out Blitz Attack Scenario',
+        totalBudgetBillions: 11.0,
+        executionTimeframeMonths: '12 - 24 months',
+        avgSuccessProbability: 85.0,
+        greenDefensibilityScore: 61.8,
+        strategies: [
+          {
+            id: 'meta-all-1',
+            title: 'Free Llama 405B Model Weight Enterprise Subsidies',
+            summary: 'Provide free enterprise licensing, fine-tuning scripts, and MTIA hardware subsidies for Fortune 500 companies migrating off Google Gemini Cloud APIs.',
+            probabilityOfSuccess: 88,
+            costBillions: 6.0,
+            executionTimeMonths: 12,
+            feasibilityScore: 9,
+            redAdvantage: 'Destroys Google API cloud margin by open-sourcing frontier AI weights.',
+            greenCountermeasure: 'Google leverages 2M token context window and GCP infrastructure SLA guarantees.'
+          },
+          {
+            id: 'meta-all-2',
+            title: 'Meta Advantage+ Performance Guarantee Blitz',
+            summary: 'Guarantee a 30% higher ROAS (Return on Ad Spend) for e-commerce advertisers switching budget from Google Performance Max to Advantage+.',
+            probabilityOfSuccess: 82,
+            costBillions: 5.0,
+            executionTimeMonths: 9,
+            feasibilityScore: 8,
+            redAdvantage: 'Meta 82.1% Gross Margin absorbs short-term performance gap guarantees.',
+            greenCountermeasure: 'Google expands YouTube Shorts shoppable video ad integrations.'
+          }
+        ]
+      }
+    },
+
+    redTeamStrategies: [
+      {
+        id: 'strat-1',
+        title: 'Free Llama Model Weight Enterprise Subsidies',
+        summary: 'Provide free enterprise licensing and fine-tuning scripts for Fortune 500 companies migrating off Google Gemini Cloud APIs.',
+        probabilityOfSuccess: 88,
+        costBillions: 6.0,
+        executionTimeMonths: 12,
+        feasibilityScore: 9,
+        redAdvantage: 'Destroys Google API cloud margin by open-sourcing frontier AI weights.',
+        greenCountermeasure: 'Google leverages 2M token context window and GCP infrastructure SLA guarantees.'
+      },
+      {
+        id: 'strat-2',
+        title: 'Meta Advantage+ Performance Guarantee Blitz',
+        summary: 'Guarantee a 30% higher ROAS for e-commerce advertisers switching budget from Google Performance Max to Advantage+.',
+        probabilityOfSuccess: 82,
+        costBillions: 5.0,
+        executionTimeMonths: 9,
+        feasibilityScore: 8,
+        redAdvantage: 'Meta 82.1% Gross Margin absorbs short-term performance gap guarantees.',
+        greenCountermeasure: 'Google expands YouTube Shorts shoppable video ad integrations.'
       }
     ]
   }
@@ -297,25 +642,38 @@ export function runGTMAgent(companyKey) {
 /**
  * Execute Red Team vs. Green Team Full Simulation Pipeline Engine
  */
-export function runRedVsGreenSimulation(companyKey = 'apple-vs-samsung') {
+export function runRedVsGreenSimulation(companyKey = 'apple-vs-samsung', scenarioMode = 'balanced') {
   const startTime = performance.now();
   const dataset = COMPETITOR_MARKET_DATABASE[companyKey] || COMPETITOR_MARKET_DATABASE['apple-vs-samsung'];
 
+  let activeStrategies = dataset.redTeamStrategies;
+  let activeScenarioMeta = null;
+
+  if (scenarioMode === 'low-cost' && dataset.attackScenarios?.lowCost) {
+    activeStrategies = dataset.attackScenarios.lowCost.strategies;
+    activeScenarioMeta = dataset.attackScenarios.lowCost;
+  } else if (scenarioMode === 'all-out' && dataset.attackScenarios?.allOut) {
+    activeStrategies = dataset.attackScenarios.allOut.strategies;
+    activeScenarioMeta = dataset.attackScenarios.allOut;
+  }
+
   const traceLog = [
-    { step: 1, name: 'Pipeline Initialization', detail: `Loaded competitor target matrix: Green (${dataset.greenCompany}) vs Red (${dataset.redCompany}).` },
+    { step: 1, name: 'Pipeline Initialization', detail: `Loaded competitor target matrix: Green (${dataset.greenCompany}) vs Red (${dataset.redCompany}) [Scenario Mode: ${scenarioMode.toUpperCase()}].` },
     { step: 2, name: 'Market Researcher Agent Ingestion', detail: `Ingested 5-year SEC/yfinance balance sheets, gross margins (${dataset.greenFinancials.grossMarginPct.slice(-1)[0]}% vs ${dataset.redFinancials.grossMarginPct.slice(-1)[0]}%), and IR transcripts.` },
     { step: 3, name: 'GTM Financial & War Chest Ingestion', detail: `Evaluated cash war chest ($${dataset.greenFinancials.cashWarChest}B vs $${dataset.redFinancials.cashWarChest}B) and free cash flow defensibility.` },
     { step: 4, name: 'IP Portfolio & Loyalty Vetting', detail: `Mapped IP strengths and identified unvetted areas: ${dataset.ipPortfolio.unvettedAreas.join('; ')}.` },
-    { step: 5, name: 'Red Team Offensive Strategy Generation', detail: `Synthesized ${dataset.redTeamStrategies.length} full-information Red Team attack vectors with success probability %, cost ($B), time (months), and feasibility.` },
+    { step: 5, name: 'Red Team Offensive Strategy Generation', detail: `Synthesized ${activeStrategies.length} attack vectors for scenario mode: "${scenarioMode.toUpperCase()}".` },
     { step: 6, name: 'Green Team Countermeasure Synthesis', detail: `Calculated defensive response protocols for each Red Team attack vector.` }
   ];
 
   // Calculate Overall Red Attack Score vs Green Defensibility Score
-  const avgRedSuccessProb = Math.round(
-    dataset.redTeamStrategies.reduce((acc, s) => acc + s.probabilityOfSuccess, 0) / dataset.redTeamStrategies.length
-  );
+  const avgRedSuccessProb = activeScenarioMeta 
+    ? activeScenarioMeta.avgSuccessProbability 
+    : Math.round(activeStrategies.reduce((acc, s) => acc + s.probabilityOfSuccess, 0) / activeStrategies.length);
   
-  const greenDefensibilityScore = Math.min(98, Math.max(60, 100 - (avgRedSuccessProb * 0.45)));
+  const greenDefensibilityScore = activeScenarioMeta 
+    ? activeScenarioMeta.greenDefensibilityScore 
+    : parseFloat((Math.min(98, Math.max(60, 100 - (avgRedSuccessProb * 0.45)))).toFixed(1));
   
   const totalLatencyMs = (performance.now() - startTime).toFixed(2);
   traceLog.push({
@@ -329,9 +687,12 @@ export function runRedVsGreenSimulation(companyKey = 'apple-vs-samsung') {
     redCompany: dataset.redCompany,
     sector: dataset.sector,
     marketOverview: dataset.marketOverview,
+    scenarioMode,
+    activeScenarioMeta,
+    attackScenarios: dataset.attackScenarios,
     marketResearcher: runMarketResearcherAgent(companyKey),
     gtmAnalysis: runGTMAgent(companyKey),
-    redTeamStrategies: dataset.redTeamStrategies,
+    redTeamStrategies: activeStrategies,
     overallMetrics: {
       avgRedSuccessProbability: avgRedSuccessProb,
       greenDefensibilityScore,

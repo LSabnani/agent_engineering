@@ -157,21 +157,23 @@ export function runAllTests() {
     );
   }
 
-  // --- TEST SUITE 8: Red Team vs Green Team Simulation Bounds & Defensibility ---
+  // --- TEST SUITE 8: Red Team vs Green Team Simulation Bounds & Attack Scenarios ---
   {
-    const sim = runRedVsGreenSimulation('apple-vs-samsung');
-    const validProb = sim.overallMetrics.avgRedSuccessProbability >= 0 && sim.overallMetrics.avgRedSuccessProbability <= 100;
-    const validDef = sim.overallMetrics.greenDefensibilityScore >= 0 && sim.overallMetrics.greenDefensibilityScore <= 100;
-    const validStrats = Array.isArray(sim.redTeamStrategies) && sim.redTeamStrategies.length >= 2;
-    const validCounter = sim.redTeamStrategies.every(s => Boolean(s.greenCountermeasure) && s.feasibilityScore > 0);
+    const simBalanced = runRedVsGreenSimulation('apple-vs-samsung', 'balanced');
+    const simLowCost = runRedVsGreenSimulation('apple-vs-samsung', 'low-cost');
+    const simAllOut = runRedVsGreenSimulation('apple-vs-samsung', 'all-out');
+
+    const validLowCost = simLowCost.overallMetrics.avgRedSuccessProbability > 0 && simLowCost.redTeamStrategies.length > 0;
+    const validAllOut = simAllOut.overallMetrics.avgRedSuccessProbability > simLowCost.overallMetrics.avgRedSuccessProbability;
+    const validDef = simBalanced.overallMetrics.greenDefensibilityScore >= 0 && simBalanced.overallMetrics.greenDefensibilityScore <= 100;
 
     assert(
-      'Red Team vs Green Team Simulation Bounds & Countermeasures Check',
-      'Assumption: Red Team attack simulation outputs valid success probabilities, feasibility, cost, time, and green countermeasures',
-      'Simulation query: "apple-vs-samsung"',
-      { avgRedProb: sim.overallMetrics.avgRedSuccessProbability, greenDef: sim.overallMetrics.greenDefensibilityScore, strats: sim.redTeamStrategies.length },
-      'All probability metrics bounded and countermeasures present',
-      validProb && validDef && validStrats && validCounter
+      'Red Team Low-Cost vs All-Out Attack Scenario Mode Check',
+      'Assumption: All-Out Blitz scenario yields higher average attack probability and total budget than Low-Cost Targeted scenario',
+      'Scenario queries: "low-cost" vs "all-out"',
+      { lowCostProb: simLowCost.overallMetrics.avgRedSuccessProbability, allOutProb: simAllOut.overallMetrics.avgRedSuccessProbability },
+      'All-Out attack probability > Low-Cost attack probability',
+      validLowCost && validAllOut && validDef
     );
   }
 

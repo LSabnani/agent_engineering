@@ -156,12 +156,22 @@
       <p class="hero-subtitle">Simulate full-information competitor attack vectors, financial war chest defensibility, patent coverage, and strategy probability modeling.</p>
 
       <div class="glass-panel" style="margin-bottom:2rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
           <div>
             <span class="quick-picks-label">Select Battle Face-Off:</span>
-            <div id="gtm-preset-pills" style="display:inline-flex; gap:0.5rem; flex-wrap:wrap;">
+            <div id="gtm-preset-pills" style="display:inline-flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem;">
               <button class="depth-tab active" data-company="apple-vs-samsung">🍏 Apple (Green) vs. 📱 Samsung (Red)</button>
               <button class="depth-tab" data-company="microsoft-vs-google">🪟 Microsoft (Green) vs. 🔍 Google (Red)</button>
+              <button class="depth-tab" data-company="google-vs-meta">🔍 Google (Green) vs. ♾️ Meta (Red)</button>
+            </div>
+            
+            <div style="margin-top:0.5rem;">
+              <span class="quick-picks-label">Attack Scenario Mode:</span>
+              <div id="gtm-scenario-pills" style="display:inline-flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="depth-tab active" data-scenario="balanced">🎯 Balanced Baseline</button>
+                <button class="depth-tab" data-scenario="low-cost">💵 Low-Cost Targeted</button>
+                <button class="depth-tab" data-scenario="all-out">🚀 All-Out Blitz</button>
+              </div>
             </div>
           </div>
           <button id="run-gtm-btn" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size:1.05rem;">
