@@ -12,8 +12,12 @@
     <!-- Header -->
     <header>
       <div class="logo-group">
-        <div class="logo-icon">📖</div>
-        <div class="logo-text">StorySummarizer</div>
+        <div class="logo-icon">⚔️</div>
+        <div class="logo-text">GTM & Story AI Suite</div>
+      </div>
+      <div class="mode-nav">
+        <button id="nav-story-mode" class="mode-btn active">📖 Story Summarizer</button>
+        <button id="nav-gtm-mode" class="mode-btn">⚔️ GTM Red vs Green AI</button>
       </div>
       <div class="header-actions">
         <button id="view-saved-btn" class="btn">
@@ -141,6 +145,154 @@
           <div class="glass-panel">
             <h3 class="section-title"><span>💬</span> Notable Quotes</h3>
             <div id="quotes-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GTM Red Team vs Green Team Pipeline Section -->
+    <section id="gtm-section" style="display: none;" class="hero-section">
+      <h1 class="hero-title">Red Team vs Green Team Competitor AI</h1>
+      <p class="hero-subtitle">Simulate full-information competitor attack vectors, financial war chest defensibility, patent coverage, and strategy probability modeling.</p>
+
+      <div class="glass-panel" style="margin-bottom:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+          <div>
+            <span class="quick-picks-label">Select Battle Face-Off:</span>
+            <div id="gtm-preset-pills" style="display:inline-flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="depth-tab active" data-company="apple-vs-samsung">🍏 Apple (Green) vs. 📱 Samsung (Red)</button>
+              <button class="depth-tab" data-company="microsoft-vs-google">🪟 Microsoft (Green) vs. 🔍 Google (Red)</button>
+            </div>
+          </div>
+          <button id="run-gtm-btn" class="btn btn-primary" style="padding: 0.8rem 2rem; font-size:1.05rem;">
+            <span>⚔️</span> Run Red vs Green Simulation
+          </button>
+        </div>
+      </div>
+
+      <div id="gtm-results-container" class="glass-panel">
+        <!-- Banner & Header -->
+        <div class="gtm-banner">
+          <div class="gtm-banner-grid">
+            <div class="team-card green">
+              <span class="green-tag">GREEN TEAM (DEFENDER)</span>
+              <h2 id="gtm-green-title" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; margin:0.4rem 0;">Apple Inc.</h2>
+              <div id="gtm-green-overview" style="font-size:0.85rem; color:var(--text-secondary);">High-margin integrated hardware-software ecosystem.</div>
+            </div>
+            <div class="versus-badge">VS</div>
+            <div class="team-card red">
+              <span class="red-tag">RED TEAM (ATTACKER)</span>
+              <h2 id="gtm-red-title" style="font-family:var(--font-heading); font-size:1.6rem; font-weight:800; margin:0.4rem 0;">Samsung Electronics</h2>
+              <div id="gtm-red-overview" style="font-size:0.85rem; color:var(--text-secondary);">Vertically integrated display & chip hardware giant.</div>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <div style="font-size:0.8rem; color:var(--text-muted);">Defensibility Verdict</div>
+              <div id="gtm-verdict-title" style="font-family:var(--font-heading); font-size:1.2rem; font-weight:800; color:#10b981;">Green Team Defensible Dominance</div>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <div style="text-align:right;">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Green Defensibility</div>
+                <div id="gtm-defensibility-score" style="font-family:var(--font-heading); font-size:1.4rem; font-weight:800; color:#10b981;">72.5%</div>
+              </div>
+              <div style="text-align:right; margin-left:1rem;">
+                <div style="font-size:0.75rem; color:var(--text-muted);">Avg Red Attack Prob</div>
+                <div id="gtm-attack-score" style="font-family:var(--font-heading); font-size:1.4rem; font-weight:800; color:#ef4444;">76.0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-bottom:1.5rem;">
+          <button id="view-gtm-trace-btn" class="btn" style="border-color:var(--accent-secondary); color:var(--accent-secondary);"><span>🔍</span> View Pipeline Trace</button>
+          <button id="export-gtm-btn" class="btn btn-primary"><span>📥</span> Export GTM Report (.TXT)</button>
+        </div>
+
+        <!-- Financial War Chest & Head to Head Grid -->
+        <div class="gtm-grid-2">
+          <div class="gtm-stat-card">
+            <div class="gtm-stat-header">
+              <span>💰 Financial War Chest & FCF</span>
+              <span class="badge">SEC / Financial Data</span>
+            </div>
+            <div id="gtm-warchest-body" style="font-size:0.9rem; line-height:1.6;"></div>
+          </div>
+
+          <div class="gtm-stat-card">
+            <div class="gtm-stat-header">
+              <span>🥊 Product Head-to-Head</span>
+              <span class="badge">Customer Matrix</span>
+            </div>
+            <div id="gtm-headtohead-body" style="font-size:0.9rem; line-height:1.6;"></div>
+          </div>
+        </div>
+
+        <!-- IP Portfolio & Loyalty Cards -->
+        <div class="gtm-grid-2">
+          <div class="gtm-stat-card">
+            <div class="gtm-stat-header">
+              <span>🛡️ IP & Patent Portfolio Analysis</span>
+              <span class="badge">Patent Coverage</span>
+            </div>
+            <div id="gtm-ip-body" style="font-size:0.9rem; line-height:1.6;"></div>
+          </div>
+
+          <div class="gtm-stat-card">
+            <div class="gtm-stat-header">
+              <span>❤️ Product Loyalty & Retention</span>
+              <span class="badge">Customer Stickiness</span>
+            </div>
+            <div id="gtm-loyalty-body" style="font-size:0.9rem; line-height:1.6;"></div>
+          </div>
+        </div>
+
+        <!-- Red Team Offensive Strategies & War Games Simulation Table -->
+        <div class="gtm-stat-card" style="margin-bottom:1.5rem;">
+          <div class="gtm-stat-header">
+            <span>⚔️ Red Team Offensive Attack Vectors (Full-Information Simulation)</span>
+            <span class="red-tag">WAR GAMES SIMULATION</span>
+          </div>
+          <div class="gtm-table-container">
+            <table class="gtm-table">
+              <thead>
+                <tr>
+                  <th>Attack Strategy</th>
+                  <th>Feasibility (1-10)</th>
+                  <th>Cost ($B)</th>
+                  <th>Time (Mo)</th>
+                  <th>Success Prob</th>
+                  <th>Green Defensive Countermeasure</th>
+                </tr>
+              </thead>
+              <tbody id="gtm-strategies-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Financial Projections Table -->
+        <div class="gtm-stat-card">
+          <div class="gtm-stat-header">
+            <span>📈 Financial Projections & Gross Margins (3-Yr Historical + 3-Yr Forward)</span>
+            <span class="green-tag">GTM METRICS</span>
+          </div>
+          <div class="gtm-table-container">
+            <table class="gtm-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th id="th-hist-1">2023</th>
+                  <th id="th-hist-2">2024</th>
+                  <th id="th-hist-3">2025</th>
+                  <th id="th-fwd-1">2026 (P)</th>
+                  <th id="th-fwd-2">2027 (P)</th>
+                  <th id="th-fwd-3">2028 (P)</th>
+                </tr>
+              </thead>
+              <tbody id="gtm-projections-table-body"></tbody>
+            </table>
           </div>
         </div>
       </div>

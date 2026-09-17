@@ -628,3 +628,182 @@ header {
   transform: translateY(0);
   opacity: 1;
 }
+
+/* ==========================================================================
+   Red Team vs. Green Team AI Competitor Analyzer & GTM Pipeline Styles
+   ========================================================================== */
+
+/* Mode Switcher Tabs */
+.mode-nav {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--bg-input);
+  padding: 0.35rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.mode-btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* Red vs Green Theme Color Tokens */
+.green-tag {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.red-tag {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* GTM Header Banner */
+.gtm-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(239, 68, 68, 0.12) 100%);
+  border: 1px solid var(--border-color-glow);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.gtm-banner-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.team-card {
+  padding: 1.2rem;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+}
+
+.team-card.green {
+  border-left: 4px solid #10b981;
+}
+
+.team-card.red {
+  border-left: 4px solid #ef4444;
+}
+
+.versus-badge {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #10b981, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+/* Financial War Chest & Grid Cards */
+.gtm-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gtm-stat-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.gtm-stat-header {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Red Team Strategy Table */
+.gtm-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.gtm-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.gtm-table th, .gtm-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.gtm-table th {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.gtm-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.prob-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.prob-badge.high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.prob-badge.med {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.prob-badge.low {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+

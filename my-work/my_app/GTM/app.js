@@ -1,4 +1,5 @@
 import { getStorySummary, CURATED_STORIES } from './database.js';
+import { runRedVsGreenSimulation, generateFinancialProjections } from './gtmPipeline.js';
 
 // Application State
 let currentStory = null;
@@ -7,6 +8,10 @@ let savedSummaries = JSON.parse(localStorage.getItem('story_summarizer_saved') |
 let speechSynth = window.speechSynthesis || null;
 let currentUtterance = null;
 let isPlayingAudio = false;
+
+// GTM Pipeline State
+let activeGTMCompanyKey = 'apple-vs-samsung';
+let currentGTMResult = null;
 
 // DOM Elements
 const titleInput = document.getElementById('title-input');
@@ -400,3 +405,284 @@ function showToast(msg) {
     toastEl.classList.remove('show');
   }, 3000);
 }
+
+/* ==========================================================================
+   GTM Red Team vs. Green Team Controller & UI Renderer
+   ========================================================================== */
+
+const navStoryModeBtn = document.getElementById('nav-story-mode');
+const navGtmModeBtn = document.getElementById('nav-gtm-mode');
+const heroSection = document.querySelector('.hero-section');
+const gtmSection = document.getElementById('gtm-section');
+const runGtmBtn = document.getElementById('run-gtm-btn');
+const gtmPresetPills = document.querySelectorAll('#gtm-preset-pills .depth-tab');
+
+if (navStoryModeBtn && navGtmModeBtn) {
+  navStoryModeBtn.addEventListener('click', () => {
+    navStoryModeBtn.classList.add('active');
+    navGtmModeBtn.classList.remove('active');
+    if (heroSection) heroSection.style.display = 'block';
+    if (resultsSection && currentStory) resultsSection.style.display = 'block';
+    if (gtmSection) gtmSection.style.display = 'none';
+  });
+
+  navGtmModeBtn.addEventListener('click', () => {
+    navGtmModeBtn.classList.add('active');
+    navStoryModeBtn.classList.remove('active');
+    if (heroSection) heroSection.style.display = 'none';
+    if (resultsSection) resultsSection.style.display = 'none';
+    if (gtmSection) {
+      gtmSection.style.display = 'block';
+      if (!currentGTMResult) {
+        handleGTMSimulation('apple-vs-samsung');
+      }
+    }
+  });
+}
+
+if (gtmPresetPills) {
+  gtmPresetPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      gtmPresetPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      activeGTMCompanyKey = pill.getAttribute('data-company');
+      handleGTMSimulation(activeGTMCompanyKey);
+    });
+  });
+}
+
+if (runGtmBtn) {
+  runGtmBtn.addEventListener('click', () => {
+    handleGTMSimulation(activeGTMCompanyKey);
+  });
+}
+
+const viewGtmTraceBtn = document.getElementById('view-gtm-trace-btn');
+const exportGtmBtn = document.getElementById('export-gtm-btn');
+
+if (viewGtmTraceBtn) {
+  viewGtmTraceBtn.addEventListener('click', () => {
+    if (!currentGTMResult) return;
+    renderGTMTraceLog(currentGTMResult.traceLog, currentGTMResult.overallMetrics.confidenceScore);
+  });
+}
+
+if (exportGtmBtn) {
+  exportGtmBtn.addEventListener('click', () => {
+    exportGTMReport();
+  });
+}
+
+function handleGTMSimulation(companyKey = 'apple-vs-samsung') {
+  currentGTMResult = runRedVsGreenSimulation(companyKey);
+  renderGTMResults(currentGTMResult);
+  showToast(`Ran Red vs Green GTM Simulation for ${currentGTMResult.greenCompany} vs ${currentGTMResult.redCompany}!`);
+}
+
+function renderGTMResults(res) {
+  document.getElementById('gtm-green-title').textContent = res.greenCompany;
+  document.getElementById('gtm-green-overview').textContent = `Dominant high-margin market position in ${res.sector}.`;
+  document.getElementById('gtm-red-title').textContent = res.redCompany;
+  document.getElementById('gtm-red-overview').textContent = `Aggressive challenger deploying full-information attack vectors.`;
+
+  document.getElementById('gtm-verdict-title').textContent = res.overallMetrics.winLikelihood;
+  document.getElementById('gtm-defensibility-score').textContent = `${res.overallMetrics.greenDefensibilityScore}%`;
+  document.getElementById('gtm-attack-score').textContent = `${res.overallMetrics.avgRedSuccessProbability}%`;
+
+  // Financial War Chest & FCF Body
+  const war = res.gtmAnalysis.financialWarChest;
+  document.getElementById('gtm-warchest-body').innerHTML = `
+    <p><strong>${res.greenCompany} Cash War Chest:</strong> <span style="color:#10b981; font-weight:700;">$${war.greenWarChest}B</span> (FCF: $${war.greenFCF}B)</p>
+    <p><strong>${res.redCompany} Cash War Chest:</strong> <span style="color:#ef4444; font-weight:700;">$${war.redWarChest}B</span> (FCF: $${war.redFCF}B)</p>
+    <p style="margin-top:0.5rem; color:var(--text-secondary);">${war.analysis}</p>
+  `;
+
+  // Product Head-to-Head Body
+  const h2h = res.gtmAnalysis.headToHead;
+  let specsHtml = '';
+  if (h2h.greenSpecs && h2h.redSpecs) {
+    specsHtml = `
+      <div style="margin-top:0.75rem; background:rgba(0,0,0,0.25); border:1px solid var(--border-color); border-radius:10px; padding:0.75rem;">
+        <div style="font-weight:700; font-size:0.85rem; color:var(--accent-secondary); margin-bottom:0.5rem;">📱 Detailed Hardware Specs Comparison</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-size:0.8rem;">
+          <div style="border-right:1px solid var(--border-color); padding-right:0.5rem;">
+            <div style="color:#10b981; font-weight:700; margin-bottom:0.2rem;">${h2h.greenProduct}</div>
+            <div><strong>Display:</strong> ${h2h.greenSpecs.display}</div>
+            <div><strong>Chipset:</strong> ${h2h.greenSpecs.chipset}</div>
+            <div><strong>Memory:</strong> ${h2h.greenSpecs.memoryStorage}</div>
+            <div><strong>Camera:</strong> ${h2h.greenSpecs.cameraSystem}</div>
+            <div><strong>Battery:</strong> ${h2h.greenSpecs.batteryCharging}</div>
+          </div>
+          <div style="padding-left:0.5rem;">
+            <div style="color:#ef4444; font-weight:700; margin-bottom:0.2rem;">${h2h.redProduct}</div>
+            <div><strong>Display:</strong> ${h2h.redSpecs.display}</div>
+            <div><strong>Chipset:</strong> ${h2h.redSpecs.chipset}</div>
+            <div><strong>Memory:</strong> ${h2h.redSpecs.memoryStorage}</div>
+            <div><strong>Camera:</strong> ${h2h.redSpecs.cameraSystem}</div>
+            <div><strong>Battery:</strong> ${h2h.redSpecs.batteryCharging}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('gtm-headtohead-body').innerHTML = `
+    <p><strong>Green Flagship Product:</strong> ${h2h.greenProduct} (${h2h.greenProductRevenue})</p>
+    <p><strong>Red Flagship Product:</strong> ${h2h.redProduct} (${h2h.redProductRevenue})</p>
+    <p><strong>Comparison Category:</strong> ${h2h.customerComparisonPair}</p>
+    ${specsHtml}
+    <p style="margin-top:0.5rem; color:var(--text-secondary);">${h2h.verdict}</p>
+  `;
+
+  // IP Portfolio Body
+  const ip = res.gtmAnalysis.ipPortfolio;
+  document.getElementById('gtm-ip-body').innerHTML = `
+    <p><strong>Green Vetted IP:</strong> ${ip.greenStrengths.join(', ')}</p>
+    <p><strong>Red Vetted IP:</strong> ${ip.redStrengths.join(', ')}</p>
+    <p style="color:#f59e0b; margin-top:0.5rem;"><strong>Unvetted / Vulnerable IP Frontiers:</strong> ${ip.unvettedAreas.join('; ')}</p>
+  `;
+
+  // Loyalty Body
+  const loy = res.gtmAnalysis.loyalty;
+  document.getElementById('gtm-loyalty-body').innerHTML = `
+    <p><strong>Green Retention Rate:</strong> <span style="color:#10b981; font-weight:700;">${loy.greenRetentionRate}</span></p>
+    <p><strong>Red Retention Rate:</strong> <span style="color:#ef4444; font-weight:700;">${loy.redRetentionRate}</span></p>
+    <p style="margin-top:0.5rem; color:var(--text-secondary);">${loy.greenBrandSentiment}</p>
+  `;
+
+  // Render Red Team Strategy Table
+  const tbody = document.getElementById('gtm-strategies-table-body');
+  tbody.innerHTML = res.redTeamStrategies.map(strat => {
+    let probClass = strat.probabilityOfSuccess >= 80 ? 'high' : (strat.probabilityOfSuccess >= 70 ? 'med' : 'low');
+    return `
+      <tr>
+        <td>
+          <strong style="color:var(--text-primary);">${strat.title}</strong>
+          <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.2rem;">${strat.summary}</div>
+        </td>
+        <td><span class="badge">${strat.feasibilityScore}/10</span></td>
+        <td><strong>$${strat.costBillions}B</strong></td>
+        <td>${strat.executionTimeMonths} mos</td>
+        <td><span class="prob-badge ${probClass}">${strat.probabilityOfSuccess}%</span></td>
+        <td style="font-size:0.82rem; color:#34d399;">${strat.greenCountermeasure}</td>
+      </tr>
+    `;
+  }).join('');
+
+  // Render Projections Table
+  const proj = generateFinancialProjections(activeGTMCompanyKey);
+  const projTbody = document.getElementById('gtm-projections-table-body');
+  projTbody.innerHTML = `
+    <tr>
+      <td><strong>${res.greenCompany} Revenue ($B)</strong></td>
+      <td>${proj.greenHistRev[0]}</td>
+      <td>${proj.greenHistRev[1]}</td>
+      <td>${proj.greenHistRev[2]}</td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdRev[0]}</strong></td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdRev[1]}</strong></td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdRev[2]}</strong></td>
+    </tr>
+    <tr>
+      <td><strong>${res.redCompany} Revenue ($B)</strong></td>
+      <td>${proj.redHistRev[0]}</td>
+      <td>${proj.redHistRev[1]}</td>
+      <td>${proj.redHistRev[2]}</td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdRev[0]}</strong></td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdRev[1]}</strong></td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdRev[2]}</strong></td>
+    </tr>
+    <tr>
+      <td><strong>${res.greenCompany} Gross Margin %</strong></td>
+      <td>${proj.greenHistGM[0]}%</td>
+      <td>${proj.greenHistGM[1]}%</td>
+      <td>${proj.greenHistGM[2]}%</td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdGM[0]}%</strong></td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdGM[1]}%</strong></td>
+      <td style="color:#10b981;"><strong>${proj.greenFwdGM[2]}%</strong></td>
+    </tr>
+    <tr>
+      <td><strong>${res.redCompany} Gross Margin %</strong></td>
+      <td>${proj.redHistGM[0]}%</td>
+      <td>${proj.redHistGM[1]}%</td>
+      <td>${proj.redHistGM[2]}%</td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdGM[0]}%</strong></td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdGM[1]}%</strong></td>
+      <td style="color:#ef4444;"><strong>${proj.redFwdGM[2]}%</strong></td>
+    </tr>
+  `;
+}
+
+function renderGTMTraceLog(traceLog, confidenceScore) {
+  traceConfidenceScore.textContent = `${confidenceScore}%`;
+  traceTimelineContainer.innerHTML = traceLog.map(item => `
+    <div class="trace-step">
+      <div class="trace-step-number">${item.step}</div>
+      <div style="flex:1;">
+        <div class="trace-step-name">${item.name}</div>
+        <div class="trace-step-detail">${item.detail}</div>
+      </div>
+    </div>
+  `).join('');
+  traceModalOverlay.style.display = 'flex';
+}
+
+function exportGTMReport() {
+  if (!currentGTMResult) return;
+  const res = currentGTMResult;
+  const content = `
+====================================================
+RED TEAM VS GREEN TEAM GO-TO-MARKET READINESS REPORT
+Green Team (Defender): ${res.greenCompany}
+Red Team (Attacker): ${res.redCompany}
+Sector: ${res.sector}
+Engine Confidence: ${res.overallMetrics.confidenceScore}%
+====================================================
+
+EXECUTIVE VERDICT:
+${res.overallMetrics.winLikelihood}
+Green Defensibility Score: ${res.overallMetrics.greenDefensibilityScore}%
+Average Red Attack Probability: ${res.overallMetrics.avgRedSuccessProbability}%
+
+FINANCIAL WAR CHEST:
+- ${res.greenCompany} Cash War Chest: $${res.gtmAnalysis.financialWarChest.greenWarChest}B (FCF: $${res.gtmAnalysis.financialWarChest.greenFCF}B)
+- ${res.redCompany} Cash War Chest: $${res.gtmAnalysis.financialWarChest.redWarChest}B (FCF: $${res.gtmAnalysis.financialWarChest.redFCF}B)
+Analysis: ${res.gtmAnalysis.financialWarChest.analysis}
+
+PRODUCT HEAD-TO-HEAD MATRIX:
+- Green Flagship: ${res.gtmAnalysis.headToHead.greenProduct} (${res.gtmAnalysis.headToHead.greenProductRevenue})
+- Red Flagship: ${res.gtmAnalysis.headToHead.redProduct} (${res.gtmAnalysis.headToHead.redProductRevenue})
+- Comparison Pair: ${res.gtmAnalysis.headToHead.customerComparisonPair}
+- Verdict: ${res.gtmAnalysis.headToHead.verdict}
+
+IP & PATENT PORTFOLIO VETTING:
+- Green Vetted IP: ${res.gtmAnalysis.ipPortfolio.greenStrengths.join(', ')}
+- Red Vetted IP: ${res.gtmAnalysis.ipPortfolio.redStrengths.join(', ')}
+- Vulnerable / Unvetted Frontiers: ${res.gtmAnalysis.ipPortfolio.unvettedAreas.join('; ')}
+
+RED TEAM OFFENSIVE ATTACK VECTORS:
+${res.redTeamStrategies.map(s => `
+* Strategy: ${s.title}
+  Summary: ${s.summary}
+  Feasibility: ${s.feasibilityScore}/10 | Cost: $${s.costBillions}B | Time: ${s.executionTimeMonths} months | Probability: ${s.probabilityOfSuccess}%
+  Green Countermeasure: ${s.greenCountermeasure}
+`).join('')}
+
+EXECUTION PROVENANCE LOG:
+${res.traceLog.map(t => `[Step ${t.step}] ${t.name}: ${t.detail}`).join('\n')}
+
+----------------------------------------------------
+Generated via GTM & Story AI Suite
+`;
+
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gtm_report_${res.greenCompany.toLowerCase()}_vs_${res.redCompany.toLowerCase()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Exported GTM Report text file!');
+}
+
