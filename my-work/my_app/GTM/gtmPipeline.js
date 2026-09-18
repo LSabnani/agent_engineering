@@ -591,6 +591,400 @@ export const COMPETITOR_MARKET_DATABASE = {
         greenCountermeasure: 'Google expands YouTube Shorts shoppable video ad integrations.'
       }
     ]
+  },
+
+  'ge-vs-ba': {
+    greenCompany: 'GE Aerospace',
+    greenSymbol: 'GE',
+    redCompany: 'Boeing Company',
+    redSymbol: 'BA',
+    sector: 'Commercial Aerospace, Jet Propulsion & Defense Systems',
+    marketOverview: 'GE Aerospace (Green) is the world leader in commercial jet propulsion (LEAP, GE9X, GEnx engines) with industry-leading gross margins (31.0%) and high-margin aftermarket service contracts. Boeing (Red) is an aerospace giant producing commercial airframes (737 MAX, 787 Dreamliner, 777X) and defense platforms, currently navigating supply chain constraints and heavy debt service.',
+    
+    greenFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [21.3, 26.0, 31.8, 38.6, 43.2],
+      grossMarginPct: [22.4, 24.8, 27.2, 29.5, 31.0],
+      freeCashFlow: [1.9, 3.1, 4.7, 5.6, 6.4],
+      cashWarChest: 15.8,
+      rdExpenses: 2.8,
+      netProfitMargin: 16.5
+    },
+    redFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [62.3, 66.6, 77.8, 73.4, 78.0],
+      grossMarginPct: [4.2, 5.1, 9.8, 6.2, 11.5],
+      freeCashFlow: [-4.4, -3.5, 3.1, -4.2, 1.8],
+      cashWarChest: 10.5,
+      rdExpenses: 3.4,
+      netProfitMargin: 3.2
+    },
+
+    greenIRInsights: {
+      leadingProducts: ['LEAP-1A / 1B Turbofan Engines (CFM International)', 'GE9X Commercial Engine (Boeing 777X Exclusive)', 'GEnx Engine (Boeing 787 Dreamliner)', 'F110 / F414 Military Fighter Engines'],
+      strengths: [
+        'Dominant ~70% market share in narrowbody commercial jet propulsion via LEAP engines',
+        'High-margin recurring aftermarket long-term service agreements (LTSA / MRO)',
+        'Strong balance sheet with $15.8B cash war chest and high free cash flow conversion'
+      ],
+      weaknesses: [
+        'Supply chain bottleneck exposure on specialized titanium forgings and castings',
+        'Exposure to Boeing delivery rate slowdowns impacting original equipment (OE) engine billing'
+      ]
+    },
+    redIRInsights: {
+      leadingProducts: ['Boeing 737 MAX Commercial Narrowbody Fleet', 'Boeing 787 Dreamliner Widebody Fleet', 'Boeing 777X Next-Gen Twin-Engine Aircraft', 'Defense, Space & Security (F/A-18, AH-64 Apache, KC-46)'],
+      strengths: [
+        'Duopoly market position in global commercial aircraft production alongside Airbus',
+        'Massive $500B+ order backlog securing multi-year manufacturing demand',
+        'Strong defense and government contract revenues'
+      ],
+      weaknesses: [
+        'Lower gross margin (11.5%) and negative net cash generation bound by debt servicing',
+        'Quality control regulatory audits and manufacturing line rate restrictions',
+        'Dependence on third-party engine suppliers (GE & Pratt & Whitney)'
+      ]
+    },
+
+    headToHead: {
+      greenProduct: 'GE Aerospace LEAP-1B / GE9X Jet Propulsion Platform',
+      greenProductRevenue: '$18.4B',
+      greenSpecs: {
+        display: 'FADEC Digital Engine Control Unit & Predix Predictive Engine Health Telemetry',
+        chipset: '3D Ceramic Matrix Composite (CMC) High-Pressure Turbine Blades & 3D Printed Nozzles',
+        memoryStorage: '100,000+ Flight Cycle Reliability Architecture | Real-Time Engine Health Diagnostics',
+        cameraSystem: '3-D Aerodynamic Carbon Fiber Fan Blades + 15:1 Bypass Ratio Turbofan Architecture',
+        batteryCharging: 'SAF (Sustainable Aviation Fuel) 100% Compatible High-Efficiency Combustor',
+        specialFeatures: '15% lower fuel burn, 50% lower NOx emissions, 100,000+ flight cycle durability'
+      },
+      redProduct: 'Boeing 737 MAX & 787 Commercial Aircraft Platform',
+      redProductRevenue: '$34.5B',
+      redSpecs: {
+        display: 'Advanced Rockwell Collins / Honeywell Glass Cockpit & Flight Management System (FMS)',
+        chipset: 'Automated Fiber Placement Carbon Fiber Composite Wings & Lightweight Airframe Structure',
+        memoryStorage: 'Quad-Redundant Flight Control Computer Architecture | ARINC 629 Avionics Bus',
+        cameraSystem: 'Synthetic Vision Guidance System + HUD Dual-Flight Deck Display',
+        batteryCharging: 'High-Capacity Lithium-Ion Auxiliary Power Unit (APU) & Dual 115V AC Generators',
+        specialFeatures: 'Advanced winglet aerodynamics, 210-330 passenger capacity, 3,550-7,305 nmi range'
+      },
+      customerComparisonPair: 'Commercial Aircraft Engine & Airframe Architecture Tier ($100M+ Fleet Tier)',
+      verdict: 'GE Aerospace delivers vastly superior profitability (31.0% Gross Margin vs 11.5%) and $15.8B cash war chest resilience, holding absolute leverage as the primary propulsion engine provider for Boeing 737 MAX and exclusive engine provider for the Boeing 777X.'
+    },
+
+    ipPortfolio: {
+      greenStrengths: ['Ceramic Matrix Composite (CMC) High-Temperature Materials Patents', 'Additive Manufacturing 3D-Printed Fuel Nozzle IP', 'Predix Predictive Engine Health Monitoring Telemetry'],
+      redStrengths: ['Composite Fuselage Automated Fiber Placement IP', 'Supercritical Wing Aerodynamics & Blended Winglet Patents', 'Defense System Integration & Autonomous Flight Control Systems'],
+      unvettedAreas: [
+        'Hybrid-Electric Propulsion certification standards for commercial narrowbody jets',
+        'Sustainable Aviation Fuel (SAF) 100% pure combustor thermal durability'
+      ]
+    },
+
+    loyalty: {
+      greenRetentionRate: '96.8%',
+      redRetentionRate: '86.2%',
+      greenBrandSentiment: 'Unrivaled reputation for propulsion reliability, safety, and fuel efficiency',
+      redBrandSentiment: 'Dominant airframe provider, but undergoing intensive quality control and delivery stabilization'
+    },
+
+    attackScenarios: {
+      lowCost: {
+        scenarioTitle: 'Low-Cost Targeted Attack Scenario',
+        totalBudgetBillions: 1.8,
+        executionTimeframeMonths: '4 - 8 months',
+        avgSuccessProbability: 71.0,
+        greenDefensibilityScore: 78.1,
+        strategies: [
+          {
+            id: 'ge-low-1',
+            title: 'Boeing Dual-Source Engine Design Exploration',
+            summary: 'Commission engineering studies to evaluate dual-sourcing engine options for future airframes to erode GE exclusive leverage.',
+            probabilityOfSuccess: 68,
+            costBillions: 0.6,
+            executionTimeMonths: 6,
+            feasibilityScore: 7,
+            redAdvantage: 'Airframe OEM controls engine bay specifications and wing interface design.',
+            greenCountermeasure: 'GE locks in long-term exclusive supply agreements and joint venture rights.'
+          },
+          {
+            id: 'ge-low-2',
+            title: 'Direct Airline Customer Aftermarket Warranty Top-Ups',
+            summary: 'Offer airlines $50M fleet warranty credits on 737 MAX purchases to incentivize airlines to negotiate lower GE engine MRO rates.',
+            probabilityOfSuccess: 74,
+            costBillions: 1.2,
+            executionTimeMonths: 4,
+            feasibilityScore: 8,
+            redAdvantage: 'Direct sales relationship with airline fleet buyers.',
+            greenCountermeasure: 'GE counters with GE OnPoint guaranteed engine flight hour services.'
+          }
+        ]
+      },
+
+      allOut: {
+        scenarioTitle: 'All-Out Blitz Attack Scenario',
+        totalBudgetBillions: 15.5,
+        executionTimeframeMonths: '12 - 24 months',
+        avgSuccessProbability: 82.5,
+        greenDefensibilityScore: 62.9,
+        strategies: [
+          {
+            id: 'ge-all-1',
+            title: 'In-House Propulsion & Nacelle Manufacturing Vertical Integration',
+            summary: 'Acquire or launch an in-house propulsion division to build nacelles and hybrid-electric engines for next-generation aircraft.',
+            probabilityOfSuccess: 85,
+            costBillions: 9.0,
+            executionTimeMonths: 18,
+            feasibilityScore: 8,
+            redAdvantage: 'Captures full airframe-engine TCO margin across commercial fleets.',
+            greenCountermeasure: 'GE leverages 100M+ flight hour LEAP data and unmatched CMC material IP.'
+          },
+          {
+            id: 'ge-all-2',
+            title: 'Defense-Subsidized Aircraft Fleet Discounting Blitz',
+            summary: 'Cross-subsidize 737 MAX commercial sales using defense contract margins to flood carrier fleets and demand engine price cuts.',
+            probabilityOfSuccess: 80,
+            costBillions: 6.5,
+            executionTimeMonths: 12,
+            feasibilityScore: 8,
+            redAdvantage: 'Large U.S. Defense Department prime contract cash flows.',
+            greenCountermeasure: 'GE counters with F110 / F414 military engine defense synergies.'
+          }
+        ]
+      }
+    },
+
+    redTeamStrategies: [
+      {
+        id: 'ge-strat-1',
+        title: 'In-House Engine & Nacelle In-Sourcing Attack',
+        summary: 'Invest in proprietary propulsion integration and nacelle engineering to reduce reliance on GE Aerospace single-source engines.',
+        probabilityOfSuccess: 83,
+        costBillions: 5.5,
+        executionTimeMonths: 18,
+        feasibilityScore: 8,
+        redAdvantage: 'Boeing controls total aircraft architecture and wing integration.',
+        greenCountermeasure: 'GE leverages 100M+ flight hour LEAP operational data and CMC patent portfolio.'
+      },
+      {
+        id: 'ge-strat-2',
+        title: 'Airline Fleet Aftermarket Warranty Top-Up Blitz',
+        summary: 'Offer direct $50M fleet warranty credits on 737 MAX aircraft orders to incentivize airlines to negotiate lower GE engine MRO contract rates.',
+        probabilityOfSuccess: 76,
+        costBillions: 2.8,
+        executionTimeMonths: 9,
+        feasibilityScore: 8,
+        redAdvantage: 'Direct commercial relationships with global airline fleet procurement C-suites.',
+        greenCountermeasure: 'GE counters with GE OnPoint comprehensive flight-hour service guarantees.'
+      },
+      {
+        id: 'ge-strat-3',
+        title: 'Hybrid-Electric Open Propulsion Architecture Coalition',
+        summary: 'Partner with Pratt & Whitney and NASA to fund open-standard hybrid-electric engine research for 2035+ narrowbody aircraft.',
+        probabilityOfSuccess: 69,
+        costBillions: 2.1,
+        executionTimeMonths: 15,
+        feasibilityScore: 7,
+        redAdvantage: 'Access to NASA research grants and multi-vendor propulsion options.',
+        greenCountermeasure: 'GE advances CFM RISE open-fan engine architecture providing 20%+ fuel burn reductions.'
+      }
+    ]
+  },
+
+  'osis-vs-cbc': {
+    greenCompany: 'OSI Systems, Inc.',
+    greenSymbol: 'OSIS',
+    redCompany: 'CBC Group / Security Systems',
+    redSymbol: 'CBC',
+    sector: 'Security Inspection Technologies, Cargo Screening & Healthcare Systems',
+    marketOverview: 'OSI Systems (Green) is a global leader in airport checkpoint screening, high-energy cargo inspection (Rapiscan Systems), and patient monitoring electronics (Spacelabs Healthcare), backed by high-margin long-term service agreements (37.2% Gross Margin). CBC (Red) competes in commercial security camera optics, thermal surveillance, and facility access control systems.',
+    
+    greenFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [1.15, 1.18, 1.28, 1.54, 1.68],
+      grossMarginPct: [34.2, 35.0, 35.8, 36.5, 37.2],
+      freeCashFlow: [0.11, 0.12, 0.15, 0.18, 0.21],
+      cashWarChest: 0.85,
+      rdExpenses: 0.12,
+      netProfitMargin: 11.2
+    },
+    redFinancials: {
+      years: [2021, 2022, 2023, 2024, 2025],
+      revenue: [0.78, 0.82, 0.89, 0.94, 1.02],
+      grossMarginPct: [28.5, 29.1, 30.0, 30.8, 31.4],
+      freeCashFlow: [0.048, 0.052, 0.061, 0.074, 0.085],
+      cashWarChest: 0.42,
+      rdExpenses: 0.07,
+      netProfitMargin: 7.8
+    },
+
+    greenIRInsights: {
+      leadingProducts: ['Rapiscan® Real-Time Cargo & Baggage Inspection', 'Spacelabs® Patient Monitoring Systems', 'Optoelectronics Custom Subassemblies', 'CertScan® Integration Platform'],
+      strengths: [
+        'Dominant global market share in high-energy cargo and border inspection (Rapiscan Systems)',
+        'High-margin recurring maintenance and turn-key screening operations (37.2% Gross Margin)',
+        'Strong balance sheet with $850M cash war chest (2.02x larger than CBC)'
+      ],
+      weaknesses: [
+        'Lumpy revenue timing tied to large international government border security contracts',
+        'Supply chain component Lead times for high-voltage X-ray generators and LINAC sources'
+      ]
+    },
+    redIRInsights: {
+      leadingProducts: ['Computar® Optical Zoom Camera Lenses', 'GANZ® Intelligent Video Surveillance Suite', 'Thermal Facial Detection Cameras', 'Access Control Systems'],
+      strengths: [
+        'Established optical lens manufacturing scale (Computar brand affinity)',
+        'Broad commercial security integrator distribution channels',
+        'Lower unit cost hardware for perimeter surveillance'
+      ],
+      weaknesses: [
+        'Lower gross margin (31.4%) vulnerable to commoditized IP camera price competition',
+        'Lack of proprietary high-energy LINAC / X-ray screening technology',
+        'Limited penetration in tier-1 international airport and customs contracts'
+      ]
+    },
+
+    headToHead: {
+      greenProduct: 'Rapiscan Eagle® High-Energy Cargo Inspection Platform',
+      greenProductRevenue: '$940M',
+      greenSpecs: {
+        display: 'CertScan® Multi-Agency Unified Inspection Console & Automated Threat Recognition (ATR)',
+        chipset: '6 MeV High-Energy Linear Accelerator (LINAC) X-Ray Source & Dual-Energy Material Discrimination',
+        memoryStorage: 'Enterprise Threat Image Projection (TIP) Vault | Real-Time Customs Manifest Sync',
+        cameraSystem: 'High-Resolution 3D Tomographic X-Ray Sensor Array + Automated License Plate Reader',
+        batteryCharging: 'Diesel-Electric Mobile Trailer Generator & Dual 480V Heavy Industrial Power Grid',
+        specialFeatures: 'Scans up to 180 trucks/hour in drive-through mode, penetration up to 300mm steel'
+      },
+      redProduct: 'Computar® / GANZ® Intelligent Surveillance Suite',
+      redProductRevenue: '$560M',
+      redSpecs: {
+        display: 'GANZ® CORTROL Central Management Video Wall Engine & Web Operator Console',
+        chipset: 'Ambarella AI Vision SoC & Custom Thermal Sensor Microbolometer Core',
+        memoryStorage: 'Local Edge MicroSD Storage + Cloud NVR Multi-Channel Video Vault',
+        cameraSystem: '4K Ultra-HD Optical Zoom Lens + Long-Range Uncooled Infrared Thermal Camera',
+        batteryCharging: 'PoE+ (Power over Ethernet IEEE 802.3at) 30W High-Efficiency Power Module',
+        specialFeatures: 'Smart AI motion detection, perimeter intrusion alerts, facial recognition matching'
+      },
+      customerComparisonPair: 'Security Inspection & Facility Surveillance Systems ($500K+ Enterprise Tier)',
+      verdict: 'OSI Systems holds an overwhelming advantage in critical high-security infrastructure (37.2% Gross Margin vs 31.4%) and $850M cash war chest (2.02x larger), commanding non-displaceable lock-in across international airports, customs borders, and defense facilities.'
+    },
+
+    ipPortfolio: {
+      greenStrengths: ['High-Energy Linear Accelerator (LINAC) Inspection Patents', 'Dual-Energy Material Discrimination & Automated Threat Recognition (ATR) IP', 'Spacelabs Clinical Patient Monitoring Telemetry IP'],
+      redStrengths: ['Precision Optical Lens Design Patents (Computar IP)', 'Edge Thermal Facial Recognition Algorithms', 'Low-Latency Video Management System (VMS) Architecture'],
+      unvettedAreas: [
+        'Autonomous AI Cargo Threat Detection liability standards across international border crossings',
+        'Cybersecurity zero-trust hardening for IoT security screening cameras'
+      ]
+    },
+
+    loyalty: {
+      greenRetentionRate: '95.4%',
+      redRetentionRate: '82.6%',
+      greenBrandSentiment: 'Essential operational standard for international customs agencies and military checkpoints',
+      redBrandSentiment: 'Trusted commercial optics vendor, but susceptible to price competition from low-cost Asian camera makers'
+    },
+
+    attackScenarios: {
+      lowCost: {
+        scenarioTitle: 'Low-Cost Targeted Attack Scenario',
+        totalBudgetBillions: 0.15,
+        executionTimeframeMonths: '3 - 6 months',
+        avgSuccessProbability: 69.0,
+        greenDefensibilityScore: 79.0,
+        strategies: [
+          {
+            id: 'osis-low-1',
+            title: 'Open-Source AI VMS Integration for Third-Party Cameras',
+            summary: 'Distribute free GANZ AI video analytics SDK for third-party security camera networks to undercut Rapiscan software fees.',
+            probabilityOfSuccess: 66,
+            costBillions: 0.05,
+            executionTimeMonths: 4,
+            feasibilityScore: 8,
+            redAdvantage: 'Software API distribution leveraging broad commercial camera base.',
+            greenCountermeasure: 'OSI Systems expands CertScan® multi-agency threat software grants.'
+          },
+          {
+            id: 'osis-low-2',
+            title: 'Surgical Thermal Screening Top-Up for Airport Perimeter',
+            summary: 'Offer targeted $25K trade-in rebates for airport perimeter thermal upgrades to displace Rapiscan perimeter sensors.',
+            probabilityOfSuccess: 72,
+            costBillions: 0.1,
+            executionTimeMonths: 3,
+            feasibilityScore: 8,
+            redAdvantage: 'High optical lens margin absorbs promotional trade-in costs.',
+            greenCountermeasure: 'OSI Systems bundles perimeter thermal sensors into turnkey Rapiscan contracts.'
+          }
+        ]
+      },
+
+      allOut: {
+        scenarioTitle: 'All-Out Blitz Attack Scenario',
+        totalBudgetBillions: 0.95,
+        executionTimeframeMonths: '12 - 24 months',
+        avgSuccessProbability: 81.5,
+        greenDefensibilityScore: 63.3,
+        strategies: [
+          {
+            id: 'osis-all-1',
+            title: 'Subsidized Checkpoint Camera & Baggage Inspection Bundling',
+            summary: 'Offer airport authorities 40% TCO discounts when bundling Computar lenses with baggage inspection hardware.',
+            probabilityOfSuccess: 84,
+            costBillions: 0.55,
+            executionTimeMonths: 12,
+            feasibilityScore: 8,
+            redAdvantage: 'Combines optical lens manufacturing scale with facility access control.',
+            greenCountermeasure: 'OSI Systems leverages proprietary Rapiscan dual-view 3D X-ray patents.'
+          },
+          {
+            id: 'osis-all-2',
+            title: 'Commercial Facilities Access Security Lockout Blitz',
+            summary: 'Deploy $400M in financing subsidies for enterprise facilities upgrading to GANZ AI security suites.',
+            probabilityOfSuccess: 79,
+            costBillions: 0.4,
+            executionTimeMonths: 9,
+            feasibilityScore: 8,
+            redAdvantage: 'Broad commercial security distributor network.',
+            greenCountermeasure: 'OSI Systems counters with integrated Spacelabs & Optoelectronics enterprise contracts.'
+          }
+        ]
+      }
+    },
+
+    redTeamStrategies: [
+      {
+        id: 'osis-strat-1',
+        title: 'Subsidized Airport Checkpoint Camera & Optics Attack',
+        summary: 'Bundle Computar optical lenses and GANZ AI video analytics at 35% below Rapiscan system TCO for regional airport upgrades.',
+        probabilityOfSuccess: 82,
+        costBillions: 0.35,
+        executionTimeMonths: 12,
+        feasibilityScore: 8,
+        redAdvantage: 'In-house optics manufacturing scale lowers unit sensor cost.',
+        greenCountermeasure: 'OSI Systems leverages proprietary Rapiscan dual-view 3D X-ray patents and customs certifications.'
+      },
+      {
+        id: 'osis-strat-2',
+        title: 'Enterprise Perimeter Surveillance Financing Blitz',
+        summary: 'Offer 3-year zero-interest financing on GANZ thermal surveillance suites to lock out Rapiscan perimeter security options.',
+        probabilityOfSuccess: 75,
+        costBillions: 0.2,
+        executionTimeMonths: 8,
+        feasibilityScore: 8,
+        redAdvantage: 'Direct commercial security integrator distribution channels.',
+        greenCountermeasure: 'OSI Systems counters with comprehensive turnkey maintenance SLAs.'
+      },
+      {
+        id: 'osis-strat-3',
+        title: 'Open-Architecture AI Video Analytics Coalition',
+        summary: 'Partner with NVIDIA and commercial software vendors to standardize open threat detection models against Rapiscan CertScan.',
+        probabilityOfSuccess: 68,
+        costBillions: 0.12,
+        executionTimeMonths: 14,
+        feasibilityScore: 7,
+        redAdvantage: 'Access to NVIDIA Metropolis AI ecosystem.',
+        greenCountermeasure: 'OSI Systems advances proprietary LINAC dual-energy material classification algorithms.'
+      }
+    ]
   }
 };
 
